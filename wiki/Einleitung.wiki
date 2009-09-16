@@ -1,4 +1,0 @@
-#labels Featured
-= Einleitung =
-
-Hier ensteht der praktische Anteil meiner Bachelor Thesis zum Thema "visualisation of data fusion models".
