@@ -1,8 +1,4 @@
 #labels Featured
-
-
-= Hintergrund =
-
 Dieses Projekt ist Teil einer Bachelor Thesis zum Thema "Visualisation of data fusion models" am Institut für Theoretische Informatik, Mathematik und Operations Research an der Universität der Bundeswehr München.
 
 Ziel meiner Arbeit soll es sein, verschiedene Modelle für die Fusion von gesammelten Daten zu visualisieren (3D/4D).
