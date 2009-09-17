@@ -6,16 +6,10 @@ package de.unibw.fusionvis.common;
 /**
  * <p>Eigenschaftscontainer, der Eigenschaften mit ihrer ID, ihrem Typ und ihrem Wert speichert.
  * </p>
- * <p>Zulässige Typen sind:
- * <ul>
- *  <li><code>int</code></li>
- *  <li><code>float</code></li>
- *  <li><code>char</code></li>
- *  <li><code>Date</code></li>
- *  <li><code>String</code></li>
- * </ul>
- * </p>
+ * 
  * Gespeichert werden die Werte als String.
+ * 
+ * @see de.unibw.fusionvis.common.Type
  * @author stzschoppe
  *
  */
@@ -24,20 +18,13 @@ public class SimpleProperty {
 	 * ID der Eigenschaft.
 	 */
 	private String id;
+	
 	/**
 	 * Typ der Eigenschaft.
-	 * <p>
-	 * Zulässige Typen sind:
-	 * <ul>
-	 * <li><code>int</code></li>
-	 * <li><code>float</code></li>
-	 * <li><code>char</code></li>
-	 * <li><code>Date</code></li>
-	 * <li><code>String</code></li>
-	 * </ul>
-	 * </p>
+	 * @see de.unibw.fusionvis.common.Type
 	 */
-	private String type;
+	private Type type;
+	
 	/**
 	 * Wert der Eigenschaft, gespeichert in einem String Objekt. Der zugewiesene Wert
 	 * muss in den angegeben Typ überführbar sein.
@@ -50,15 +37,19 @@ public class SimpleProperty {
 	 * @param type Typ
 	 * @param value Wert
 	 */
-	public SimpleProperty(String id, String type, String value) {
+	public SimpleProperty(String id, Type type, String value) {
 		this.id = id;
 		this.type = type;
-		this.value = value;
+		if (Type.valueCorrect(value, type)) {
+			this.value = value;
+		}
+		else this.value = Type.getNeutral(type);
+		
 	}
 	
 	/**
 	 * Konstruktor einer Eigenschaft aus einer bestehenden Eigenschaft.
-	 * @param sp
+	 * @param sp Die zu kopierende Eigenschaft
 	 */
 	public SimpleProperty(SimpleProperty sp){
 		this(sp.getId(), sp.getType(), sp.getValue());
@@ -72,19 +63,10 @@ public class SimpleProperty {
 	}
 
 	/**
-	 * <p>
-	 * Zulässige Typen sind:
-	 * <ul>
-	 * <li><code>int</code></li>
-	 * <li><code>float</code></li>
-	 * <li><code>char</code></li>
-	 * <li><code>Date</code></li>
-	 * <li><code>String</code></li>
-	 * </ul>
-	 * </p>
+	 *@see de.unibw.fusionvis.common.Type
 	 * @return Typ
 	 */
-	public String getType() {
+	public Type getType() {
 		return type;
 	}
 
@@ -93,6 +75,17 @@ public class SimpleProperty {
 	 */
 	public String getValue() {
 		return value;
+	}
+
+	/**
+	 * Setz die Eigenschaft auf einen neuen Wert. Wenn der Wert nicht zum Typ
+	 * der Eigenschaft passt, wird die Zuweisung ignoriert.
+	 * @param value the value to set
+	 */
+	public void setValue(String value) {
+		if (Type.valueCorrect(value, type)) {
+			this.value = value;
+		}
 	}
 	
 }
