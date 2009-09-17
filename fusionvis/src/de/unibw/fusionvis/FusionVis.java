@@ -2,11 +2,9 @@ package de.unibw.fusionvis;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.unibw.fusionvis.importer.BattleSimImporter;
 import de.unibw.fusionvis.importer.Importer;
 
-/**
- * 
- */
 
 /**
  * 
@@ -36,14 +34,14 @@ public class FusionVis {
 	      logger.log(Level.INFO, "starte FusionVis..\n");
 	      
 	      // Initialisierung des Importers
-	      logger.log(Level.INFO, "Initialisierung des Importers\n");
-	      fusionVis.importer = new Importer("\\res\\testdaten.xml"); //TODO hook für die GUI
-	      
+	      logger.log(Level.INFO, "Initialisierung des Importers"+"\n");
+	      fusionVis.importer = new BattleSimImporter("\\res\\testdaten .xml"); //TODO hook für die GUI
+	      logger.log(Level.INFO, "Root Element: " + fusionVis.importer.getDocument().getFirstChild().getNodeName() + "\n");
 	      
 	      logger.log(Level.INFO, "beende FusionVis");
-	    } catch (SecurityException e) {
-	      e.printStackTrace();
-	  
-	  }
+	    } catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+			logger.log(Level.INFO, "beende FusionVis");
+		}
 	}
 }
