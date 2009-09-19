@@ -14,7 +14,7 @@ import java.util.HashMap;
  * @author stzschoppe
  *
  */
-public class DataSet {
+public class DataSet { //TODO toString() implementieren.
 	private String id;
 	
 	private VectorProperty position;
@@ -25,4 +25,14 @@ public class DataSet {
 	
 	private HashMap<String, String> taxonomies;
 
+	/**
+	 * Konstruktor eines leeren Datensatzes.
+	 * @param id Bezeicher des Datensatzes
+	 */
+	public DataSet(String id){
+		this.id = id;
+		simpleProperties = new HashMap<String, SimpleProperty>();
+		vectorProperties = new HashMap<String, VectorProperty>();
+		taxonomies = new HashMap<String, String>();
+	}
 }

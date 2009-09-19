@@ -4,6 +4,8 @@
 package de.unibw.fusionvis.common;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 //XXX evtl SimpleProperty und VectorProperty auf ein Interface zurückführen, damit man sie schachteln kann
 /**
  * Eigenschaftscontainer, der mehrere Eigenschaften (<code>SimpleProperty</Code>) mit ihreren ID, 
@@ -21,10 +23,6 @@ public class VectorProperty {
 	 */
 	private HashMap<String, SimpleProperty> components;
 		
-	/**
-	 * Dimension des Vektors.
-	 */
-	private int dimension;
 	
 	/**
 	 * Konstruktor für einen leeren Vektor.
@@ -32,7 +30,6 @@ public class VectorProperty {
 	 */
 	public VectorProperty(String id) {
 		this.id = id;
-		this.dimension = 0;
 		this.components = new HashMap<String, SimpleProperty>();
 	}
 	
@@ -44,7 +41,6 @@ public class VectorProperty {
 	public VectorProperty(String id, HashMap<String, SimpleProperty> componets) {
 		this.id = id;
 		this.components = componets;
-		this.dimension = componets.size();
 	}
 	
 	
@@ -62,7 +58,6 @@ public class VectorProperty {
 	 */
 	public void setComponents(HashMap<String, SimpleProperty> components) {
 		this.components = components;
-		dimension = components.size();
 	}
 
 	/**
@@ -78,8 +73,9 @@ public class VectorProperty {
 	 * oder <code>null</code> falls der Bezeichner ungültig ist.
 	 * @param id Bezeicher der Komponente
 	 * @return Die Komponente
+	 * @deprecated
 	 */
-	public SimpleProperty getComponent(String id){ //TODO Testen
+	public SimpleProperty getComponent(String id){ //TODO Testen, evtl entfernen
 		if (components.containsKey(id)) {
 			return components.get(id);
 		} else {
@@ -92,14 +88,85 @@ public class VectorProperty {
 	 * @return Die Dimension des gespeicherten Vektors von <code>SimpleProperty</code> Objekten.
 	 */
 	public int getDimension() {
-		return dimension;
+		return components.size();
 	}
 	
 	/**
-	 * @param property Die hinzuzufügende Eigenschaft.
+	 * Fügt eine Komponente hinzu. existiert sie bereits, wird sie überschrieben.
+	 * @param component Die hinzuzufügende Eigenschaft.
 	 */
-	public void addProperty(SimpleProperty property) {
-		components.put(property.getId(), property);
+	public void addComponent(SimpleProperty component) {
+		components.put(component.getId(), component);
 	}
+	
+	/**
+	 * Entfernt die zum Bezeicher gehörende Komponente
+	 * @param id Bezeichner der entfernenden Komponente
+	 * @return die entfernte Komponente oder null, wenn sie nicht vorhanden war
+	 */
+	public SimpleProperty removeComponent(String id){
+		return components.remove(id);
+	}
+	
+	/**
+	 * Gibt eine Liste von Bezeichern der Komponenten des Vektors.
+	 * @return Liste von Bezeichern
+	 */
+	public Set<String> getComponentIds() {
+		return components.keySet();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String result = id + ":\n";
+		for (Iterator<SimpleProperty> iterator = components.values().iterator(); iterator.hasNext();) {
+			SimpleProperty component =  iterator.next();
+			result += "->" + component.toString() + "\n";
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((components == null) ? 0 : components.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof VectorProperty))
+			return false;
+		VectorProperty other = (VectorProperty) obj;
+		if (components == null) {
+			if (other.components != null)
+				return false;
+		} else if (!components.equals(other.components))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+	
+	
 	
 }
