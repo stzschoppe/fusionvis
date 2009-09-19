@@ -16,11 +16,17 @@ import org.xml.sax.SAXException;
 import de.unibw.fusionvis.FusionVis;
 
 /**
+ * <p>Baut einen DOM-Baum aus einem XML-Datensatz eines Battle Simulators 
+ * und wandelt diesen in eine Collection von einzelnen Dateneinträgen um.</p>
  * @author stzschoppe
- *
  */
 public class BattleSimImporter extends Importer {
 
+	/**
+	 * Konstruktor eines Importers für Ausgaben eines Battle Simulators 
+	 * unter Angabe der zu importierenden XML-Datei
+	 * @param xmlDataLocation Pfad zur XML-Datei
+	 */
 	public BattleSimImporter(String xmlDataLocation) {
 		super(xmlDataLocation);
 	}
