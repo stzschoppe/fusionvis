@@ -15,6 +15,8 @@ import de.unibw.fusionvis.importer.Importer;
 public class FusionVis {
 	/** globaler Logger*/
 	private static Logger logger = Logger.getLogger("FusionVis");
+	
+	/** Importer zum Erstellen der Datenstruktur*/
 	private Importer importer;
 	
 	
@@ -26,6 +28,10 @@ public class FusionVis {
 		return logger;
 	}
 
+	/**
+	 * Main-Methode
+	 * @param args
+	 */
 	public static void main(String[] args) {
 	    FusionVis fusionVis = new FusionVis();
 		try {

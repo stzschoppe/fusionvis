@@ -19,7 +19,7 @@ public abstract class Importer {
 	
 	/**
 	 * Konstruktor eines Importers unter Angabe der zu importierenden XML-Datei
-	 * @param xmlDataLocation
+	 * @param xmlDataLocation Pfad zur XML-Datei
 	 */
 	public Importer(String xmlDataLocation){
 		this.xmlDataLocation = xmlDataLocation;
