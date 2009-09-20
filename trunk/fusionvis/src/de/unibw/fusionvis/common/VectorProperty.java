@@ -129,7 +129,7 @@ public class VectorProperty {
 		String result = id + ":\n";
 		for (Iterator<SimpleProperty> iterator = components.values().iterator(); iterator.hasNext();) {
 			SimpleProperty component =  iterator.next();
-			result += "->" + component.toString() + "\n";
+			result += "-->" + component.toString();
 		}
 		return result;
 	}

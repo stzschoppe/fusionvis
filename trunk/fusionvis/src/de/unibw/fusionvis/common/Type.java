@@ -76,7 +76,7 @@ public enum Type {
 				Float.valueOf(value);
 				break;
 			case TString:
-				break;
+				return true;
 			case TDate:
 				new Date(value);
 				break;
