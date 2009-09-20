@@ -41,8 +41,8 @@ public class FusionVis {
 	      
 	      // Initialisierung des Importers
 	      logger.log(Level.INFO, "Initialisierung des Importers"+"\n");
-	      fusionVis.importer = new BattleSimImporter("\\res\\testdaten .xml"); //TODO hook für die GUI
-	      logger.log(Level.INFO, "Root Element: " + fusionVis.importer.getDocument().getFirstChild().getNodeName() + "\n");
+	      fusionVis.importer = new BattleSimImporter("\\res\\testdaten.xml"); //TODO hook für die GUI
+	      logger.log(Level.INFO, fusionVis.importer.getDataSet() + "\n");
 	      
 	      logger.log(Level.INFO, "beende FusionVis");
 	    } catch (Exception e) {

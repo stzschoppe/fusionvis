@@ -3,7 +3,7 @@
  */
 package de.unibw.fusionvis.importer;
 
-import org.w3c.dom.Document;
+import de.unibw.fusionvis.common.DataSet;
 
 /**
  * <p>Baut einen DOM-Baum aus einem XML-Datensatz und wandelt diesen in 
@@ -14,15 +14,15 @@ public abstract class Importer {
 	/**Ort der XML-Datei, aus der die Informationen zu lesen sind */
 	protected final String xmlDataLocation;
 	
-	/**DOM Struktur des Datensatzes*/
-	protected Document document = null;
+	/**Datensatz*/
+	protected DataSet dataSet = null;
 	
 	/**
 	 * Konstruktor eines Importers unter Angabe der zu importierenden XML-Datei
 	 * @param xmlDataLocation Pfad zur XML-Datei
 	 */
 	public Importer(String xmlDataLocation){
-		this.xmlDataLocation = xmlDataLocation;
+		this.xmlDataLocation = xmlDataLocation; 
 	}
 	
 	/**
@@ -34,10 +34,11 @@ public abstract class Importer {
 	}
 
 	/**
-	 * DOM Struktur des Datensatzes
-	 * @return document
+	 * DOM Struktur des Datensatzes. Ist verantwortlich die Instanzvariable 
+	 * <code>dataSet</code> zu initialisieren.
+	 * @return Satz von Daten
 	 */
-	public abstract Document getDocument();
+	public abstract DataSet getDataSet();
 	
 
 
