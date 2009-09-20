@@ -63,7 +63,7 @@ public enum Type {
 			switch (type) {
 			case TInt:
 				Integer.valueOf(value);
-				break;
+				return true;
 			case TChar: {
 				if (value.length() == 1) return true;
 				else return false;
@@ -74,19 +74,18 @@ public enum Type {
 				}
 			case TFloat:
 				Float.valueOf(value);
-				break;
+				return true;
 			case TString:
 				return true;
 			case TDate:
 				new Date(value);
-				break;
+				return true;
 			default:
 				return false;
 			}
 		} catch (Exception e) {
 			return true;
 		}
-		return false;
 	}
 
 	/**
