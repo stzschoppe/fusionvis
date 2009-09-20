@@ -73,6 +73,26 @@ public class DataSet {
 	public void addData(Data data){
 		this.data.add(data);
 	}
+	
+	/**
+	 * Liefert den Satz von Daten, der in den einfachen Eigenschaften das angegebene 
+	 * id-value Paar enthält.
+	 * @param id Bezeicher der zur filterung verwendeten Eigenschaft
+	 * @param value Wert nachdem gefiltert wird
+	 * @return Die reduzierte Datenstruktur
+	 */
+	@SuppressWarnings("unchecked")
+	public DataSet filterBy(String id, String value){
+		DataSet result = new DataSet(String.valueOf(this.id));
+		result.simpleProperties = (HashMap<String, SimpleProperty>) this.simpleProperties.clone();
+		for (Iterator<Data> iterator = data.iterator(); iterator.hasNext();) {
+			Data tmpData =  iterator.next();
+			if (tmpData.getSimpleProperty(id).getStringValue().equals(value)) {
+				result.data.add(tmpData);
+			}
+		}
+		return result;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -80,8 +100,13 @@ public class DataSet {
 	@Override
 	public String toString() {
 		String result="";
-		result += "DataSet id=" + id + "\n\ndata:\n" + data +"\n\n";
-		result += "Einfache Eigenschaften:\n";
+		result += "DataSet id=" + id + "\n\ndata:\n";
+		result += data;
+//		for (Iterator<Data> iterator = data.iterator(); iterator.hasNext();) {
+//			Data component =  iterator.next();
+//			result += component.toString() + "\n";
+//		}
+		result += "\nEinfache Eigenschaften:\n";
 		for (Iterator<SimpleProperty> iterator = simpleProperties.values().iterator(); iterator.hasNext();) {
 			SimpleProperty component =  iterator.next();
 			result += "->" + component.toString() + "\n";

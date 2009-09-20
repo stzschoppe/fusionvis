@@ -131,14 +131,13 @@ public class Data {
 		result += id + "\n";
 		result += "===========\n\n";
 		
-		result += "Position:\n";
 		result += position + "\n";
 		result += "-----------\n\n";
 		
 		result += "Einfache Eigenschaften:\n";
 		for (Iterator<SimpleProperty> iterator = simpleProperties.values().iterator(); iterator.hasNext();) {
 			SimpleProperty component =  iterator.next();
-			result += "->" + component.toString() + "\n";
+			result += "->" + component.toString();
 		}
 		result += "-----------\n\n";
 		
@@ -150,7 +149,7 @@ public class Data {
 		result += "-----------\n\n";
 		
 		result += "Taxonomien:\n";
-		for (Iterator<SimpleProperty> iterator = simpleProperties.values().iterator(); iterator.hasNext();) {
+		for (Iterator<SimpleProperty> iterator = taxonomies.values().iterator(); iterator.hasNext();) {
 			SimpleProperty component =  iterator.next();
 			result += "->" + component.toString() + "\n";
 		}
