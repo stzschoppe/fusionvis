@@ -326,7 +326,7 @@ public class SimpleProperty {
 	 */
 	@Override
 	public String toString() {
-		return id + " [type=" + type + ", value=" + value + "]";
+		return id + ": type=" + type + ", value=" + value + "\n";
 	}
 
 }
