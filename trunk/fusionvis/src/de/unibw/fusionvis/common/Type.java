@@ -57,6 +57,7 @@ public enum Type {
 	 * @param type Zieltyp
 	 * @return <code>true</code> bei korrrektem Wert, <code>false</code> sonst
 	 */
+	@SuppressWarnings("deprecation")
 	public static boolean valueCorrect(String value, Type type){ //TODO Testen
 		try {
 			switch (type) {
@@ -102,6 +103,7 @@ public enum Type {
 	 * @param type Der Typ, für den das neutrale Element ausgegeben werden soll
 	 * @return Das Neutrale Element zum angegebenen Typen.
 	 */
+	@SuppressWarnings("deprecation")
 	public static String getNeutral(Type type) { //TODO Testen
 		switch (type) {
 		case TInt:

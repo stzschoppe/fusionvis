@@ -3,6 +3,8 @@
  */
 package de.unibw.fusionvis.common;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -19,7 +21,7 @@ public class VectorProperty {
 	private String id;
 	
 	/**
-	 * Komponenten in Form einer <code>ArrayList&lt;SimpleProperty>
+	 * Komponenten in Form einer <code>HashMap&lt;String, SimpleProperty>
 	 */
 	private HashMap<String, SimpleProperty> components;
 		
@@ -35,12 +37,16 @@ public class VectorProperty {
 	
 	/**
 	 * Konstruktor für einen Vektor mit angegebenen Inhalt.
-	 * @param id Bezeichner des Vektors
-	 * @param componets Komponenten des Vektors
+	 * @param id Bezeichner des Vektors 
+	 * @param components Komponenten des Vektors
 	 */
-	public VectorProperty(String id, HashMap<String, SimpleProperty> componets) {
+	public VectorProperty(String id, Collection<SimpleProperty> components) {
 		this.id = id;
-		this.components = componets;
+		this.components = new HashMap<String, SimpleProperty>();
+		for (Iterator<SimpleProperty> iterator = components.iterator(); iterator.hasNext();) {
+			SimpleProperty component =  iterator.next();
+			this.components.put(component.getId(), component);
+		}
 	}
 	
 	
@@ -61,11 +67,11 @@ public class VectorProperty {
 	}
 
 	/**
-	 * @return Die Komponenten, <code>HashMap</code> von Bezeicher der Komponente (Key) 
-	 * und <code>SimpleProperty</code> (Value)
+	 * @return Die Komponenten als <code>ArrayList</code>
+	 * 
 	 */
-	public HashMap<String, SimpleProperty> getComponents() {
-		return components;
+	public ArrayList<SimpleProperty> getComponents() {
+		return new ArrayList<SimpleProperty>(components.values());
 	}
 	
 	/**
@@ -73,9 +79,8 @@ public class VectorProperty {
 	 * oder <code>null</code> falls der Bezeichner ungültig ist.
 	 * @param id Bezeicher der Komponente
 	 * @return Die Komponente
-	 * @deprecated
 	 */
-	public SimpleProperty getComponent(String id){ //TODO Testen, evtl entfernen
+	public SimpleProperty getComponent(String id){ //TODO Testen
 		if (components.containsKey(id)) {
 			return components.get(id);
 		} else {
