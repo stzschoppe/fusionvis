@@ -46,6 +46,7 @@ public class FusionVis {
 			
 			DataSet dataSet = fusionVis.importer.getDataSet().filterBy("Certainty", "Perceived");
 			dataSet = dataSet.filterBy("HostilityCode", "HO");
+			
 			logger.log(Level.INFO, "\n"
 					+ fusionVis.importer.getDataSet().getData().size()
 					+ " Datensätze Importiert.\n");

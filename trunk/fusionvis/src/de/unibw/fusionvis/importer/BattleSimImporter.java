@@ -42,8 +42,17 @@ public class BattleSimImporter extends Importer {
 	 * Liste vektorieller Eigenschaften
 	 */
 	private ArrayList<String> vectorPropertyList = new ArrayList<String>();
+	/**
+	 * 
+	 */
 	private ArrayList<String> taxonomyList = new ArrayList<String>();
+	/**
+	 * 
+	 */
 	private String position = "Location";
+	/**
+	 * 
+	 */
 	private String id = "Name";
 	
 	
