@@ -3,6 +3,7 @@
  */
 package de.unibw.fusionvis.common;
 
+
 /**
  * <p>
  * Eigenschaftscontainer, eine Eigenschaft mit ihrer ID, ihrem Typ und ihrem

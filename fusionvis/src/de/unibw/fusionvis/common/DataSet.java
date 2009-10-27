@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
 /**
  * Datenstruktur zur Aufnahme von Daten, die der Importer ausliest. Wichtigste
  * Eigenschaft neben dem Bezeicher (<code>id</code>) ist eine Liste Daten.
