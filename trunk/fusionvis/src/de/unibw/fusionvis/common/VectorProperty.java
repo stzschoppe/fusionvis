@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+
 //XXX evtl SimpleProperty und VectorProperty auf ein Interface zurückführen, damit man sie schachteln kann
 /**
  * Eigenschaftscontainer, der mehrere Eigenschaften (<code>SimpleProperty</Code>) mit ihreren ID, 

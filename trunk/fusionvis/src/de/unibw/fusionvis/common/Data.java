@@ -6,6 +6,7 @@ package de.unibw.fusionvis.common;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
 /**
  * Datenstruktur zur Aufnahme von Eigenschaften, die der Importer ausliest. Wichtigste
  * Eigenschaft neben dem Bezeicher (<code>id</code>) ist ein 3D/4D-Vektor 
