@@ -4,82 +4,89 @@ import java.util.GregorianCalendar;
 
 import de.unibw.fusionvis.common.Type;
 
+/**
+ * Klasse zur Speicherung von char-Eigenschaften
+ * @author stzschoppe
+ *
+ */
 public class CharProperty extends AbstractProperty {
-
+	/**
+	 * Wert der Eigenschaft als <code>char</code>
+	 */
+	private char value;
+	
+	/**
+	 * @param id Bezeichnung der Eigenschaft
+	 * @param type Type der Eigenschaft
+	 */
 	public CharProperty(String id, Type type) {
-		super(id, type);
-		// TODO Auto-generated constructor stub
+		super(id, Type.TChar);
 	}
 
 	@Override
 	public boolean getValueAsBoolean() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		throw new UnsupportedOperationException("Zugriff auf char als boolean-Wert");
 	}
 
 	@Override
 	public char getValueAsChar() {
-		// TODO Auto-generated method stub
-		return 0;
+		return value;
 	}
 
 	@Override
 	public ContainerProperty getValueAsContainerProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Zugriff auf char als ContainerProperty");
 	}
 
 	@Override
 	public GregorianCalendar getValueAsDate() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Zugriff auf char als Date");
 	}
 
 	@Override
 	public int getValueAsInt() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("Zugriff auf char als int-Wert");
 	}
 
 	@Override
 	public String getValueAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		return String.valueOf(value);
 	}
 
 	@Override
 	public void setValueFromBoolean(boolean value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem boolean-Wert");
 
 	}
 
 	@Override
 	public void setValueFromChar(char value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem char-Wert");
 
 	}
 
 	@Override
 	public void setValueFromContainerProperty(ContainerProperty value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einer Containerproperty");
 
 	}
 
 	@Override
 	public void setValueFromDate(GregorianCalendar value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem Date");
 
 	}
 
 	@Override
 	public void setValueFromInt(int value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem int-Wert");
 
 	}
 
 	@Override
 	public void setValueFromString(String value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem String");
 
 	}
 
