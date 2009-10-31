@@ -73,4 +73,11 @@ public abstract class Importer {
 		}
 	}
 
+	/**
+	 * @param dataSet neuer Datensatz.
+	 */
+	public void setDataSet(DataSet dataSet) {
+		this.dataSet = dataSet;
+	}
+
 }
