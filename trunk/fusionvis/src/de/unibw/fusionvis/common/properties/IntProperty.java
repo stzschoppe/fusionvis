@@ -3,84 +3,108 @@ package de.unibw.fusionvis.common.properties;
 import java.util.GregorianCalendar;
 
 import de.unibw.fusionvis.common.Type;
-
+/**
+ * Klasse zur Speicherung von int-Eigenschaften
+ * @author stzschoppe
+ *
+ */
 public class IntProperty extends AbstractProperty {
+	/**
+	 * Wert der Eigenschaft als <code>int</code>
+	 */
+	private int value;
 
-	public IntProperty(String id, Type type) {
-		super(id, type);
-		// TODO Auto-generated constructor stub
+	/**
+	 * Konstruktor
+	 * @param id Bezeichnung der Eigenschaft
+	 * @param value Wert der Eigenschaft
+	 */
+	public IntProperty(String id, int value) {
+		super(id, Type.TInt);
+		this.value = value;
 	}
 
 	@Override
 	public boolean getValueAsBoolean() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException("Zugriff auf int als boolean-Wert");
 	}
 
 	@Override
 	public char getValueAsChar() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("Zugriff auf int als char-Wert");
 	}
 
 	@Override
 	public GregorianCalendar getValueAsDate() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Zugriff auf int als Date");
 	}
 
 	@Override
 	public int getValueAsInt() {
-		// TODO Auto-generated method stub
-		return 0;
+		return value;
 	}
 
 	@Override
 	public String getValueAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		return Integer.toString(value);
 	}
 
 	@Override
 	public void setValueFromBoolean(boolean value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines int-Wertes mit einem boolean-Wert");
 
 	}
 
 	@Override
 	public void setValueFromChar(char value) {
-		// TODO Auto-generated method stub
+		this.value = value;
 
 	}
 
 	@Override
 	public void setValueFromDate(GregorianCalendar value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines int-Wertes mit einem Date");
 
 	}
 
 	@Override
 	public void setValueFromInt(int value) {
-		// TODO Auto-generated method stub
+		this.value = value;
 
 	}
 
 	@Override
 	public void setValueFromString(String value) {
-		// TODO Auto-generated method stub
+		try {
+			this.value = Integer.parseInt(value);
+		} catch (Exception e) {
+			throw new UnsupportedOperationException("Setzen eines int-Wertes mit einem ungültigen String");
+		}
 
 	}
 
 	@Override
 	public ContainerProperty getValueAsContainerProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Zugriff auf int als ContainerProperty");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return id + ": type=" + type + ", value=" + value + "\n";
 	}
 
 	@Override
-	public void setValueFromContainerProperty(ContainerProperty value) {
-		// TODO Auto-generated method stub
-		
+	public float getValueAsFloat() {
+		throw new UnsupportedOperationException("Zugriff auf int als float-Wert");
 	}
 
+	@Override
+	public void setValueFromFloat(float value) {
+		throw new UnsupportedOperationException("Setzen eines int-Wertes mit einem float-Wert");
+	}
 }

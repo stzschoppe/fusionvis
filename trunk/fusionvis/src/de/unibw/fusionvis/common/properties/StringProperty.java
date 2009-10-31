@@ -4,83 +4,99 @@ import java.util.GregorianCalendar;
 
 import de.unibw.fusionvis.common.Type;
 
+/**
+ * Klasse zur Speicherung von String Eigenschaften
+ * @author stzschoppe
+ *
+ */
 public class StringProperty extends AbstractProperty{
+	/**
+	 * Wert der Eigenschaft als <code>String</code>
+	 */
+	private String value;
 
-	public StringProperty(String id, Type type) {
-		super(id, type);
-		// TODO Auto-generated constructor stub
+	/**
+	 * Konstruktor
+	 * @param id Bezeichnung der Eigenschaft
+	 * @param value Wert der Eigenschaft
+	 */
+	public StringProperty(String id, String value) {
+		super(id, Type.TString);
+		this.value = value;
 	}
 
 	@Override
 	public boolean getValueAsBoolean() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException("Zugriff auf String als boolean-Wert");
 	}
 
 	@Override
 	public char getValueAsChar() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("Zugriff auf String als char-Wert");
 	}
 
 	@Override
 	public ContainerProperty getValueAsContainerProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Zugriff auf String als ContainerProperty");
 	}
 
 	@Override
 	public GregorianCalendar getValueAsDate() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Zugriff auf String als Date");
 	}
 
 	@Override
 	public int getValueAsInt() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("Zugriff auf String als int-Wert");
 	}
 
 	@Override
 	public String getValueAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		return value;
 	}
 
 	@Override
 	public void setValueFromBoolean(boolean value) {
-		// TODO Auto-generated method stub
+		this.value = String.valueOf(value);
 		
 	}
 
 	@Override
 	public void setValueFromChar(char value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setValueFromContainerProperty(ContainerProperty value) {
-		// TODO Auto-generated method stub
-		
+		this.value = String.valueOf(value);
 	}
 
 	@Override
 	public void setValueFromDate(GregorianCalendar value) {
-		// TODO Auto-generated method stub
-		
+		this.value = value.toString();
 	}
 
 	@Override
 	public void setValueFromInt(int value) {
-		// TODO Auto-generated method stub
-		
+		this.value = String.valueOf(value);
 	}
 
 	@Override
 	public void setValueFromString(String value) {
-		// TODO Auto-generated method stub
-		
+		this.value = String.valueOf(value);
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return id + ": type=" + type + ", value=" + value + "\n";
 	}
 
+	@Override
+	public float getValueAsFloat() {
+		throw new UnsupportedOperationException("Zugriff auf String als float-Wert");
+	}
+
+	@Override
+	public void setValueFromFloat(float value) {
+		this.value = Float.toString(value);
+	}
 }

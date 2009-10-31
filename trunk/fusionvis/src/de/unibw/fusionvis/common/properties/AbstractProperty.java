@@ -21,14 +21,14 @@ public abstract class AbstractProperty {
 	/**
 	 * Bezeichnung der Eigenschaft
 	 */
-	final private String id;
+	protected final String id;
 	
 	/**
 	 * Typ der Eigenschaft.
 	 * 
 	 * @see de.unibw.fusionvis.common.Type
 	 */
-	final private Type type;
+	protected final Type type;
 	
 	/**
 	 * Konstruktor
@@ -70,6 +70,11 @@ public abstract class AbstractProperty {
 	public abstract boolean getValueAsBoolean();
 	
 	/**
+	 * @return Wert als <code>float</code>
+	 */
+	public abstract float getValueAsFloat();
+	
+	/**
 	 * @return Wert als <code>String</code>
 	 */
 	public abstract String getValueAsString();
@@ -102,6 +107,11 @@ public abstract class AbstractProperty {
 	/**
 	 * @param value neuer Wert
 	 */
+	public abstract void setValueFromFloat(float  value);
+	
+	/**
+	 * @param value neuer Wert
+	 */
 	public abstract void setValueFromString(String  value);
 	
 	/**
@@ -109,8 +119,4 @@ public abstract class AbstractProperty {
 	 */
 	public abstract void setValueFromDate(GregorianCalendar  value);
 	
-	/**
-	 * @param value neuer Wert
-	 */
-	public abstract void setValueFromContainerProperty(ContainerProperty  value);
 }

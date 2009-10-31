@@ -60,12 +60,6 @@ public class DateProperty extends AbstractProperty {
 	}
 
 	@Override
-	public void setValueFromContainerProperty(ContainerProperty value) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setValueFromDate(GregorianCalendar value) {
 		// TODO Auto-generated method stub
 
@@ -81,6 +75,18 @@ public class DateProperty extends AbstractProperty {
 	public void setValueFromString(String value) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public float getValueAsFloat() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setValueFromFloat(float value) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
