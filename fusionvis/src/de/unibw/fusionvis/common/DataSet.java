@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import de.unibw.fusionvis.common.properties.AbstractProperty;
+
 
 /**
  * Datenstruktur zur Aufnahme von Daten, die der Importer ausliest. Wichtigste
@@ -18,7 +20,7 @@ public class DataSet {
 	private ArrayList<Data> data;
 	
 	/** Einfache Eigenschaften*/
-	private HashMap<String, SimpleProperty> simpleProperties;
+	private HashMap<String, AbstractProperty> simpleProperties;
 
 	/** Bezeichner des Satzes von Daten*/
 	private String id;
@@ -29,7 +31,7 @@ public class DataSet {
 	 */
 	public DataSet(String id) {
 		this.id = id;
-		this.simpleProperties = new HashMap<String, SimpleProperty>();
+		this.simpleProperties = new HashMap<String, AbstractProperty>();
 		this.data = new ArrayList<Data>();
 	}
 	
@@ -45,7 +47,7 @@ public class DataSet {
 	 * Fügt eine einfache Eigenschaft hinzu
 	 * @param property Hinzuzufügende Eigenschaft
 	 */
-	public void addSimpleProperty(SimpleProperty property) {
+	public void addSimpleProperty(AbstractProperty property) {
 		simpleProperties.put(property.getId(), property);
 	}
 	
@@ -55,7 +57,7 @@ public class DataSet {
 	 * @param id Bezeicher der Eigenschaft
 	 * @return Die Eigenschaft
 	 */
-	public SimpleProperty getSimpleProperty(String id) {
+	public AbstractProperty getSimpleProperty(String id) {
 		return simpleProperties.get(id);
 	}
 	
@@ -85,10 +87,10 @@ public class DataSet {
 	@SuppressWarnings("unchecked")
 	public DataSet filterBy(String id, String value){
 		DataSet result = new DataSet(String.valueOf(this.id));
-		result.simpleProperties = (HashMap<String, SimpleProperty>) this.simpleProperties.clone();
+		result.simpleProperties = (HashMap<String, AbstractProperty>) this.simpleProperties.clone();
 		for (Iterator<Data> iterator = data.iterator(); iterator.hasNext();) {
 			Data tmpData =  iterator.next();
-			if (tmpData.getSimpleProperty(id).getStringValue().equals(value)) {
+			if (tmpData.getAbstractProperty(id).getValueAsString().equals(value)) {
 				result.data.add(tmpData);
 			}
 		}
@@ -108,8 +110,8 @@ public class DataSet {
 //			result += component.toString() + "\n";
 //		}
 		result += "\nEinfache Eigenschaften:\n";
-		for (Iterator<SimpleProperty> iterator = simpleProperties.values().iterator(); iterator.hasNext();) {
-			SimpleProperty component =  iterator.next();
+		for (Iterator<AbstractProperty> iterator = simpleProperties.values().iterator(); iterator.hasNext();) {
+			AbstractProperty component =  iterator.next();
 			result += "->" + component.toString() + "\n";
 		}
 		return result;
