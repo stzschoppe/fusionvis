@@ -10,7 +10,7 @@ import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Cylinder;
 import com.jme.scene.shape.Sphere;
 
-public class Viewer extends SimpleGame {
+public  class Viewer extends SimpleGame {
 	private static int numberOfPoints = 0;
 	private final boolean cones = true;
 

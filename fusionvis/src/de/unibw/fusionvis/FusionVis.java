@@ -10,8 +10,10 @@ import shell.StringParameter;
 import shell.tools.HaltCommand;
 
 import de.unibw.fusionvis.common.DataSet;
-import de.unibw.fusionvis.importer.BattleSimImporter;
+import de.unibw.fusionvis.implementation.battlesimvis.BattleSimImporter;
 import de.unibw.fusionvis.importer.Importer;
+import de.unibw.fusionvis.mapper.Mapper;
+import de.unibw.fusionvis.viewer.Viewer;
 
 
 /**
@@ -27,10 +29,21 @@ public class FusionVis {
 	/** Importer zum Erstellen der Datenstruktur*/
 	private Importer importer;
 	
+	/** Mapper zum Erstellen der graphischen Datenstruktur*/
+	private Mapper mapper;
+	
+	/** Viewer zum Anzeigen der graphischen Datenstruktur*/
+	private Viewer viewer;
+	
 	/**
-	 * Konstrucktor
+	 * Konstruktor
 	 */
-	public FusionVis() {
+	public FusionVis(Importer importer, Mapper mapper, Viewer viewer) {
+		this.importer = importer;
+		this.mapper = mapper;
+		this.viewer = viewer;
+		
+		// Initialieren der Shell
 		createCommands();
 	}
 	
@@ -38,58 +51,10 @@ public class FusionVis {
 	 * Getter fuer den globalen Logger
 	 * @return the logger
 	 */
-	public static Logger getLogger() {
+	protected static Logger getLogger() {
 		return logger;
 	}
 
-	/**
-	 * Main-Methode
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		FusionVis fusionVis = new FusionVis();
-		try {
-			// Logger Konfiguration
-			logger.setLevel(Level.ALL);
-			logger.log(Level.INFO, "starte FusionVis..\n");	
-			
-			
-			Shell.getInstance().run();
-			
-			
-			
-			
-//			DataSet dataSet = fusionVis.importer.getDataSet().filterBy("Certainty", "Perceived");
-//			dataSet = dataSet.filterBy("HostilityCode", "HO");
-			
-			// Beenden
-			logger.log(Level.INFO, "beende FusionVis");
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage());
-			logger.log(Level.INFO, "beende FusionVis");
-		}
-	}
-
-	private void importXML(String file) {
-		// Initialisierung des Importers
-		logger.log(Level.INFO, "Initialisierung des Importers mit " + file + "\n");
-		this.importer = new BattleSimImporter(file);
-		logger.log(Level.INFO, "\n"
-				+ this.importer.getDataSet().getData().size()
-				+ " Datensätze importiert.\n");
-	}
-
-	/**
-	 * Gibt einen Datensatz über den Logger aus
-	 * @param dataSet
-	 */
-	private void printAll() {
-		logger.log(Level.INFO, this.importer.getDataSet() + "\n");
-		logger.log(Level.INFO, ""
-				+ this.importer.getDataSet().getData().size()
-				+ " Datensätze vorhanden.\n");
-	}
-	
 	/**
      * Erstellt die commands für die shell. Ausgelagert aus dem Konstruktor auf Gruenden der Uebersicht.
      * Weiterfuehrende Erlaeuterungen zu finden in der shell/package.html.
@@ -100,7 +65,7 @@ public class FusionVis {
     		
 			@Override
 			public void execute(Command command) {
-				printAll();
+				commandPrintAll();
 			}}));
     	
     	
@@ -113,7 +78,7 @@ public class FusionVis {
     		
 			@Override
 			public void execute(Command command) {
-				importXML(command.getParameterByName("file").getValueAsString());				
+				commandImportXML(command.getParameterByName("file").getValueAsString());				
 			}}));
     	//Fügt dem Kommando einen Parameter hinzu
     	importXML.addParameter(new StringParameter("file", "Dateiname der zu importierenden XML-Datei."));	
@@ -125,7 +90,7 @@ public class FusionVis {
     		
 			@Override
 			public void execute(Command command) {
-				filter(command.getParameterByName("key").getValueAsString(), command.getParameterByName("value").getValueAsString());				
+				commandFilter(command.getParameterByName("key").getValueAsString(), command.getParameterByName("value").getValueAsString());				
 			}}));
     	//Fügt dem Kommando zwei Parameter hinzu
     	filter.addParameter(new StringParameter("key", "Schlüssel, nach dessen Wert zu filtern ist"));
@@ -133,8 +98,28 @@ public class FusionVis {
     	Shell.getInstance().addCommand(filter);
     }
 
-	private void filter(String key, String value) {
+	private void commandFilter(String key, String value) {
 		importer.setDataSet(importer.getDataSet().filterBy(key, value));
+		logger.log(Level.INFO, ""
+				+ this.importer.getDataSet().getData().size()
+				+ " Datensätze vorhanden.\n");
+	}
+	
+	private void commandImportXML(String file) {
+		// Initialisierung des Importers
+		logger.log(Level.INFO, "Initialisierung des Importers mit " + file + "\n");
+		this.importer.runImport(file);
+		logger.log(Level.INFO, "\n"
+				+ this.importer.getDataSet().getData().size()
+				+ " Datensätze importiert.\n");
+	}
+	
+	/**
+	 * Gibt einen Datensatz über den Logger aus
+	 * @param dataSet
+	 */
+	private void commandPrintAll() {
+		logger.log(Level.INFO, this.importer.getDataSet() + "\n");
 		logger.log(Level.INFO, ""
 				+ this.importer.getDataSet().getData().size()
 				+ " Datensätze vorhanden.\n");
