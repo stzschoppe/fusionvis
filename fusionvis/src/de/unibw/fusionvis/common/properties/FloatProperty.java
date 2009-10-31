@@ -3,61 +3,55 @@ package de.unibw.fusionvis.common.properties;
 import java.util.GregorianCalendar;
 
 import de.unibw.fusionvis.common.Type;
-
 /**
- * Klasse zur Speicherung von char-Eigenschaften
+ * Klasse zur Speicherung von float-Eigenschaften
  * @author stzschoppe
  *
  */
-public class CharProperty extends AbstractProperty {
+public class FloatProperty extends AbstractProperty {
 	/**
-	 * Wert der Eigenschaft als <code>char</code>
+	 * Wert der Eigenschaft als <code>float</code>
 	 */
-	private char value;
-	
+	private float value;
+
 	/**
 	 * Konstruktor
 	 * @param id Bezeichnung der Eigenschaft
 	 * @param value Wert der Eigenschaft
 	 */
-	public CharProperty(String id, char value) {
-		super(id, Type.TChar);
+	public FloatProperty(String id, float value) {
+		super(id, Type.TInt);
 		this.value = value;
 	}
 
 	@Override
 	public boolean getValueAsBoolean() {
-		throw new UnsupportedOperationException("Zugriff auf char als boolean-Wert");
+		throw new UnsupportedOperationException("Zugriff auf float als boolean-Wert");
 	}
 
 	@Override
 	public char getValueAsChar() {
-		return value;
-	}
-
-	@Override
-	public ContainerProperty getValueAsContainerProperty() {
-		throw new UnsupportedOperationException("Zugriff auf char als ContainerProperty");
+		throw new UnsupportedOperationException("Zugriff auf float als char-Wert");
 	}
 
 	@Override
 	public GregorianCalendar getValueAsDate() {
-		throw new UnsupportedOperationException("Zugriff auf char als Date");
+		throw new UnsupportedOperationException("Zugriff auf float als Date");
 	}
 
 	@Override
 	public int getValueAsInt() {
-		throw new UnsupportedOperationException("Zugriff auf char als int-Wert");
+		return (int)value;
 	}
 
 	@Override
 	public String getValueAsString() {
-		return String.valueOf(value);
+		return Float.toString(value);
 	}
 
 	@Override
 	public void setValueFromBoolean(boolean value) {
-		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem boolean-Wert");
+		throw new UnsupportedOperationException("Setzen eines float-Wertes mit einem boolean-Wert");
 
 	}
 
@@ -69,24 +63,29 @@ public class CharProperty extends AbstractProperty {
 
 	@Override
 	public void setValueFromDate(GregorianCalendar value) {
-		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem Date");
+		throw new UnsupportedOperationException("Setzen eines float-Wertes mit einem Date");
 
 	}
 
 	@Override
 	public void setValueFromInt(int value) {
-		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem int-Wert");
+		this.value = value;
 
 	}
 
 	@Override
 	public void setValueFromString(String value) {
 		try {
-			this.value = value.charAt(0);
+			this.value = Float.parseFloat(value);
 		} catch (Exception e) {
-			throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem ungültigen String");
+			throw new UnsupportedOperationException("Setzen eines float-Wertes mit einem ungültigen String");
 		}
 
+	}
+
+	@Override
+	public ContainerProperty getValueAsContainerProperty() {
+		throw new UnsupportedOperationException("Zugriff auf float als ContainerProperty");
 	}
 	
 	/*
@@ -101,13 +100,12 @@ public class CharProperty extends AbstractProperty {
 
 	@Override
 	public float getValueAsFloat() {
-		throw new UnsupportedOperationException("Zugriff auf char als float-Wert");
+		return value;
 	}
 
 	@Override
 	public void setValueFromFloat(float value) {
-		throw new UnsupportedOperationException("Setzen eines char-Wertes mit einem float-Wert");
+		this.value = value;
 		
 	}
-
 }

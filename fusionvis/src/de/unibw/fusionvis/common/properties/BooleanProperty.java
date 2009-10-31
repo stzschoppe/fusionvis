@@ -18,14 +18,15 @@ public class BooleanProperty extends AbstractProperty {
 	/**
 	 * Konstruktor
 	 * @param id Bezeichnung der Eigenschaft
+	 * @param value Wert der Eigenschaft
 	 */
-	public BooleanProperty(String id) {
+	public BooleanProperty(String id, boolean value) {
 		super(id, Type.TBool);
+		this.value = value;
 	}
 
 	@Override
 	public boolean getValueAsBoolean() {
-		
 		return value;
 	}
 
@@ -67,12 +68,6 @@ public class BooleanProperty extends AbstractProperty {
 	}
 
 	@Override
-	public void setValueFromContainerProperty(ContainerProperty value) {
-		throw new UnsupportedOperationException("Setzen eines boolean-Wertes mit einer Containerproperty");
-
-	}
-
-	@Override
 	public void setValueFromDate(GregorianCalendar value) {
 		throw new UnsupportedOperationException("Setzen eines boolean-Wertes mit einem Date");
 
@@ -86,8 +81,32 @@ public class BooleanProperty extends AbstractProperty {
 
 	@Override
 	public void setValueFromString(String value) {
-		throw new UnsupportedOperationException("Setzen eines boolean-Wertes mit einem String");
+		try {
+			Boolean.valueOf(value);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Setzen eines boolean-Wertes mit einem ungültigen String");
+		}
+		this.value = Boolean.valueOf(value);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return id + ": type=" + type + ", value=" + value + "\n";
+	}
 
+	@Override
+	public float getValueAsFloat() {
+		throw new UnsupportedOperationException("Zugriff auf boolean als float-Wert");
+	}
+
+	@Override
+	public void setValueFromFloat(float value) {
+		throw new UnsupportedOperationException("Setzen eines boolean-Wertes mit einem float-Wert");
 	}
 
 }
