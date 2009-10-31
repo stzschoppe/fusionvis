@@ -3,6 +3,9 @@
  */
 package de.unibw.fusionvis.importer;
 
+import java.util.ArrayList;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import de.unibw.fusionvis.common.DataSet;
@@ -21,10 +24,31 @@ import de.unibw.fusionvis.common.properties.StringProperty;
  */
 public abstract class Importer {
 	/**Ort der XML-Datei, aus der die Informationen zu lesen sind */
-	protected final String xmlDataLocation;
+	protected String xmlDataLocation = "\\res\\sit8979.xml"; //TODO remove
 	
 	/**Datensatz*/
 	protected DataSet dataSet = null;
+	
+	/**
+	 * DOM-Document der importierten XML Datei;
+	 */
+	protected Document document;
+	
+	/**
+	 * Liste einfacher Eigenschaften
+	 */
+	protected ArrayList<String> simplePropertyList = new ArrayList<String>();
+	
+	/**
+	 * Liste vektorieller Eigenschaften
+	 */
+	protected ArrayList<String> vectorPropertyList = new ArrayList<String>();
+
+	protected ArrayList<String> taxonomyList = new ArrayList<String>();
+
+	protected String position = "Location";
+
+	protected String id = "Name";
 	
 	/**
 	 * Konstruktor eines Importers unter Angabe der zu importierenden XML-Datei
@@ -43,12 +67,28 @@ public abstract class Importer {
 	}
 
 	/**
+	 * @param Ort der XML-Datei, aus der die Informationen zu lesen sind
+	 */
+	public void setXmlDataLocation(String xmlDataLocation) {
+		this.xmlDataLocation = xmlDataLocation;
+	}
+
+	/**
 	 * DOM Struktur des Datensatzes. Ist verantwortlich die Instanzvariable 
 	 * <code>dataSet</code> zu initialisieren.
 	 * @return Satz von Daten
 	 */
-	public abstract DataSet getDataSet();
+	public DataSet getDataSet() {
+		if (dataSet == null) {
+			if (document == null) {
+				runImport(xmlDataLocation);
+			}
+		}
+		return dataSet;
+	}
 	
+	public abstract void runImport(String file);
+
 	/**
 	 * Extrahiert eine einfache Eigenschaft.
 	 * @param node XML-Node

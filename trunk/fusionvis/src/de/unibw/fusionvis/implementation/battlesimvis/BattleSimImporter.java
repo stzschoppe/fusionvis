@@ -1,11 +1,12 @@
 /**
  * 
  */
-package de.unibw.fusionvis.importer;
+package de.unibw.fusionvis.implementation.battlesimvis;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,6 +23,7 @@ import de.unibw.fusionvis.common.DataSet;
 import de.unibw.fusionvis.common.Type;
 import de.unibw.fusionvis.common.properties.AbstractProperty;
 import de.unibw.fusionvis.common.properties.ContainerProperty;
+import de.unibw.fusionvis.importer.Importer;
 
 /**
  * <p>Baut einen DOM-Baum aus einem XML-Datensatz eines Battle Simulators 
@@ -29,41 +31,18 @@ import de.unibw.fusionvis.common.properties.ContainerProperty;
  * @author stzschoppe
  */
 public class BattleSimImporter extends Importer {
-	/**
-	 * DOM-Document der importierten XML Datei;
-	 */
-	private Document document;
-	
-	/**
-	 * Liste einfacher Eigenschaften
-	 */
-	private ArrayList<String> simplePropertyList = new ArrayList<String>();
-	/**
-	 * Liste vektorieller Eigenschaften
-	 */
-	private ArrayList<String> vectorPropertyList = new ArrayList<String>();
-	/**
-	 * 
-	 */
-	private ArrayList<String> taxonomyList = new ArrayList<String>();
-	/**
-	 * 
-	 */
-	private String position = "Location";
-	/**
-	 * 
-	 */
-	private String id = "Name";
-	
-	
+	private Logger logger;
 	
 	/**
 	 * Konstruktor eines Importers für Ausgaben eines Battle Simulators 
 	 * unter Angabe der zu importierenden XML-Datei
 	 * @param xmlDataLocation Pfad zur XML-Datei
 	 */
-	public BattleSimImporter(String xmlDataLocation) {
+	public BattleSimImporter(String xmlDataLocation, Logger logger) {
 		super(xmlDataLocation);
+		this.logger = logger;
+		id = "Name";
+		position = "Location";
 		
 		// Listen der zu übernehmenden Elemente initialisieren.
 		simplePropertyList.add("FormalAbbrdName");
@@ -83,41 +62,34 @@ public class BattleSimImporter extends Importer {
 		vectorPropertyList.add("Orientation");
 	}
 
-	/* (non-Javadoc)
-	 * @see de.unibw.fusionvis.importer.Importer#getDocument()
-	 */
 	@Override
-	public DataSet getDataSet() {
-		if (dataSet == null) {
-			if (document == null) {
+	public void runImport(String file) {
 				// Einlesen des Datensatzes
 				DocumentBuilderFactory factory = DocumentBuilderFactory
 						.newInstance();
 				DocumentBuilder builder = null;
 				try {
 					builder = factory.newDocumentBuilder();
-					document = builder.parse(xmlDataLocation);
+					document = builder.parse(file);
 					buildDataSet();
 
 				} catch (ParserConfigurationException e) {
-					FusionVis.getLogger().log(
+					logger.log(
 							Level.SEVERE,
 							"Fehler beim Initialisieren des Importers" + "\n"
 									+ e.getLocalizedMessage() + "\n");
 				} catch (SAXException e) {
-					FusionVis.getLogger().log(
+					logger.log(
 							Level.SEVERE,
 							"Fehler beim Initialisieren des Importers " + "\n"
 									+ e.getLocalizedMessage() + "\n");
 				} catch (IOException e) {
-					FusionVis.getLogger().log(
+					logger.log(
 							Level.SEVERE,
 							"Fehler beim Initialisieren des Importers " + "\n"
 									+ e.getLocalizedMessage() + "\n");
 				}
-			}
-		}
-		return dataSet;
+
 	}
 	
 	/**
