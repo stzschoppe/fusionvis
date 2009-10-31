@@ -4,6 +4,8 @@
 package de.unibw.fusionvis.common;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Mögliche Typen für eine Eigenschaft:
@@ -14,6 +16,7 @@ import java.util.Date;
  * <li><code>TBool</code></li>
  * <li><code>TDate</code></li>
  * <li><code>TString</code></li>
+ * <li><code>TContainer</code></li>
  * </ul>
  * 
  * @author stzschoppe
@@ -48,7 +51,12 @@ public enum Type {
 	/**
 	 * Stringtyp
 	 */
-	TString;
+	TString,
+	
+	/**
+	 * Containertyp
+	 */
+	TContainer;
 	
 	/**
 	 * Prüft, ob ein in <code>value</code> angegebener String in den in <code>type</code>
@@ -78,7 +86,7 @@ public enum Type {
 			case TString:
 				return true;
 			case TDate:
-				new Date(value);
+				new GregorianCalendar(new Locale(value));
 				return true;
 			default:
 				return false;
@@ -95,7 +103,7 @@ public enum Type {
 	 * <li><code>TFloat 0.0</code></li>
 	 * <li><code>TChar "\0"</code></li>
 	 * <li><code>TBool false</code></li>
-	 * <li><code>TDate new Date()</code></li>
+	 * <li><code>TDate new GregorianCalendar()</code></li>
 	 * <li><code>TString ""</code></li>
 	 * </ul>
 	 * 
@@ -116,7 +124,7 @@ public enum Type {
 		case TString:
 			return "";
 		case TDate:
-			return (new Date()).toGMTString();
+			return new GregorianCalendar().toString();
 		default:
 			return "";
 		}
