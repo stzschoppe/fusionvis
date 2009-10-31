@@ -23,8 +23,7 @@ import de.unibw.fusionvis.common.properties.StringProperty;
  * @author stzschoppe
  */
 public abstract class Importer {
-	/**Ort der XML-Datei, aus der die Informationen zu lesen sind */
-	protected String xmlDataLocation = "\\res\\sit8979.xml"; //TODO remove
+	private final String standardInputFile = "\\res\\sit8979.xml";
 	
 	/**Datensatz*/
 	protected DataSet dataSet = null;
@@ -49,29 +48,6 @@ public abstract class Importer {
 	protected String position = "Location";
 
 	protected String id = "Name";
-	
-	/**
-	 * Konstruktor eines Importers unter Angabe der zu importierenden XML-Datei
-	 * @param xmlDataLocation Pfad zur XML-Datei
-	 */
-	public Importer(String xmlDataLocation){
-		this.xmlDataLocation = xmlDataLocation; 
-	}
-	
-	/**
-	 * <p>Ort der XML-Datei, aus der die Informationen zu lesen sind</p>
-	 * @return xmlDataLocation
-	 */
-	public String getXmlDataLocation() {
-		return xmlDataLocation;
-	}
-
-	/**
-	 * @param Ort der XML-Datei, aus der die Informationen zu lesen sind
-	 */
-	public void setXmlDataLocation(String xmlDataLocation) {
-		this.xmlDataLocation = xmlDataLocation;
-	}
 
 	/**
 	 * DOM Struktur des Datensatzes. Ist verantwortlich die Instanzvariable 
@@ -81,7 +57,7 @@ public abstract class Importer {
 	public DataSet getDataSet() {
 		if (dataSet == null) {
 			if (document == null) {
-				runImport(xmlDataLocation);
+				runImport(standardInputFile);
 			}
 		}
 		return dataSet;
