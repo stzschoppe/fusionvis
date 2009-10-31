@@ -39,7 +39,6 @@ public class BattleSimImporter extends Importer {
 	 * @param xmlDataLocation Pfad zur XML-Datei
 	 */
 	public BattleSimImporter(String xmlDataLocation, Logger logger) {
-		super(xmlDataLocation);
 		this.logger = logger;
 		id = "Name";
 		position = "Location";
