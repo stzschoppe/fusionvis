@@ -19,9 +19,9 @@ import org.xml.sax.SAXException;
 import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.common.Data;
 import de.unibw.fusionvis.common.DataSet;
-import de.unibw.fusionvis.common.SimpleProperty;
 import de.unibw.fusionvis.common.Type;
-import de.unibw.fusionvis.common.VectorProperty;
+import de.unibw.fusionvis.common.properties.AbstractProperty;
+import de.unibw.fusionvis.common.properties.ContainerProperty;
 
 /**
  * <p>Baut einen DOM-Baum aus einem XML-Datensatz eines Battle Simulators 
@@ -169,18 +169,18 @@ public class BattleSimImporter extends Importer {
 				Node element = list.item(i);
 				//Position setzen
 				if (element.getNodeName().equals(position)) {
-					result.setPosition(extractVectorProperty(element, "Position"));
+					result.setPosition(extractContainerProperty(element, "Position"));
 				}
 				else if (simplePropertyList.contains(element.getNodeName())) {
 					if (element.getNodeName().equals("IsPlatform")) {
-						result.addSimpleProperty(extractSimpleProperty(element,
+						result.addAbstractProperty(extractSimpleProperty(element,
 								Type.TBool));
 					}
-					else result.addSimpleProperty(extractSimpleProperty(element,
+					else result.addAbstractProperty(extractSimpleProperty(element,
 							Type.TString));
 				} 
 				else if (vectorPropertyList.contains(element.getNodeName())) {
-					result.addVectorProperty(extractVectorProperty(element, element.getNodeName()));
+					result.addContainerProperty(extractContainerProperty(element, element.getNodeName()));
 				}
 				else if (taxonomyList.contains(element.getNodeName())) {
 					result.addTaxonomie((extractSimpleProperty(element)));
@@ -193,16 +193,7 @@ public class BattleSimImporter extends Importer {
 		return result;
 	}
 	
-	/**
-	 * Extrahiert eine einfache Eigenschaft.
-	 * @param node
-	 * @param type
-	 * @return
-	 */
-	private SimpleProperty extractSimpleProperty(Node node, Type type) {
-		return new SimpleProperty(node.getNodeName(), 
-				type, node.getTextContent()); //TODO Anpassen auf automatische Typerkennung.
-	}
+
 	
 	
 	/**
@@ -210,14 +201,12 @@ public class BattleSimImporter extends Importer {
 	 * @param node
 	 * @return
 	 */
-	private SimpleProperty extractSimpleProperty(Node node) {
+	private AbstractProperty extractSimpleProperty(Node node) {
 		try {
 			Float.valueOf(node.getTextContent());
-			return new SimpleProperty(node.getNodeName(), 
-					Type.TFloat, node.getTextContent());
+			return extractSimpleProperty(node, Type.TFloat);
 		} catch (NumberFormatException e) {
-			return new SimpleProperty(node.getNodeName(), 
-					Type.TString, node.getTextContent());
+			return extractSimpleProperty(node, Type.TString);
 		}
 	}
 	
@@ -227,8 +216,8 @@ public class BattleSimImporter extends Importer {
 	 * @param id
 	 * @return
 	 */
-	private VectorProperty extractVectorProperty(Node node, String id) {
-		VectorProperty result = new VectorProperty(id);
+	private ContainerProperty extractContainerProperty(Node node, String id) {
+		ContainerProperty result = new ContainerProperty(id);
 		NodeList list = node.getChildNodes();
 		
 		for (int i=0; i<list.getLength();i++){
