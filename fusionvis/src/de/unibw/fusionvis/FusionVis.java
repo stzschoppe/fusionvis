@@ -42,7 +42,7 @@ public class FusionVis {
 
 			// Initialisierung des Importers
 			logger.log(Level.INFO, "Initialisierung des Importers" + "\n");
-			fusionVis.importer = new BattleSimImporter("\\res\\testdaten.xml"); 
+			fusionVis.importer = new BattleSimImporter("\\res\\sit8979.xml"); 
 			
 			DataSet dataSet = fusionVis.importer.getDataSet().filterBy("Certainty", "Perceived");
 			dataSet = dataSet.filterBy("HostilityCode", "HO");
