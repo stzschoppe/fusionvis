@@ -20,7 +20,7 @@ public class FloatProperty extends AbstractProperty {
 	 * @param value Wert der Eigenschaft
 	 */
 	public FloatProperty(String id, float value) {
-		super(id, Type.TInt);
+		super(id, Type.TFloat);
 		this.value = value;
 	}
 
