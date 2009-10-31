@@ -6,6 +6,9 @@ package de.unibw.fusionvis.common;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import de.unibw.fusionvis.common.properties.AbstractProperty;
+import de.unibw.fusionvis.common.properties.ContainerProperty;
+
 
 /**
  * Datenstruktur zur Aufnahme von Eigenschaften, die der Importer ausliest. Wichtigste
@@ -22,16 +25,16 @@ public class Data {
 	private String id;
 	
 	/** "Lage"-Vektor des Datums*/
-	private VectorProperty position;
+	private ContainerProperty position;
 	
 	/** Einfache Eigenschaften*/
-	private HashMap<String, SimpleProperty> simpleProperties;
+	private HashMap<String, AbstractProperty> simpleProperties;
 	
 	/** Vektorielle Eigenschaften*/
-	private HashMap<String, VectorProperty> vectorProperties;
+	private HashMap<String, ContainerProperty> vectorProperties;
 	
 	/** Taxonomien*/
-	private HashMap<String, SimpleProperty> taxonomies;
+	private HashMap<String, AbstractProperty> taxonomies;
 
 	/**
 	 * Konstruktor eines leeren Datums.
@@ -39,16 +42,16 @@ public class Data {
 	 */
 	public Data(String id){
 		this.id = id;
-		simpleProperties = new HashMap<String, SimpleProperty>();
-		vectorProperties = new HashMap<String, VectorProperty>();
-		taxonomies = new HashMap<String, SimpleProperty>();
+		simpleProperties = new HashMap<String, AbstractProperty>();
+		vectorProperties = new HashMap<String, ContainerProperty>();
+		taxonomies = new HashMap<String, AbstractProperty>();
 	}
 
 	/**
 	 * Gibt die "Lage" des Datums wieder.
 	 * @return Vektor mit Lageinformationen.
 	 */
-	public VectorProperty getPosition() {
+	public ContainerProperty getPosition() {
 		return position;
 	}
 
@@ -56,7 +59,7 @@ public class Data {
 	 * Setzt die "Lage" des Datums.
 	 * @param position Die zu setzende Lage
 	 */
-	public void setPosition(VectorProperty position) {
+	public void setPosition(ContainerProperty position) {
 		this.position = position;
 	}
 
@@ -72,7 +75,7 @@ public class Data {
 	 * Fügt eine einfache Eigenschaft hinzu
 	 * @param property Hinzuzufügende Eigenschaft
 	 */
-	public void addSimpleProperty(SimpleProperty property) {
+	public void addAbstractProperty(AbstractProperty property) {
 		simpleProperties.put(property.getId(), property);
 	}
 	
@@ -80,7 +83,7 @@ public class Data {
 	 *Fügt eine vektorielle Eigenschaft hinzu
 	 * @param property Hinzuzufügende Eigenschaft
 	 */
-	public void addVectorProperty(VectorProperty property){
+	public void addContainerProperty(ContainerProperty property){
 		vectorProperties.put(property.getId(), property);
 	}
 	
@@ -88,7 +91,7 @@ public class Data {
 	 * Fügt eine Taxonomie hinzu
 	 * @param taxonomy Hinzuzufügende Taxonomie
 	 */
-	public void addTaxonomie(SimpleProperty taxonomy) {
+	public void addTaxonomie(AbstractProperty taxonomy) {
 		taxonomies.put(taxonomy.getId(), taxonomy);
 	}
 	
@@ -98,7 +101,7 @@ public class Data {
 	 * @param id Bezeicher der Eigenschaft
 	 * @return Die Eigenschaft
 	 */
-	public SimpleProperty getSimpleProperty(String id) {
+	public AbstractProperty getAbstractProperty(String id) {
 		return simpleProperties.get(id);
 	}
 	
@@ -108,7 +111,7 @@ public class Data {
 	 * @param id Bezeicher der Eigenschaft
 	 * @return Die Eigenschaft
 	 */
-	public VectorProperty getVectorProperty(String id) {
+	public ContainerProperty getContainerProperty(String id) {
 		return vectorProperties.get(id);
 	}
 	
@@ -118,7 +121,7 @@ public class Data {
 	 * @param id Bezeicher der Taxonomie
 	 * @return Die Taxonomie
 	 */
-	public SimpleProperty getTaxonomy(String id) {
+	public AbstractProperty getTaxonomy(String id) {
 		return taxonomies.get(id);
 	}
 
@@ -136,22 +139,22 @@ public class Data {
 		result += "-----------\n\n";
 		
 		result += "Einfache Eigenschaften:\n";
-		for (Iterator<SimpleProperty> iterator = simpleProperties.values().iterator(); iterator.hasNext();) {
-			SimpleProperty component =  iterator.next();
+		for (Iterator<AbstractProperty> iterator = simpleProperties.values().iterator(); iterator.hasNext();) {
+			AbstractProperty component =  iterator.next();
 			result += "->" + component.toString();
 		}
 		result += "-----------\n\n";
 		
 		result += "Vektorielle Eigenschaften:\n";
-		for (Iterator<VectorProperty> iterator = vectorProperties.values().iterator(); iterator.hasNext();) {
-			VectorProperty component =  iterator.next();
+		for (Iterator<ContainerProperty> iterator = vectorProperties.values().iterator(); iterator.hasNext();) {
+			ContainerProperty component =  iterator.next();
 			result += "->" + component.toString() + "\n";
 		}
 		result += "-----------\n\n";
 		
 		result += "Taxonomien:\n";
-		for (Iterator<SimpleProperty> iterator = taxonomies.values().iterator(); iterator.hasNext();) {
-			SimpleProperty component =  iterator.next();
+		for (Iterator<AbstractProperty> iterator = taxonomies.values().iterator(); iterator.hasNext();) {
+			AbstractProperty component =  iterator.next();
 			result += "->" + component.toString() + "\n";
 		}
 		result += "===========\n";
