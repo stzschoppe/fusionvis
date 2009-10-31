@@ -6,7 +6,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import de.unibw.fusionvis.common.SimpleProperty;
 import de.unibw.fusionvis.common.Type;
 
 /**
@@ -15,9 +14,25 @@ import de.unibw.fusionvis.common.Type;
  *
  */
 public class ContainerProperty extends AbstractProperty {
-
+	/**
+	 * Inhalt des Containers als <code>HashMap&lt;String,AbstractProperty></code>
+	 */
 	private HashMap<String,AbstractProperty> value;
 
+	/**
+	 * Konstruktor
+	 * @param id Bezeichnung der Eigenschaft
+	 */
+	public ContainerProperty(String id) {
+		super(id, Type.TContainer);
+		this.value = new HashMap<String, AbstractProperty>();
+	}
+	
+	/**
+	 * Konstruktor
+	 * @param id Bezeichnung der Eigenschaft
+	 * @param value Collection von Eigenschaften
+	 */
 	public ContainerProperty(String id, Collection<AbstractProperty> value) {
 		super(id, Type.TContainer);
 		this.value = new HashMap<String, AbstractProperty>();
@@ -38,7 +53,7 @@ public class ContainerProperty extends AbstractProperty {
 	}
 
 	@Override
-	public ContainerProperty getValueAsContainerProperty() { //XXX
+	public ContainerProperty getValueAsContainerProperty() {
 		return this;
 	}
 
@@ -116,7 +131,7 @@ public class ContainerProperty extends AbstractProperty {
 	 * @param id Bezeicher der Komponente
 	 * @return Die Komponente
 	 */
-	public AbstractProperty getComponent(String id){ //TODO Testen
+	public AbstractProperty getComponent(String id){
 		if (value.containsKey(id)) {
 			return value.get(id);
 		} else {
@@ -139,6 +154,19 @@ public class ContainerProperty extends AbstractProperty {
 	 */
 	public AbstractProperty removeComponent(String id){
 		return value.remove(id);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String result = id + ":\n";
+		for (Iterator<AbstractProperty> iterator = value.values().iterator(); iterator.hasNext();) {
+			AbstractProperty component =  iterator.next();
+			result += "-->" + component.toString();
+		}
+		return result;
 	}
 
 }
