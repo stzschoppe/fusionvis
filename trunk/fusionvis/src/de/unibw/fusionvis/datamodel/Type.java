@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.unibw.fusionvis.common;
+package de.unibw.fusionvis.datamodel;
 
 import java.util.Date;
 import java.util.GregorianCalendar;

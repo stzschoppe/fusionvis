@@ -11,8 +11,8 @@ import shell.Shell;
 import shell.StringParameter;
 import shell.tools.HaltCommand;
 
-import de.unibw.fusionvis.common.Data;
-import de.unibw.fusionvis.common.DataSet;
+import de.unibw.fusionvis.datamodel.Data;
+import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.implementation.battlesimvis.BattleSimImporter;
 import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.mapper.Mapper;

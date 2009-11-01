@@ -1,8 +1,8 @@
-package de.unibw.fusionvis.common.properties;
+package de.unibw.fusionvis.datamodel.properties;
 
 import java.util.GregorianCalendar;
 
-import de.unibw.fusionvis.common.Type;
+import de.unibw.fusionvis.datamodel.Type;
 
 /**
  * Klasse zur Speicherung von char-Eigenschaften

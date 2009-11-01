@@ -17,15 +17,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.unibw.fusionvis.common.Data;
-import de.unibw.fusionvis.common.DataSet;
-import de.unibw.fusionvis.common.Type;
-import de.unibw.fusionvis.common.properties.AbstractProperty;
-import de.unibw.fusionvis.common.properties.BooleanProperty;
-import de.unibw.fusionvis.common.properties.CharProperty;
-import de.unibw.fusionvis.common.properties.FloatProperty;
-import de.unibw.fusionvis.common.properties.IntProperty;
-import de.unibw.fusionvis.common.properties.StringProperty;
+import de.unibw.fusionvis.datamodel.Data;
+import de.unibw.fusionvis.datamodel.DataSet;
+import de.unibw.fusionvis.datamodel.Type;
+import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
+import de.unibw.fusionvis.datamodel.properties.BooleanProperty;
+import de.unibw.fusionvis.datamodel.properties.CharProperty;
+import de.unibw.fusionvis.datamodel.properties.FloatProperty;
+import de.unibw.fusionvis.datamodel.properties.IntProperty;
+import de.unibw.fusionvis.datamodel.properties.StringProperty;
 
 /**
  * <p>Baut einen DOM-Baum aus einem XML-Datensatz und wandelt diesen in 

@@ -1,4 +1,4 @@
-package de.unibw.fusionvis.common.properties;
+package de.unibw.fusionvis.datamodel.properties;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import de.unibw.fusionvis.common.Type;
+import de.unibw.fusionvis.datamodel.Type;
 
 /**
  * Klasse zur Speicherung von  Eigenschaften

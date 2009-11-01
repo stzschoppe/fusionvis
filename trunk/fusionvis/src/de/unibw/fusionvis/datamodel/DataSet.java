@@ -1,13 +1,13 @@
 /**
  * 
  */
-package de.unibw.fusionvis.common;
+package de.unibw.fusionvis.datamodel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import de.unibw.fusionvis.common.properties.AbstractProperty;
+import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
 
 
 /**

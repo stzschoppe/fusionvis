@@ -1,11 +1,11 @@
 /**
  * 
  */
-package de.unibw.fusionvis.common.properties;
+package de.unibw.fusionvis.datamodel.properties;
 
 import java.util.GregorianCalendar;
 
-import de.unibw.fusionvis.common.Type;
+import de.unibw.fusionvis.datamodel.Type;
 
 /**
  * <p>
@@ -26,7 +26,7 @@ public abstract class AbstractProperty {
 	/**
 	 * Typ der Eigenschaft.
 	 * 
-	 * @see de.unibw.fusionvis.common.Type
+	 * @see de.unibw.fusionvis.datamodel.Type
 	 */
 	protected final Type type;
 	
