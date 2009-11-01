@@ -3,11 +3,21 @@
  */
 package de.unibw.fusionvis.importer;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import de.unibw.fusionvis.common.Data;
 import de.unibw.fusionvis.common.DataSet;
 import de.unibw.fusionvis.common.Type;
 import de.unibw.fusionvis.common.properties.AbstractProperty;
@@ -24,6 +34,8 @@ import de.unibw.fusionvis.common.properties.StringProperty;
  */
 public abstract class Importer {
 	private final String standardInputFile = "\\res\\sit8979.xml";
+	
+	protected Logger logger;
 	
 	/**Datensatz*/
 	protected DataSet dataSet = null;
@@ -48,6 +60,41 @@ public abstract class Importer {
 	protected String position = "Location";
 
 	protected String id = "Name";
+	
+	public Importer(Logger logger){
+		this.logger = logger;
+	}
+
+	public void runImport(String file) {
+		// Einlesen des Datensatzes
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			document = builder.parse(file);
+			buildDataSet();
+
+		} catch (ParserConfigurationException e) {
+			logger.log(Level.SEVERE, "Fehler beim Initialisieren des Importers"
+					+ "\n" + e.getLocalizedMessage() + "\n");
+		} catch (SAXException e) {
+			logger.log(Level.SEVERE,
+					"Fehler beim Initialisieren des Importers " + "\n"
+							+ e.getLocalizedMessage() + "\n");
+		} catch (IOException e) {
+			logger.log(Level.SEVERE,
+					"Fehler beim Initialisieren des Importers " + "\n"
+							+ e.getLocalizedMessage() + "\n");
+		}
+
+	}
+
+	/**
+	 * @param dataSet neuer Datensatz.
+	 */
+	public void setDataSet(DataSet dataSet) {
+		this.dataSet = dataSet;
+	}
 
 	/**
 	 * DOM Struktur des Datensatzes. Ist verantwortlich die Instanzvariable 
@@ -62,8 +109,13 @@ public abstract class Importer {
 		}
 		return dataSet;
 	}
-	
-	public abstract void runImport(String file);
+
+	/**
+	 * Hilfsfuktion zum Extrahieren der Units
+	 * @param unitNode DOM Node &lt;Unit>
+	 * @return Data-Objekt
+	 */
+	protected abstract Data extractUnit(Node item);
 
 	/**
 	 * Extrahiert eine einfache Eigenschaft.
@@ -90,10 +142,24 @@ public abstract class Importer {
 	}
 
 	/**
-	 * @param dataSet neuer Datensatz.
+	 * Erzeugt einen Satz von Daten
 	 */
-	public void setDataSet(DataSet dataSet) {
-		this.dataSet = dataSet;
+	protected void buildDataSet() {
+		Node root = document.getDocumentElement();
+		Node current = root;
+		
+		//Bezeicher für dataSet auslesen
+		dataSet = new DataSet(root.getNodeName());
+		
+		current = current.getFirstChild().getNextSibling(); // current --> <Units>
+		NodeList units = current.getChildNodes();
+		
+		for (int i=0; i<units.getLength();i++){
+			if (units.item(i).getNodeType() != Node.ELEMENT_NODE) {
+				continue; //wenn kein Element, dann skip
+			}
+			dataSet.addData(extractUnit(units.item(i)));
+		}
 	}
 
 }

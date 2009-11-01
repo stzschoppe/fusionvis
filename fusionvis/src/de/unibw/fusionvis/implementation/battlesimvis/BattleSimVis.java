@@ -21,7 +21,7 @@ public class BattleSimVis extends FusionVis {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		BattleSimVis battleSimVis = new BattleSimVis(new BattleSimImporter("", getLogger()), null, null);
+		BattleSimVis battleSimVis = new BattleSimVis(new BattleSimImporter(getLogger()), null, null);
 		try {
 			// Logger Konfiguration
 			getLogger().setLevel(Level.ALL);
