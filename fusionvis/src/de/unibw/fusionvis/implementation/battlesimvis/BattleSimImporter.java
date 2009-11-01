@@ -19,11 +19,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import de.unibw.fusionvis.FusionVis;
-import de.unibw.fusionvis.common.Data;
-import de.unibw.fusionvis.common.DataSet;
-import de.unibw.fusionvis.common.Type;
-import de.unibw.fusionvis.common.properties.AbstractProperty;
-import de.unibw.fusionvis.common.properties.ContainerProperty;
+import de.unibw.fusionvis.datamodel.Data;
+import de.unibw.fusionvis.datamodel.DataSet;
+import de.unibw.fusionvis.datamodel.Type;
+import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
+import de.unibw.fusionvis.datamodel.properties.ContainerProperty;
 import de.unibw.fusionvis.importer.Importer;
 
 /**
