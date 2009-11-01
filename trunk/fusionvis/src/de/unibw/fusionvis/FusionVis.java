@@ -1,4 +1,6 @@
 package de.unibw.fusionvis;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,6 +11,7 @@ import shell.Shell;
 import shell.StringParameter;
 import shell.tools.HaltCommand;
 
+import de.unibw.fusionvis.common.Data;
 import de.unibw.fusionvis.common.DataSet;
 import de.unibw.fusionvis.implementation.battlesimvis.BattleSimImporter;
 import de.unibw.fusionvis.importer.Importer;
@@ -27,13 +30,13 @@ public class FusionVis {
 	private static Logger logger = Logger.getLogger("FusionVis");
 	
 	/** Importer zum Erstellen der Datenstruktur*/
-	private Importer importer;
+	protected Importer importer;
 	
 	/** Mapper zum Erstellen der graphischen Datenstruktur*/
-	private Mapper mapper;
+	protected Mapper mapper;
 	
 	/** Viewer zum Anzeigen der graphischen Datenstruktur*/
-	private Viewer viewer;
+	protected Viewer viewer;
 	
 	/**
 	 * Konstruktor
