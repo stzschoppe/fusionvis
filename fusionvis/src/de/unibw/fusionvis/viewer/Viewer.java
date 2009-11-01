@@ -28,7 +28,7 @@ public  class Viewer extends SimpleGame {
     /**
      * The amount of opacity (0 = fully transparent or invisible).
      */
-    private float opacityAmount = 0.5f;
+    private float opacityAmount = 0.1f;
  
     /**
      * Step amount for transparency changes.
@@ -71,7 +71,7 @@ public  class Viewer extends SimpleGame {
         // attach the light to a lightState
         lightState.attach(light);
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 20; i++) {
 			createPoint();
 		}
 		// rootNode.setLightCombineMode(Spatial.LightCombineMode.Off);
@@ -80,13 +80,13 @@ public  class Viewer extends SimpleGame {
 
 	private void createPoint() {
 		numberOfPoints++;
-		float upperBound = 20;
+		float upperBound = 200;
 		float x = (float) (2 * upperBound * Math.random()) - upperBound;
-		float y = (float) (upperBound * Math.random());
+		float y = (float) (.5*upperBound * Math.random());
 		float z = (float) (2 * upperBound * Math.random()) - upperBound;
 		float[] rot = { (float) Math.PI / 2, (float) Math.PI / 2, 0 };
 		float h = upperBound - y;
-		float r = .2f * h;
+		float r = .3f * h;
 		Sphere sphere = new Sphere("Point " + numberOfPoints, new Vector3f(x,
 				y, z), 50, 50, 0.3f);
 
@@ -154,7 +154,7 @@ public  class Viewer extends SimpleGame {
          */
 
     	// Gitternetz
-        for (int x = -300; x <= 300; x=x+10) {
+        for (int x = -300; x <= 300; x=x+5) {
             Line l = new Line("xLine" + x, new Vector3f[]{new Vector3f((float) x, 0f, -300f), new Vector3f((float) x, 0f, 300f)}, null, null, null);
             l.setSolidColor(ColorRGBA.darkGray);
             l.setModelBound(new BoundingBox());
@@ -163,7 +163,7 @@ public  class Viewer extends SimpleGame {
             gridNode.attachChild(l);
         }
 
-        for (int z = -300; z <= 300; z=z+10) {
+        for (int z = -300; z <= 300; z=z+5) {
             Line l = new Line("zLine" + z, new Vector3f[]{new Vector3f(-300f, 0f, (float) z), new Vector3f(300f, 0f, (float) z)}, null, null, null);
             l.setSolidColor(ColorRGBA.darkGray);
             l.setModelBound(new BoundingBox());
@@ -180,7 +180,7 @@ public  class Viewer extends SimpleGame {
         xAxis.setCastsShadows(false);
         gridNode.attachChild(xAxis);
 
-        // blaue z-Achse
+        // rote z-Achse
         final Line zAxis = new Line("zAxis", new Vector3f[]{new Vector3f(0f, 0f, -300f), new Vector3f(0f, 0f, 300f)}, null, null, null);
         zAxis.setModelBound(new BoundingBox());
         zAxis.updateModelBound();

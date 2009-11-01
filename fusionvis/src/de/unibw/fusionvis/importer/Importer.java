@@ -33,7 +33,7 @@ import de.unibw.fusionvis.common.properties.StringProperty;
  * @author stzschoppe
  */
 public abstract class Importer {
-	private final String standardInputFile = "\\res\\sit8979.xml";
+	private final String standardInputFile = "\\res\\input.xml";
 	
 	protected Logger logger;
 	
@@ -105,6 +105,7 @@ public abstract class Importer {
 		if (dataSet == null) {
 			if (document == null) {
 				runImport(standardInputFile);
+				logger.log(Level.SEVERE, "importiere Standardinput." + standardInputFile + "\n");
 			}
 		}
 		return dataSet;
