@@ -4,7 +4,11 @@
 package de.unibw.fusionvis.implementation.battlesimvis;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,7 +72,7 @@ public class BattleSimImporter extends Importer {
 	}
 
 	@Override
-	protected Data extractUnit(Node unitNode) {
+	protected Data extractUnit(Node unitNode) throws Exception {
 		Data result = null;
 		NodeList list = unitNode.getChildNodes();
 
@@ -115,18 +119,24 @@ public class BattleSimImporter extends Importer {
 	}
 
 	/**
-	 * Extrahiert eine einfache Eigenschaft vom Typ Float, fallsmöglich, String
+	 * Extrahiert eine einfache Eigenschaft vom Typ Float, Date oder String
 	 * sonst.
 	 * 
 	 * @param node
 	 * @return
+	 * @throws Exception 
 	 */
-	private AbstractProperty extractSimpleProperty(Node node) {
+	private AbstractProperty extractSimpleProperty(Node node) throws Exception {
 		try {
 			Float.valueOf(node.getTextContent());
 			return extractSimpleProperty(node, Type.TFloat);
 		} catch (NumberFormatException e) {
-			return extractSimpleProperty(node, Type.TString);
+			try {
+				parseDate(node.getTextContent());
+				return extractSimpleProperty(node, Type.TDate);
+			} catch (Exception e2) {
+				return extractSimpleProperty(node, Type.TString);
+			}
 		}
 	}
 
@@ -136,8 +146,9 @@ public class BattleSimImporter extends Importer {
 	 * @param node
 	 * @param id
 	 * @return
+	 * @throws Exception 
 	 */
-	private ContainerProperty extractContainerProperty(Node node, String id) {
+	private ContainerProperty extractContainerProperty(Node node, String id) throws Exception {
 		ContainerProperty result = new ContainerProperty(id);
 		NodeList list = node.getChildNodes();
 
@@ -150,5 +161,6 @@ public class BattleSimImporter extends Importer {
 
 		return result;
 	}
+	
 
 }

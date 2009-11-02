@@ -4,7 +4,11 @@
 package de.unibw.fusionvis.importer;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -23,6 +28,7 @@ import de.unibw.fusionvis.datamodel.Type;
 import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
 import de.unibw.fusionvis.datamodel.properties.BooleanProperty;
 import de.unibw.fusionvis.datamodel.properties.CharProperty;
+import de.unibw.fusionvis.datamodel.properties.DateProperty;
 import de.unibw.fusionvis.datamodel.properties.FloatProperty;
 import de.unibw.fusionvis.datamodel.properties.IntProperty;
 import de.unibw.fusionvis.datamodel.properties.StringProperty;
@@ -86,6 +92,11 @@ public abstract class Importer {
 					"Fehler beim Initialisieren des Importers " + "\n"
 							+ e.getLocalizedMessage() + "\n");
 		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE,
+					"Fehler beim Importieren " + "\n"
+						+ e.getLocalizedMessage() + "\n");
+		}
 
 	}
 
@@ -115,8 +126,9 @@ public abstract class Importer {
 	 * Hilfsfuktion zum Extrahieren der Units
 	 * @param unitNode DOM Node &lt;Unit>
 	 * @return Data-Objekt
+	 * @throws Exception 
 	 */
-	protected abstract Data extractUnit(Node item);
+	protected abstract Data extractUnit(Node item) throws Exception;
 
 	/**
 	 * Extrahiert eine einfache Eigenschaft.
@@ -124,8 +136,9 @@ public abstract class Importer {
 	 * @param type Einer der folgenden Typen: <code>TString, TBool, TFloat, TInt, TChar</code>
 	 * @return Die jeweilige Typ-Implementierung der AbstractProperty oder null, wenn
 	 * keiner der o. a. Typen verwendet wurde
+	 * @throws Exception 
 	 */
-	protected AbstractProperty extractSimpleProperty(Node node, Type type) {
+	protected AbstractProperty extractSimpleProperty(Node node, Type type) throws Exception {
 		switch (type) {
 		case TString:
 			return new StringProperty(node.getNodeName(), node.getTextContent());
@@ -137,6 +150,10 @@ public abstract class Importer {
 			return new IntProperty(node.getNodeName(), Integer.parseInt(node.getTextContent()));
 		case TChar:
 			return new CharProperty(node.getNodeName(), node.getTextContent().charAt(0));
+		case TDate:
+			Date date;
+			date = parseDate(node.getTextContent());
+			return new DateProperty(node.getNodeName(), date);
 		default:
 			return null;
 		}
@@ -144,8 +161,9 @@ public abstract class Importer {
 
 	/**
 	 * Erzeugt einen Satz von Daten
+	 * @throws Exception 
 	 */
-	protected void buildDataSet() {
+	protected void buildDataSet() throws Exception {
 		Node root = document.getDocumentElement();
 		Node current = root;
 		
@@ -161,6 +179,51 @@ public abstract class Importer {
 			}
 			dataSet.addData(extractUnit(units.item(i)));
 		}
+	}
+	
+	protected Date parseDate(String stringToParse) throws ParseException {
+		// yyyy-MM-dd'T'HH:mm:ss.SSSSZ
+		Date date = null;
+		String formatString = "";
+		String parameter = stringToParse;
+
+		// Versuch ein Date ohne Nachkommasekunden zu Parsen
+		try {
+			if (parameter.length() > 18) {
+				parameter = parameter.substring(0, 18) + "GMT"
+						+ parameter.substring(19);
+			}
+			SimpleDateFormat formatter = new SimpleDateFormat(
+					"yyyy-MM-dd'T'HH:mm:ssZ");
+			date = (Date) formatter.parse(parameter);
+			return date;
+		} catch (Exception e) {
+		}
+
+		// Versuch ein Date mit 1-7 Nachkommasekundenstellen zu Parsen
+		for (int i = 20; i < 27; i++) {
+			formatString = "yyyy-MM-dd'T'HH:mm:ss.";
+			int j = i - 19;
+			while (j > 0) {
+				formatString += "S";
+				j--;
+			}
+			formatString += "Z";
+
+			if (parameter.length() > i) {
+				parameter = parameter.substring(0, i) + "GMT"
+						+ parameter.substring(i + 1);
+			}
+			try {
+				SimpleDateFormat formatter = new SimpleDateFormat(formatString);
+				date = (Date) formatter.parse(parameter);
+				return date;
+			} catch (Exception e) {
+			}
+			parameter = stringToParse;
+		}
+		throw new ParseException("Kein Date\t" + formatString + "\t"
+				+ stringToParse, 0);
 	}
 
 }
