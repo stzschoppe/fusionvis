@@ -32,6 +32,17 @@ public class DateProperty extends AbstractProperty {
 			throw new IllegalArgumentException("Falsches Format des, in ein Date zu parsenden Strings.");
 		}
 	}
+	
+	/**
+	 * Konstruktor aus einem Date
+	 * @param id Bezeicher der Eigenschaft
+	 * @param value Zu setzender Wert als Date
+	 */
+	public DateProperty(String id, Date value) {
+		super(id, Type.TDate);
+		this.value = new GregorianCalendar();
+			this.value.setTime(value);
+	}
 
 	@Override
 	public boolean getValueAsBoolean() {
@@ -114,4 +125,13 @@ public class DateProperty extends AbstractProperty {
 		throw new UnsupportedOperationException("Setzen eines Dates mit einem float-Wert");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return id + ": type=" + type + ", value=" + DateFormat.getInstance().format(value.getTime()) + "\n";
+	}
 }
