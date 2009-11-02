@@ -1,92 +1,117 @@
 package de.unibw.fusionvis.datamodel.properties;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import de.unibw.fusionvis.datamodel.Type;
 
+/**
+ * Klasse zur Speicherung von Date Eigenschaften
+ * @author stzschoppe
+ *
+ */
 public class DateProperty extends AbstractProperty {
+	/**
+	 * Wert der Eigenschaft als <code>GregorianCalendar</code>
+	 */
+	private GregorianCalendar value;
 
-	public DateProperty(String id, Type type) {
-		super(id, type);
-		// TODO Auto-generated constructor stub
+	/**
+	 * Konstruktor aus einem zu parsenden String
+	 * @param id Bezeicher der Eigenschaft
+	 * @param value Zu setzender Wert als String
+	 */
+	public DateProperty(String id, String value) {
+		super(id, Type.TDate);
+		this.value = new GregorianCalendar();
+		try {
+			this.value.setTime(DateFormat.getInstance().parse(value));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("Falsches Format des, in ein Date zu parsenden Strings.");
+		}
 	}
 
 	@Override
 	public boolean getValueAsBoolean() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException("Zugriff auf Date als boolean-Wert");
 	}
 
 	@Override
 	public char getValueAsChar() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("Zugriff auf Date als char-Wert");
 	}
 
 	@Override
 	public ContainerProperty getValueAsContainerProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Zugriff auf Date als ContainerProperty");
 	}
 
 	@Override
 	public GregorianCalendar getValueAsDate() {
-		// TODO Auto-generated method stub
-		return null;
+		return value;
 	}
 
 	@Override
 	public int getValueAsInt() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)value.getTimeInMillis();
 	}
 
 	@Override
 	public String getValueAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		return DateFormat.getInstance().format(value.getTime());
 	}
 
 	@Override
 	public void setValueFromBoolean(boolean value) {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Setzen eines Dates mit einem boolean-Wert");
 	}
 
 	@Override
 	public void setValueFromChar(char value) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Setzen eines Dates mit einem char-Wert");
 
 	}
 
 	@Override
 	public void setValueFromDate(GregorianCalendar value) {
-		// TODO Auto-generated method stub
+		this.value = value;
 
 	}
 
+	/**
+	 * Setzt die Zeit, indem der übergebene int in ein Date umgewandelt wird.
+	 * @param value Zeit in ms
+	 */
 	@Override
 	public void setValueFromInt(int value) {
-		// TODO Auto-generated method stub
+		this.value.setTime(new Date(value));
 
 	}
 
+	/**
+	 * Setzt die Zeit, indem der übergebene String in ein Date geparst wird.
+	 * @param value zu parsender String.
+	 */
 	@Override
 	public void setValueFromString(String value) {
-		// TODO Auto-generated method stub
+		try {
+			this.value.setTime(DateFormat.getInstance().parse(value));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("Falsches Format des, in ein Date zu parsenden Strings.");
+		}
 
 	}
 
 	@Override
 	public float getValueAsFloat() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("Zugriff auf Date als float-Wert");
 	}
 
 	@Override
 	public void setValueFromFloat(float value) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Setzen eines Dates mit einem float-Wert");
 	}
 
 }
