@@ -106,7 +106,7 @@ public class BattleSimVis extends FusionVis {
 				getLogger().log(Level.INFO, data.toString() + "\n");
 				return;
 			} 
-			getLogger().log(Level.INFO, "Keine Unit mit diesem Namen vorhanden." + "\n");
 		}
+		getLogger().log(Level.INFO, "Keine Unit mit diesem Namen vorhanden." + "\n");
 	}
 }
