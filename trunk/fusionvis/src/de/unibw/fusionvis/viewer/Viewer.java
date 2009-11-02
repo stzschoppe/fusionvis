@@ -30,13 +30,7 @@ public  class Viewer extends SimpleGame {
      */
     private float opacityAmount = 0.1f;
  
-    /**
-     * Step amount for transparency changes.
-     */
-    private float step = -0.5f;
-
-
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		Viewer main = new Viewer();
 		main.setConfigShowMode(ConfigShowMode.AlwaysShow);
 		main.start();
@@ -88,7 +82,7 @@ public  class Viewer extends SimpleGame {
 		float h = upperBound - y;
 		float r = .3f * h;
 		Sphere sphere = new Sphere("Point " + numberOfPoints, new Vector3f(x,
-				y, z), 50, 50, 0.3f);
+				y, z), 50, 50, 5f);
 
 		sphere.setModelBound(new BoundingSphere());
 		sphere.updateModelBound();
@@ -154,7 +148,7 @@ public  class Viewer extends SimpleGame {
          */
 
     	// Gitternetz
-        for (int x = -300; x <= 300; x=x+5) {
+        for (int x = -300; x <= 300; x=x+10) {
             Line l = new Line("xLine" + x, new Vector3f[]{new Vector3f((float) x, 0f, -300f), new Vector3f((float) x, 0f, 300f)}, null, null, null);
             l.setSolidColor(ColorRGBA.darkGray);
             l.setModelBound(new BoundingBox());
@@ -163,7 +157,7 @@ public  class Viewer extends SimpleGame {
             gridNode.attachChild(l);
         }
 
-        for (int z = -300; z <= 300; z=z+5) {
+        for (int z = -300; z <= 300; z=z+10) {
             Line l = new Line("zLine" + z, new Vector3f[]{new Vector3f(-300f, 0f, (float) z), new Vector3f(300f, 0f, (float) z)}, null, null, null);
             l.setSolidColor(ColorRGBA.darkGray);
             l.setModelBound(new BoundingBox());
