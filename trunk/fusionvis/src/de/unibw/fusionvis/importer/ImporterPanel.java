@@ -36,6 +36,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	public ImporterPanel(Importer importer) {
 		initComponents();
 		importer.addObserver(this);
+		this.importer = importer;
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerDetailTree = new javax.swing.JTree();
 		importerDetailTaxonomy = new javax.swing.JLabel();
 
-		setPreferredSize(new java.awt.Dimension(340, 600));
+		setPreferredSize(new java.awt.Dimension(400, 600));
 		setLayout(new java.awt.BorderLayout());
 
 		// importerSplitPane.setDividerLocation(150);
@@ -283,8 +284,8 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerListingPanel.add(importerFilterPanel,
 				java.awt.BorderLayout.PAGE_START);
 
-		importerList.getSelectionModel()
-				.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+		importerList.getSelectionModel().addListSelectionListener(
+				new javax.swing.event.ListSelectionListener() {
 					public void valueChanged(
 							javax.swing.event.ListSelectionEvent evt) {
 						importerListValueChanged(evt);
@@ -324,13 +325,18 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void importerFilterButtonMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_importerFilterButtonMouseClicked
-		// TODO add your handling code here:
+		if (importerFilterKeyText.getText().equals("")) {
+			// Nichts tun
+		} else {
+			update(importer, model.filterBy(importerFilterKeyText.getText(),
+					importerFilterValueText.getText()));
+		}
 	}// GEN-LAST:event_importerFilterButtonMouseClicked
 
 	private void importerFilterViewComboBoxItemStateChanged(
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_importerFilterViewComboBoxItemStateChanged
-		//TODO Method Stub
-		
+		// TODO Method Stub
+
 	}// GEN-LAST:event_importerFilterViewComboBoxItemStateChanged
 
 	private void importerListValueChanged(
@@ -338,51 +344,51 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		String id = (String) importerList.getSelectedValue();
 		Data data = model.getDataById(id);
 		AbstractProperty property;
-		
-		// Wurzel mit Namen des Data Objekts
-		DefaultMutableTreeNode root =
-	        new DefaultMutableTreeNode(data.getId());
-		
+
+		// Wurzel mit Namen des Data Objekts //XXX NullPointerException
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(data.getId());
+
 		// Position
-		DefaultMutableTreeNode position =
-	        new DefaultMutableTreeNode("Position");
+		DefaultMutableTreeNode position = new DefaultMutableTreeNode("Position");
 		property = data.getPosition();
-		for (AbstractProperty component : property.getValueAsContainerProperty().getComponents()) {
+		for (AbstractProperty component : property
+				.getValueAsContainerProperty().getComponents()) {
 			position.add(extractProperty(component));
 		}
-		
+
 		// Einfache Eigenschaften
-		DefaultMutableTreeNode simpleProperties =
-	        new DefaultMutableTreeNode("Eigenschaften");
+		DefaultMutableTreeNode simpleProperties = new DefaultMutableTreeNode(
+				"Eigenschaften");
 		for (AbstractProperty component : data.getSimpleProperties()) {
 			simpleProperties.add(extractProperty(component));
 		}
-		
+
 		// Zusammengesetzte Eigenschaften
-		DefaultMutableTreeNode containerProperties =
-	        new DefaultMutableTreeNode("Vektoren");
+		DefaultMutableTreeNode containerProperties = new DefaultMutableTreeNode(
+				"Vektoren");
 		for (AbstractProperty component : data.getContainerProperties()) {
-			DefaultMutableTreeNode vector =
-		        new DefaultMutableTreeNode(component.getId());
-			for (AbstractProperty vectorComponent : component.getValueAsContainerProperty().getComponents()) {
+			DefaultMutableTreeNode vector = new DefaultMutableTreeNode(
+					component.getId());
+			for (AbstractProperty vectorComponent : component
+					.getValueAsContainerProperty().getComponents()) {
 				vector.add(extractProperty(vectorComponent));
 			}
 			containerProperties.add(vector);
 		}
-		
+
 		// Taxonomien
-		DefaultMutableTreeNode taxonimies =
-	        new DefaultMutableTreeNode("Taxonomien");
+		DefaultMutableTreeNode taxonimies = new DefaultMutableTreeNode(
+				"Taxonomien");
 		for (AbstractProperty component : data.getTaxonomies()) {
 			taxonimies.add(extractProperty(component));
 		}
-		
+
 		// Baum zusammenfügen
 		root.add(position);
 		root.add(simpleProperties);
 		root.add(containerProperties);
 		root.add(taxonimies);
-		
+
 		importerDetailTree.setModel(new DefaultTreeModel(root));
 	}// GEN-LAST:event_importerListValueChanged
 
@@ -409,6 +415,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	private javax.swing.JSplitPane importerSplitPane;
 	private javax.swing.JSeparator jSeparator1;
 	protected DataSet model;
+	private Importer importer;
 
 	// End of variables declaration//GEN-END:variables
 	@Override
@@ -418,28 +425,28 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerDataSetIdLabel.setText(dataSet.getId());
 		importerList.setListData(dataSet.getIds().toArray());
 	}
-	
+
 	/**
 	 * Extrahiert eine Eigenschaft in Baumformat. Wurzel ist der Name der
-	 * Eigenschaft.
-	 * Blätter sind Typ und Wert mit der jeweiligen Stringrepräsentation
-	 * @param property Zu bearbeitende Eigenschaft
+	 * Eigenschaft. Blätter sind Typ und Wert mit der jeweiligen
+	 * Stringrepräsentation
+	 * 
+	 * @param property
+	 *            Zu bearbeitende Eigenschaft
 	 * @return Wurzel des Extrahierten Baums
 	 */
-	private DefaultMutableTreeNode extractProperty(AbstractProperty property){
-		DefaultMutableTreeNode propertyId =
-	        new DefaultMutableTreeNode(property.getId());
-		
-		//Typknoten mit Typ als Kind
-		DefaultMutableTreeNode type =
-	        new DefaultMutableTreeNode("Typ");
+	private DefaultMutableTreeNode extractProperty(AbstractProperty property) {
+		DefaultMutableTreeNode propertyId = new DefaultMutableTreeNode(property
+				.getId());
+
+		// Typknoten mit Typ als Kind
+		DefaultMutableTreeNode type = new DefaultMutableTreeNode("Typ");
 		type.add(new DefaultMutableTreeNode(Type.toString(property.getType())));
-		
-		//Wertknoten mit Wert als Kind
-		DefaultMutableTreeNode value =
-	        new DefaultMutableTreeNode("Wert");
+
+		// Wertknoten mit Wert als Kind
+		DefaultMutableTreeNode value = new DefaultMutableTreeNode("Wert");
 		value.add(new DefaultMutableTreeNode(property.getValueAsString()));
-		
+
 		propertyId.add(type);
 		propertyId.add(value);
 		return propertyId;
