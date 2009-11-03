@@ -29,6 +29,7 @@ import de.unibw.fusionvis.datamodel.Type;
 import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
 import de.unibw.fusionvis.datamodel.properties.ContainerProperty;
 import de.unibw.fusionvis.importer.Importer;
+import de.unibw.fusionvis.importer.ImporterPanel;
 
 /**
  * <p>
@@ -50,6 +51,7 @@ public class BattleSimImporter extends Importer {
 	 */
 	public BattleSimImporter(Logger logger) {
 		super(logger);
+		this.panel = new ImporterPanel(this);
 		id = "Name";
 		position = "Location";
 
@@ -114,7 +116,6 @@ public class BattleSimImporter extends Importer {
 				// skip
 			}
 		}
-
 		return result;
 	}
 

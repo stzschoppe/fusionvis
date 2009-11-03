@@ -69,7 +69,7 @@ public class ContainerProperty extends AbstractProperty {
 
 	@Override
 	public String getValueAsString() {
-		throw new UnsupportedOperationException("Zugriff auf ContainerProperty als String");
+		return "ContainerProperty " + id;
 	}
 
 	@Override

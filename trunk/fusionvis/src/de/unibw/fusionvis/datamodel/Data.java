@@ -3,6 +3,8 @@
  */
 package de.unibw.fusionvis.datamodel;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -31,7 +33,7 @@ public class Data {
 	private HashMap<String, AbstractProperty> simpleProperties;
 	
 	/** Vektorielle Eigenschaften*/
-	private HashMap<String, ContainerProperty> vectorProperties;
+	private HashMap<String, AbstractProperty> vectorProperties;
 	
 	/** Taxonomien*/
 	private HashMap<String, AbstractProperty> taxonomies;
@@ -43,7 +45,7 @@ public class Data {
 	public Data(String id){
 		this.id = id;
 		simpleProperties = new HashMap<String, AbstractProperty>();
-		vectorProperties = new HashMap<String, ContainerProperty>();
+		vectorProperties = new HashMap<String, AbstractProperty>();
 		taxonomies = new HashMap<String, AbstractProperty>();
 	}
 
@@ -106,13 +108,29 @@ public class Data {
 	}
 	
 	/**
+	 * @return <code>Collection&lt;AbstractProperty></code> der einfachen 
+	 * Eigenschaften
+	 */
+	public Collection<AbstractProperty> getSimpleProperties(){
+		return simpleProperties.values();
+	}
+	
+	/**
+	 * @return <code>ArrayList&lt;AbstractProperty></code> der zusammengesetzten 
+	 * Eigenschaften
+	 */
+	public Collection<AbstractProperty> getContainerProperties(){
+		return vectorProperties.values();
+	}
+		
+	/**
 	 * Liefert eine vektorielle Eigenschaft unter Angabe ihres Bezeichners,
 	 * oder <code>null</code> falls der Bezeichner ungültig ist.
 	 * @param id Bezeicher der Eigenschaft
 	 * @return Die Eigenschaft
 	 */
 	public ContainerProperty getContainerProperty(String id) {
-		return vectorProperties.get(id);
+		return vectorProperties.get(id).getValueAsContainerProperty();
 	}
 	
 	/**
@@ -146,8 +164,8 @@ public class Data {
 		result += "-----------\n\n";
 		
 		result += "Vektorielle Eigenschaften:\n";
-		for (Iterator<ContainerProperty> iterator = vectorProperties.values().iterator(); iterator.hasNext();) {
-			ContainerProperty component =  iterator.next();
+		for (Iterator<AbstractProperty> iterator = vectorProperties.values().iterator(); iterator.hasNext();) {
+			ContainerProperty component =  iterator.next().getValueAsContainerProperty();
 			result += "->" + component.toString() + "\n";
 		}
 		result += "-----------\n\n";
@@ -222,6 +240,13 @@ public class Data {
 		} else if (!vectorProperties.equals(other.vectorProperties))
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return <code>ArrayList&lt;AbstractProperty></code> der Taxonomien
+	 */
+	public Collection<AbstractProperty> getTaxonomies(){
+		return taxonomies.values();
 	}
 	
 	

@@ -111,7 +111,7 @@ public class FusionVis {
 	public void commandImportXML(String file) {
 		// Initialisierung des Importers
 		logger.log(Level.INFO, "Initialisierung des Importers mit " + file + "\n");
-		this.importer.runImport(file);
+		importer.runImport(file);
 		logger.log(Level.INFO, "\n"
 				+ this.importer.getDataSet().getData().size()
 				+ " Datensätze importiert.\n");
