@@ -126,4 +126,25 @@ public enum Type {
 			return "";
 		}
 	}
+	
+	public static String toString(Type type){
+		switch (type) {
+		case TInt:
+			return "int";
+		case TChar: 
+			return "char";
+		case TBool: 
+			return "boolean";
+		case TFloat:
+			return "float";
+		case TString:
+			return "String";
+		case TDate:
+			return "DateTime";
+		case TContainer:
+			return "Container";
+		default:
+			return "";
+		}
+	}
 }
