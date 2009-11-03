@@ -12,6 +12,7 @@
 package de.unibw.fusionvis;
 
 import java.awt.Panel;
+import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -28,6 +29,7 @@ public class FusionVisForm extends javax.swing.JFrame {
     public FusionVisForm(FusionVis model, ImporterPanel importerPanel) {
     	this.model = model;
     	initComponents(importerPanel);
+    	logger = model.getLogger();
     }
 
     /** This method is called from within the constructor to
@@ -110,8 +112,8 @@ public class FusionVisForm extends javax.swing.JFrame {
     private void fusionvisImportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fusionvisImportMenuItemActionPerformed
 		int returnVal = fusionvisFileChooser.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			System.out.println("You chose to open this file: "
-					+ fusionvisFileChooser.getSelectedFile().getName());
+			fusionvisImporterPanel.setVisible(true);
+			model.commandImportXML(fusionvisFileChooser.getSelectedFile().getAbsolutePath());
     }
 
     }//GEN-LAST:event_fusionvisImportMenuItemActionPerformed
@@ -124,16 +126,16 @@ public class FusionVisForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_fusionvisInfoMenuItemMouseClicked
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FusionVisForm(null, null).setVisible(true);
-            }
-        });
-    }
+//    /**
+//    * @param args the command line arguments
+//    */
+//    public static void main(String args[]) throws Exception {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new FusionVisForm(null, null).setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     protected javax.swing.JMenuItem fusionvisCloseMenuItem;
@@ -145,6 +147,7 @@ public class FusionVisForm extends javax.swing.JFrame {
     protected javax.swing.JMenuItem fusionvisInfoMenuItem;
     protected javax.swing.JMenuBar fusionvisMenu;
     protected FusionVis model;
+    protected static Logger logger;
     // End of variables declaration//GEN-END:variables
 
 }

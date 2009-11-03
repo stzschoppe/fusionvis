@@ -31,7 +31,7 @@ public class BattleSimVis extends FusionVis {
 		}
 	};
 	
-	public BattleSimVis(Importer importer, Mapper mapper, Viewer viewer) {
+	public BattleSimVis(Importer importer, Mapper mapper, Viewer viewer) throws Exception {
 		super(importer, mapper, viewer);
 		
 		// Erzeugen des "latlon" Commands
@@ -42,6 +42,7 @@ public class BattleSimVis extends FusionVis {
 		Command print = new Command("print", "Gibt eine Unit mit angegebenen Namen aus", commandHandler);
 		print.addParameter(id);
 		Shell.getInstance().addCommand(print);
+		
 	}
 
 	/**
@@ -49,29 +50,8 @@ public class BattleSimVis extends FusionVis {
 	 * @param args
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	public void init() throws Exception {
 		BattleSimVis battleSimVis = new BattleSimVis(new BattleSimImporter(getLogger()), null, null);
-		try {
-			// Logger Konfiguration
-			getLogger().setLevel(Level.ALL);
-			getLogger().log(Level.INFO, "starte FusionVis..\n");	
-			
-			// Shell starten
-			Shell.getInstance().run();
-			
-//XXX	        java.awt.EventQueue.invokeLater(new Runnable() {
-//	            public void run() {
-//	                new FusionVisForm().setVisible(true);
-//	            }
-//	        });
-			
-			// Beenden
-			getLogger().log(Level.INFO, "beende FusionVis");
-		} catch (Exception e) {
-			getLogger().log(Level.SEVERE, e.getMessage());
-			getLogger().log(Level.INFO, "beende FusionVis");
-			throw e;
-		}
 	}
 	/**
 	 * Bestimmung des Minimums/Maximums für Lat und Lon
