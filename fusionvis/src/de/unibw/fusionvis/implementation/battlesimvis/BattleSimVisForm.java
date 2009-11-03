@@ -27,7 +27,7 @@ public class BattleSimVisForm extends FusionVisForm {
 					
 					// Shell starten
 					// Shell.getInstance().run();
-					new BattleSimVisForm(model, new ImporterPanel()).setVisible(true);
+					new BattleSimVisForm(model, new ImporterPanel(model.importer)).setVisible(true);
 					
 					// Beenden
 					// logger.log(Level.INFO, "beende BattleVis");

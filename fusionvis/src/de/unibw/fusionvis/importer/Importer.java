@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +42,7 @@ import de.unibw.fusionvis.datamodel.properties.StringProperty;
  * 
  * @author stzschoppe
  */
-public abstract class Importer {
+public abstract class Importer extends Observable {
 	private final String standardInputFile = "\\res\\input.xml";
 
 	protected ImporterPanel panel;
@@ -74,7 +75,7 @@ public abstract class Importer {
 
 	public Importer(Logger logger) {
 		this.logger = logger;
-		panel = new ImporterPanel();
+		panel = new ImporterPanel(this);
 	}
 
 	public void runImport(String file) {
@@ -86,7 +87,11 @@ public abstract class Importer {
 			builder = factory.newDocumentBuilder();
 			document = builder.parse(file);
 			buildDataSet();
-
+			
+			// ImporterPanel aktualisieren
+			setChanged();
+			notifyObservers(dataSet);
+			
 		} catch (ParserConfigurationException e) {
 			logger.log(Level.SEVERE, "Fehler beim Initialisieren des Importers"
 					+ "\n" + e.getLocalizedMessage() + "\n");

@@ -117,6 +117,33 @@ public class DataSet {
 		return result;
 	}
 	
+	/**
+	 * @return Gibt eine <code>ArrayList&lt;String></code> aller Ids des
+	 * Datensatzes zurück.
+	 */
+	public ArrayList<String> getIds(){
+		ArrayList<String> result = new ArrayList<String>();
+		for (Data data : this.data) {
+			result.add(data.getId());
+		}		
+		return result;
+	}
 	
+	/**
+	 * Gibt das Data Objekt mit angegebener Id zurück.
+	 * @param id Id, nach der gesucht werden soll.
+	 * @return Das gesuchte Data Objekt oder null, 
+	 * wenn es nicht vorhanden ist.
+	 */
+	public Data getDataById(String id){
+		if(getIds().contains(id)){
+			for (Data data : this.data) {
+				if (data.getId().equals(id)) {
+					return data;
+				}
+			}
+		}
+		return null;
+	}
 	
 }
