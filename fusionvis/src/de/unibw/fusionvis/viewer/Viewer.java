@@ -28,7 +28,7 @@ public  class Viewer extends SimpleGame {
     /**
      * The amount of opacity (0 = fully transparent or invisible).
      */
-    private float opacityAmount = 0.1f;
+    private float opacityAmount = 0.4f;
  
     public static void main(String[] args) {
 		Viewer main = new Viewer();
