@@ -41,6 +41,8 @@ import de.unibw.fusionvis.datamodel.properties.StringProperty;
 public abstract class Importer {
 	private final String standardInputFile = "\\res\\input.xml";
 	
+	protected ImporterPanel panel;
+	
 	protected Logger logger;
 	
 	/**Datensatz*/
@@ -69,6 +71,7 @@ public abstract class Importer {
 	
 	public Importer(Logger logger){
 		this.logger = logger;
+		panel = new ImporterPanel();
 	}
 
 	public void runImport(String file) {
