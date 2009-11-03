@@ -87,7 +87,6 @@ public abstract class Importer extends Observable {
 			builder = factory.newDocumentBuilder();
 			document = builder.parse(file);
 			buildDataSet();
-			System.out.println(dataSet);
 			// ImporterPanel aktualisieren
 			setChanged();
 			notifyObservers(dataSet);
