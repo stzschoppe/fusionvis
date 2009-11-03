@@ -355,7 +355,6 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		DefaultMutableTreeNode simpleProperties =
 	        new DefaultMutableTreeNode("Eigenschaften");
 		for (AbstractProperty component : data.getSimpleProperties()) {
-			System.out.println(component);
 			simpleProperties.add(extractProperty(component));
 		}
 		
@@ -380,7 +379,6 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		root.add(taxonimies);
 		
 		importerDetailTree.setModel(new DefaultTreeModel(root));
-		System.out.println("was here");
 	}// GEN-LAST:event_importerListValueChanged
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
