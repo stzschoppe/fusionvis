@@ -34,30 +34,33 @@ import de.unibw.fusionvis.datamodel.properties.IntProperty;
 import de.unibw.fusionvis.datamodel.properties.StringProperty;
 
 /**
- * <p>Baut einen DOM-Baum aus einem XML-Datensatz und wandelt diesen in 
- * eine Collection von einzelnen Dateneinträgen um.</p>
+ * <p>
+ * Baut einen DOM-Baum aus einem XML-Datensatz und wandelt diesen in eine
+ * Collection von einzelnen Dateneinträgen um.
+ * </p>
+ * 
  * @author stzschoppe
  */
 public abstract class Importer {
 	private final String standardInputFile = "\\res\\input.xml";
-	
+
 	protected ImporterPanel panel;
-	
+
 	protected Logger logger;
-	
-	/**Datensatz*/
+
+	/** Datensatz */
 	protected DataSet dataSet = null;
-	
+
 	/**
 	 * DOM-Document der importierten XML Datei;
 	 */
 	protected Document document;
-	
+
 	/**
 	 * Liste einfacher Eigenschaften
 	 */
 	protected ArrayList<String> simplePropertyList = new ArrayList<String>();
-	
+
 	/**
 	 * Liste vektorieller Eigenschaften
 	 */
@@ -68,8 +71,8 @@ public abstract class Importer {
 	protected String position = "Location";
 
 	protected String id = "Name";
-	
-	public Importer(Logger logger){
+
+	public Importer(Logger logger) {
 		this.logger = logger;
 		panel = new ImporterPanel();
 	}
@@ -79,6 +82,7 @@ public abstract class Importer {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
 		try {
+			logger.log(Level.INFO, "Starte Import von " + file + "\n");
 			builder = factory.newDocumentBuilder();
 			document = builder.parse(file);
 			buildDataSet();
@@ -94,32 +98,33 @@ public abstract class Importer {
 			logger.log(Level.SEVERE,
 					"Fehler beim Initialisieren des Importers " + "\n"
 							+ e.getLocalizedMessage() + "\n");
-		}
-		catch (Exception e) {
-			logger.log(Level.SEVERE,
-					"Fehler beim Importieren " + "\n"
-						+ e.getLocalizedMessage() + "\n");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Fehler beim Importieren " + "\n"
+					+ e.getLocalizedMessage() + "\n");
 		}
 
 	}
 
 	/**
-	 * @param dataSet neuer Datensatz.
+	 * @param dataSet
+	 *            neuer Datensatz.
 	 */
 	public void setDataSet(DataSet dataSet) {
 		this.dataSet = dataSet;
 	}
 
 	/**
-	 * DOM Struktur des Datensatzes. Ist verantwortlich die Instanzvariable 
+	 * DOM Struktur des Datensatzes. Ist verantwortlich die Instanzvariable
 	 * <code>dataSet</code> zu initialisieren.
+	 * 
 	 * @return Satz von Daten
 	 */
 	public DataSet getDataSet() {
 		if (dataSet == null) {
 			if (document == null) {
 				runImport(standardInputFile);
-				logger.log(Level.SEVERE, "importiere Standardinput." + standardInputFile + "\n");
+				logger.log(Level.SEVERE, "importiere Standardinput."
+						+ standardInputFile + "\n");
 			}
 		}
 		return dataSet;
@@ -127,32 +132,43 @@ public abstract class Importer {
 
 	/**
 	 * Hilfsfuktion zum Extrahieren der Units
-	 * @param unitNode DOM Node &lt;Unit>
+	 * 
+	 * @param unitNode
+	 *            DOM Node &lt;Unit>
 	 * @return Data-Objekt
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	protected abstract Data extractUnit(Node item) throws Exception;
 
 	/**
 	 * Extrahiert eine einfache Eigenschaft.
-	 * @param node XML-Node
-	 * @param type Einer der folgenden Typen: <code>TString, TBool, TFloat, TInt, TChar</code>
-	 * @return Die jeweilige Typ-Implementierung der AbstractProperty oder null, wenn
-	 * keiner der o. a. Typen verwendet wurde
-	 * @throws Exception 
+	 * 
+	 * @param node
+	 *            XML-Node
+	 * @param type
+	 *            Einer der folgenden Typen:
+	 *            <code>TString, TBool, TFloat, TInt, TChar</code>
+	 * @return Die jeweilige Typ-Implementierung der AbstractProperty oder null,
+	 *         wenn keiner der o. a. Typen verwendet wurde
+	 * @throws Exception
 	 */
-	protected AbstractProperty extractSimpleProperty(Node node, Type type) throws Exception {
+	protected AbstractProperty extractSimpleProperty(Node node, Type type)
+			throws Exception {
 		switch (type) {
 		case TString:
 			return new StringProperty(node.getNodeName(), node.getTextContent());
 		case TBool:
-			return new BooleanProperty(node.getNodeName(), Boolean.parseBoolean(node.getTextContent()));
+			return new BooleanProperty(node.getNodeName(), Boolean
+					.parseBoolean(node.getTextContent()));
 		case TFloat:
-			return new FloatProperty(node.getNodeName(), Float.parseFloat(node.getTextContent()));
+			return new FloatProperty(node.getNodeName(), Float.parseFloat(node
+					.getTextContent()));
 		case TInt:
-			return new IntProperty(node.getNodeName(), Integer.parseInt(node.getTextContent()));
+			return new IntProperty(node.getNodeName(), Integer.parseInt(node
+					.getTextContent()));
 		case TChar:
-			return new CharProperty(node.getNodeName(), node.getTextContent().charAt(0));
+			return new CharProperty(node.getNodeName(), node.getTextContent()
+					.charAt(0));
 		case TDate:
 			Date date;
 			date = parseDate(node.getTextContent());
@@ -164,26 +180,28 @@ public abstract class Importer {
 
 	/**
 	 * Erzeugt einen Satz von Daten
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	protected void buildDataSet() throws Exception {
 		Node root = document.getDocumentElement();
 		Node current = root;
-		
-		//Bezeicher für dataSet auslesen
+
+		// Bezeicher für dataSet auslesen
 		dataSet = new DataSet(root.getNodeName());
-		
-		current = current.getFirstChild().getNextSibling(); // current --> <Units>
+
+		current = current.getFirstChild().getNextSibling(); // current -->
+															// <Units>
 		NodeList units = current.getChildNodes();
-		
-		for (int i=0; i<units.getLength();i++){
+
+		for (int i = 0; i < units.getLength(); i++) {
 			if (units.item(i).getNodeType() != Node.ELEMENT_NODE) {
-				continue; //wenn kein Element, dann skip
+				continue; // wenn kein Element, dann skip
 			}
 			dataSet.addData(extractUnit(units.item(i)));
 		}
 	}
-	
+
 	protected Date parseDate(String stringToParse) throws ParseException {
 		// yyyy-MM-dd'T'HH:mm:ss.SSSSZ
 		Date date = null;

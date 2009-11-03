@@ -54,7 +54,7 @@ public class FusionVis {
 	 * Getter fuer den globalen Logger
 	 * @return the logger
 	 */
-	protected static Logger getLogger() {
+	public static Logger getLogger() {
 		return logger;
 	}
 
@@ -101,14 +101,14 @@ public class FusionVis {
     	Shell.getInstance().addCommand(filter);
     }
 
-	private void commandFilter(String key, String value) {
+    public void commandFilter(String key, String value) {
 		importer.setDataSet(importer.getDataSet().filterBy(key, value));
 		logger.log(Level.INFO, ""
 				+ this.importer.getDataSet().getData().size()
 				+ " Datensätze vorhanden.\n");
 	}
 	
-	private void commandImportXML(String file) {
+	public void commandImportXML(String file) {
 		// Initialisierung des Importers
 		logger.log(Level.INFO, "Initialisierung des Importers mit " + file + "\n");
 		this.importer.runImport(file);
@@ -121,7 +121,7 @@ public class FusionVis {
 	 * Gibt einen Datensatz über den Logger aus
 	 * @param dataSet
 	 */
-	private void commandPrintAll() {
+	public void commandPrintAll() {
 		logger.log(Level.INFO, this.importer.getDataSet() + "\n");
 		logger.log(Level.INFO, ""
 				+ this.importer.getDataSet().getData().size()
