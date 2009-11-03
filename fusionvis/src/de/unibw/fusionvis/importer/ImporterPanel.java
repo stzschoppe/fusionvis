@@ -362,7 +362,12 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		DefaultMutableTreeNode containerProperties =
 	        new DefaultMutableTreeNode("Vektoren");
 		for (AbstractProperty component : data.getContainerProperties()) {
-			containerProperties.add(extractProperty(component));
+			DefaultMutableTreeNode vector =
+		        new DefaultMutableTreeNode(component.getId());
+			for (AbstractProperty vectorComponent : component.getValueAsContainerProperty().getComponents()) {
+				vector.add(extractProperty(vectorComponent));
+			}
+			containerProperties.add(vector);
 		}
 		
 		// Taxonomien
