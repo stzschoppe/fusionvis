@@ -21,7 +21,7 @@ import de.unibw.fusionvis.importer.ImporterPanel;
 
 /**
  *
- * @author stephan
+ * @author stzschoppe
  */
 public class FusionVisForm extends javax.swing.JFrame {
 
@@ -44,7 +44,7 @@ public class FusionVisForm extends javax.swing.JFrame {
 
         fusionvisFileChooser = new javax.swing.JFileChooser();
         if (importerPanel==null) {
-			fusionvisImporterPanel = new ImporterPanel();
+			fusionvisImporterPanel = new ImporterPanel(model.importer);
 		}
         else {
 			fusionvisImporterPanel = importerPanel;

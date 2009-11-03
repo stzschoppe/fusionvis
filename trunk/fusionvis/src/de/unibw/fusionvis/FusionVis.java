@@ -30,7 +30,7 @@ public class FusionVis {
 	private static Logger logger = Logger.getLogger("FusionVis");
 	
 	/** Importer zum Erstellen der Datenstruktur*/
-	protected Importer importer;
+	public Importer importer;
 	
 	/** Mapper zum Erstellen der graphischen Datenstruktur*/
 	protected Mapper mapper;
