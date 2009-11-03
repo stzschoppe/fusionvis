@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 
 import de.unibw.fusionvis.FusionVis;
+import de.unibw.fusionvis.FusionVisForm;
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.mapper.Mapper;
@@ -57,6 +58,12 @@ public class BattleSimVis extends FusionVis {
 			
 			// Shell starten
 			Shell.getInstance().run();
+			
+//XXX	        java.awt.EventQueue.invokeLater(new Runnable() {
+//	            public void run() {
+//	                new FusionVisForm().setVisible(true);
+//	            }
+//	        });
 			
 			// Beenden
 			getLogger().log(Level.INFO, "beende FusionVis");
