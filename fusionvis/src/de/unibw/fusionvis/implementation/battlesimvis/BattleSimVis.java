@@ -13,7 +13,7 @@ import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.mapper.Mapper;
-import de.unibw.fusionvis.viewer.Viewer;
+import de.unibw.fusionvis.viewer.ViewerPanel;
 
 public class BattleSimVis extends FusionVis {
 	private CommandHandler commandHandler = new CommandHandler() {
@@ -29,7 +29,7 @@ public class BattleSimVis extends FusionVis {
 		}
 	};
 	
-	public BattleSimVis(Importer importer, Mapper mapper, Viewer viewer) throws Exception {
+	public BattleSimVis(Importer importer, Mapper mapper, ViewerPanel viewer) throws Exception {
 		super(importer, mapper, viewer);
 		
 		// Erzeugen des "latlon" Commands
