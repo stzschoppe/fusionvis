@@ -17,7 +17,7 @@ import com.jme.scene.state.BlendState;
 import com.jme.scene.state.MaterialState;
 import com.jme.system.DisplaySystem;
 
-public  class Viewer extends SimpleGame {
+public  class TestViewer extends SimpleGame {
 	private static int numberOfPoints = 0;
 	private final boolean cones = true;
 	private Node gridNode;
@@ -30,7 +30,7 @@ public  class Viewer extends SimpleGame {
     private float opacityAmount = 0.4f;
  
     public static void main(String[] args) {
-		Viewer main = new Viewer();
+    	TestViewer main = new TestViewer();
 		main.setConfigShowMode(ConfigShowMode.AlwaysShow);
 		main.start();
 	}

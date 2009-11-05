@@ -9,7 +9,7 @@ import shell.StringParameter;
 import shell.tools.HaltCommand;
 import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.mapper.Mapper;
-import de.unibw.fusionvis.viewer.Viewer;
+import de.unibw.fusionvis.viewer.ViewerPanel;
 
 
 /**
@@ -29,12 +29,12 @@ public class FusionVis {
 	protected Mapper mapper;
 	
 	/** Viewer zum Anzeigen der graphischen Datenstruktur*/
-	protected Viewer viewer;
+	protected ViewerPanel viewer;
 	
 	/**
 	 * Konstruktor
 	 */
-	public FusionVis(Importer importer, Mapper mapper, Viewer viewer) {
+	public FusionVis(Importer importer, Mapper mapper, ViewerPanel viewer) {
 		this.importer = importer;
 		this.mapper = mapper;
 		this.viewer = viewer;
