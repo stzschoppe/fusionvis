@@ -13,11 +13,13 @@ package de.unibw.fusionvis.importer;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.datamodel.Type;
@@ -329,6 +331,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		} else {
 			update(importer, model.filterBy(importerFilterKeyText.getText(),
 					importerFilterValueText.getText()));
+			FusionVis.getLogger().log(Level.INFO, model.getData().size() +" Datensätze mit angegebener Eigenschaft");
 		}
 	}// GEN-LAST:event_importerFilterButtonMouseClicked
 
@@ -345,50 +348,57 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		AbstractProperty property;
 
 		// Wurzel mit Namen des Data Objekts //XXX NullPointerException
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(data.getId());
+		DefaultMutableTreeNode root = null;
 
-		// Position
-		DefaultMutableTreeNode position = new DefaultMutableTreeNode("Position");
-		property = data.getPosition();
-		for (AbstractProperty component : property
-				.getValueAsContainerProperty().getComponents()) {
-			position.add(extractProperty(component));
-		}
+		try {
+			root = new DefaultMutableTreeNode(data.getId());
 
-		// Einfache Eigenschaften
-		DefaultMutableTreeNode simpleProperties = new DefaultMutableTreeNode(
-				"Eigenschaften");
-		for (AbstractProperty component : data.getSimpleProperties()) {
-			simpleProperties.add(extractProperty(component));
-		}
-
-		// Zusammengesetzte Eigenschaften
-		DefaultMutableTreeNode containerProperties = new DefaultMutableTreeNode(
-				"Vektoren");
-		for (AbstractProperty component : data.getContainerProperties()) {
-			DefaultMutableTreeNode vector = new DefaultMutableTreeNode(
-					component.getId());
-			for (AbstractProperty vectorComponent : component
+			// Position
+			DefaultMutableTreeNode position = new DefaultMutableTreeNode(
+					"Position");
+			property = data.getPosition();
+			for (AbstractProperty component : property
 					.getValueAsContainerProperty().getComponents()) {
-				vector.add(extractProperty(vectorComponent));
+				position.add(extractProperty(component));
 			}
-			containerProperties.add(vector);
+
+			// Einfache Eigenschaften
+			DefaultMutableTreeNode simpleProperties = new DefaultMutableTreeNode(
+					"Eigenschaften");
+			for (AbstractProperty component : data.getSimpleProperties()) {
+				simpleProperties.add(extractProperty(component));
+			}
+
+			// Zusammengesetzte Eigenschaften
+			DefaultMutableTreeNode containerProperties = new DefaultMutableTreeNode(
+					"Vektoren");
+			for (AbstractProperty component : data.getContainerProperties()) {
+				DefaultMutableTreeNode vector = new DefaultMutableTreeNode(
+						component.getId());
+				for (AbstractProperty vectorComponent : component
+						.getValueAsContainerProperty().getComponents()) {
+					vector.add(extractProperty(vectorComponent));
+				}
+				containerProperties.add(vector);
+			}
+
+			// Taxonomien
+			DefaultMutableTreeNode taxonimies = new DefaultMutableTreeNode(
+					"Taxonomien");
+			for (AbstractProperty component : data.getTaxonomies()) {
+				taxonimies.add(extractProperty(component));
+			}
+
+			// Baum zusammenfügen
+			root.add(position);
+			root.add(simpleProperties);
+			root.add(containerProperties);
+			root.add(taxonimies);
+
+			importerDetailTree.setModel(new DefaultTreeModel(root));
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-
-		// Taxonomien
-		DefaultMutableTreeNode taxonimies = new DefaultMutableTreeNode(
-				"Taxonomien");
-		for (AbstractProperty component : data.getTaxonomies()) {
-			taxonimies.add(extractProperty(component));
-		}
-
-		// Baum zusammenfügen
-		root.add(position);
-		root.add(simpleProperties);
-		root.add(containerProperties);
-		root.add(taxonimies);
-
-		importerDetailTree.setModel(new DefaultTreeModel(root));
 	}// GEN-LAST:event_importerListValueChanged
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
