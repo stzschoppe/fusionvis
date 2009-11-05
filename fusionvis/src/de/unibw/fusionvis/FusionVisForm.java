@@ -89,7 +89,6 @@ public class FusionVisForm extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(800, 600));
 
         getContentPane().add(fusionvisImporterPanel, java.awt.BorderLayout.WEST);
-        fusionvisImporterPanel.setVisible(false);
         
         getContentPane().add(fusionvisViewerPanel, java.awt.BorderLayout.CENTER);
         fusionvisViewerPanel.setVisible(true);
