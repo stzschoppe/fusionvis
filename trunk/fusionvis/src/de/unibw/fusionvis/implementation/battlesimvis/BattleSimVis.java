@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 
-import de.unibw.fusionvis.FusionVis;
-import de.unibw.fusionvis.FusionVisForm;
-import de.unibw.fusionvis.datamodel.Data;
-import de.unibw.fusionvis.importer.Importer;
-import de.unibw.fusionvis.mapper.Mapper;
-import de.unibw.fusionvis.viewer.Viewer;
-
 import shell.Command;
 import shell.CommandHandler;
 import shell.Parameter;
 import shell.Shell;
 import shell.StringParameter;
+import de.unibw.fusionvis.FusionVis;
+import de.unibw.fusionvis.datamodel.Data;
+import de.unibw.fusionvis.importer.Importer;
+import de.unibw.fusionvis.mapper.Mapper;
+import de.unibw.fusionvis.viewer.Viewer;
 
 public class BattleSimVis extends FusionVis {
 	private CommandHandler commandHandler = new CommandHandler() {

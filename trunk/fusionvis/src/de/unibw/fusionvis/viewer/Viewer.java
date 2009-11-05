@@ -11,7 +11,6 @@ import com.jme.renderer.Renderer;
 import com.jme.scene.Line;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial.LightCombineMode;
-import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Cylinder;
 import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.BlendState;
