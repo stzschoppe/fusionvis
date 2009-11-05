@@ -9,6 +9,11 @@ import de.unibw.fusionvis.importer.ImporterPanel;
 
 public class BattleSimVisForm extends FusionVisForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8764514617523001648L;
+
 	public BattleSimVisForm(FusionVis model, ImporterPanel importerPanel) {
 		super(model, importerPanel);
 	}

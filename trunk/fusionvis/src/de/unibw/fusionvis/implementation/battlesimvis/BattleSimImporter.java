@@ -24,7 +24,6 @@ import de.unibw.fusionvis.importer.ImporterPanel;
  * @author stzschoppe
  */
 public class BattleSimImporter extends Importer {
-	private Logger logger;
 
 	/**
 	 * Konstruktor eines Importers für Ausgaben eines Battle Simulators unter

@@ -44,14 +44,6 @@ public class BattleSimVis extends FusionVis {
 	}
 
 	/**
-	 * Main-Methode
-	 * @param args
-	 * @throws Exception 
-	 */
-	public void init() throws Exception {
-		BattleSimVis battleSimVis = new BattleSimVis(new BattleSimImporter(getLogger()), null, null);
-	}
-	/**
 	 * Bestimmung des Minimums/Maximums für Lat und Lon
 	 */
 	private void commandLatLon(){

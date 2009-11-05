@@ -3,9 +3,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+/**
+ * @author J7ts0040
+ *
+ */
 public class ParseTest {
 
 	
+	/**
+	 * @param stringToParse
+	 * @return
+	 * @throws ParseException
+	 */
 	protected Date parseDate(String stringToParse) throws ParseException {
 		// yyyy-MM-dd'T'HH:mm:ss.SSSSZ
 		Date date = null;
