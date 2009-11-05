@@ -1,19 +1,12 @@
 package de.unibw.fusionvis;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import shell.Command;
 import shell.CommandHandler;
-import shell.IntegerParameter;
 import shell.Shell;
 import shell.StringParameter;
 import shell.tools.HaltCommand;
-
-import de.unibw.fusionvis.datamodel.Data;
-import de.unibw.fusionvis.datamodel.DataSet;
-import de.unibw.fusionvis.implementation.battlesimvis.BattleSimImporter;
 import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.mapper.Mapper;
 import de.unibw.fusionvis.viewer.Viewer;

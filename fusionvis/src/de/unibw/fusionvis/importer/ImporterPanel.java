@@ -11,12 +11,9 @@
 
 package de.unibw.fusionvis.importer;
 
-import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JList;
-import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;

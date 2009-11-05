@@ -11,7 +11,6 @@
 
 package de.unibw.fusionvis;
 
-import java.awt.Panel;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
