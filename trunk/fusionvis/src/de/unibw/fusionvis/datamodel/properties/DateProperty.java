@@ -117,7 +117,7 @@ public class DateProperty extends AbstractProperty {
 
 	@Override
 	public float getValueAsFloat() {
-		throw new UnsupportedOperationException("Zugriff auf Date als float-Wert");
+		return value.getTimeInMillis();
 	}
 
 	@Override
