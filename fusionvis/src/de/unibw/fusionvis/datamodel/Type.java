@@ -127,6 +127,11 @@ public enum Type {
 		}
 	}
 	
+	/**
+	 * Wandelt Typen in ein String um
+	 * @param type umzuwandelnder String 
+	 * @return Stringrepräsentation
+	 */
 	public static String toString(Type type){
 		switch (type) {
 		case TInt:
