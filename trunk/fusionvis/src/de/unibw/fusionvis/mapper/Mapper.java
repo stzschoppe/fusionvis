@@ -29,7 +29,7 @@ public class Mapper {
 	public Node getDataRoot(DataSet dataSet) {
 		this.dataSet = dataSet;
 		dataNode = new Node("dataRoot");
-		dataNode.setLightCombineMode(LightCombineMode.Off);// eliminiere jeglichen Lichteinfluss
+		//dataNode.setLightCombineMode(LightCombineMode.Off);// eliminiere jeglichen Lichteinfluss
 
 		Vector3f[] transform = getCoefficient();
 		Vector3f factor = transform[0];
