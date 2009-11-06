@@ -21,6 +21,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.jme.system.DisplaySystem;
+
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.datamodel.Type;
@@ -262,7 +264,10 @@ public abstract class Importer extends Observable {
 	 * @return Knoten der 3D-Daten
 	 */
 	public com.jme.scene.Node getDataNode() {
+		mapper.texture(dataNode, DisplaySystem.getDisplaySystem());
 		return dataNode;
+		
 	}
+	
 
 }

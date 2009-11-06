@@ -1,19 +1,25 @@
 package de.unibw.fusionvis.mapper;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import com.jme.bounding.BoundingSphere;
+import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
-import com.jme.scene.Spatial.LightCombineMode;
-import com.jme.scene.shape.Box;
+import com.jme.scene.Spatial;
 import com.jme.scene.shape.Sphere;
+import com.jme.scene.state.TextureState;
+import com.jme.system.DisplaySystem;
+import com.jme.util.TextureManager;
 
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
+import de.unibw.fusionvis.viewer.TestViewer;
 
 public class Mapper {
 	private Node dataNode = null;
@@ -29,16 +35,16 @@ public class Mapper {
 	public Node getDataRoot(DataSet dataSet) {
 		this.dataSet = dataSet;
 		dataNode = new Node("dataRoot");
-		//dataNode.setLightCombineMode(LightCombineMode.Off);// eliminiere jeglichen Lichteinfluss
+		// dataNode.setLightCombineMode(LightCombineMode.Off);// eliminiere
+		// jeglichen Lichteinfluss
 
 		Vector3f[] transform = getCoefficient();
 		Vector3f factor = transform[0];
 		Vector3f offset = transform[1];
-		
 
 		for (Data data : dataSet.getData()) {
-			Sphere box = new Sphere(data.getId(), getPosition(
-					data, transform), 10, 10, 5);
+			Sphere box = new Sphere(data.getId(), getPosition(data, transform),
+					10, 10, 5);
 
 			box.setSolidColor(ColorRGBA.black);
 			box.setModelBound(new BoundingSphere());
@@ -125,12 +131,13 @@ public class Mapper {
 			y = 1;
 		}
 
-		Vector3f offset = new Vector3f(- lonMin, - timeMin.getTimeInMillis(), -latMin);
+		Vector3f offset = new Vector3f(-lonMin, -timeMin.getTimeInMillis(),
+				-latMin);
 		Vector3f factor = new Vector3f(x, y, z);
-		Vector3f[] result = {factor, offset};
+		Vector3f[] result = { factor, offset };
 
-//		System.out.println("Faktor " + factor);
-//		System.out.println("Offset " + offset);
+		// System.out.println("Faktor " + factor);
+		// System.out.println("Offset " + offset);
 		return result;
 	}
 
@@ -142,9 +149,9 @@ public class Mapper {
 		float y = (data.getPosition().getComponent("LastModified")
 				.getValueAsFloat() + transform[1].y)
 				* transform[0].y;
-//		System.out.println(new Vector3f(x, y, z));
+		// System.out.println(new Vector3f(x, y, z));
 		return new Vector3f(x, y, z);
-		
+
 	}
 
 	public Node getDataRoot() {
@@ -153,6 +160,72 @@ public class Mapper {
 					"Mapper nicht initialisiert, getter mir Argument aufrufen.");
 		} else {
 			return dataNode;
+		}
+	}
+
+	// Abstract
+	public void texture(Node dataNode, DisplaySystem display) {
+		URL fr = TestViewer.class.getClassLoader().getResource(
+				"de/unibw/fusionvis/img/fr.gif");
+		URL ho = TestViewer.class.getClassLoader().getResource(
+				"de/unibw/fusionvis/img/ho.gif");
+		URL frperceived = TestViewer.class.getClassLoader().getResource(
+				"de/unibw/fusionvis/img/frperceived.gif");
+		URL hoperceived = TestViewer.class.getClassLoader().getResource(
+				"de/unibw/fusionvis/img/hoperceived.gif");
+
+		Texture texture1 = TextureManager.loadTexture(fr,
+				Texture.MinificationFilter.Trilinear,
+				Texture.MagnificationFilter.Bilinear);
+		TextureState friendly = display.getRenderer().createTextureState();
+		friendly.setEnabled(true);
+		friendly.setTexture(texture1);
+
+		Texture texture2 = TextureManager.loadTexture(frperceived,
+				Texture.MinificationFilter.Trilinear,
+				Texture.MagnificationFilter.Bilinear);
+		TextureState friendlyPerceived = display.getRenderer()
+				.createTextureState();
+		friendlyPerceived.setEnabled(true);
+		friendlyPerceived.setTexture(texture2);
+
+		Texture texture3 = TextureManager.loadTexture(hoperceived,
+				Texture.MinificationFilter.Trilinear,
+				Texture.MagnificationFilter.Bilinear);
+		TextureState hostilePerceived = display.getRenderer()
+				.createTextureState();
+		hostilePerceived.setEnabled(true);
+		hostilePerceived.setTexture(texture3);
+
+		Texture texture4 = TextureManager.loadTexture(ho,
+				Texture.MinificationFilter.Trilinear,
+				Texture.MagnificationFilter.Bilinear);
+		TextureState hostile = display.getRenderer().createTextureState();
+		hostile.setEnabled(true);
+		hostile.setTexture(texture4);
+		Collection<Spatial> spartials = dataNode.getChildren();
+
+		for (Spatial spatial : spartials) {
+			String certainty = dataSet.getDataById(spatial.getName())
+			.getAbstractProperty("Certainty").getValueAsString();
+			String hostitlityCode = dataSet.getDataById(spatial.getName())
+					.getAbstractProperty("HostilityCode").getValueAsString();
+			if (hostitlityCode.equals("HO")) {
+				if (certainty.equals("Real")) {
+					spatial.setRenderState(hostile);
+				} else if (certainty.equals("Perceived")) {
+					spatial.setRenderState(hostilePerceived);
+				}
+			} else if (hostitlityCode.equals("FR")) {
+				if (certainty.equals("Real")) {
+					spatial.setRenderState(friendly);
+				} else if (certainty.equals("Perceived")) {
+					spatial.setRenderState(friendlyPerceived);
+				}
+			} else {
+				// Nichts tun
+			}
+			spatial.updateRenderState();
 		}
 	}
 }
