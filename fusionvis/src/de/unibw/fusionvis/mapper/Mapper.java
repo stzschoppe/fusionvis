@@ -37,8 +37,8 @@ public class Mapper {
 		
 
 		for (Data data : dataSet.getData()) {
-			Box box = new Box(data.getId(), getPosition(
-					data, transform), 5, 5, 5);
+			Sphere box = new Sphere(data.getId(), getPosition(
+					data, transform), 10, 10, 5);
 
 			box.setSolidColor(ColorRGBA.black);
 			box.setModelBound(new BoundingSphere());
