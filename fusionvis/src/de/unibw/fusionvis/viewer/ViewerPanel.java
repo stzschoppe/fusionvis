@@ -30,12 +30,14 @@ import com.jme.input.action.InputAction;
 import com.jme.input.action.InputActionEvent;
 import com.jme.input.action.KeyStrafeDownAction;
 import com.jme.input.action.KeyStrafeUpAction;
+import com.jme.light.DirectionalLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Line;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial.LightCombineMode;
+import com.jme.scene.state.LightState;
 import com.jme.system.DisplaySystem;
 import com.jme.system.canvas.JMECanvas;
 import com.jme.system.canvas.SimpleCanvasImpl;
@@ -201,7 +203,9 @@ public class ViewerPanel extends JPanel implements Observer{
 	/**Klasse zum Implementieren der Szene */
     class MyImplementor extends SimpleCanvasImpl
     {
-        public MyImplementor(int iWidth, int iHeight)
+        private LightState lightState;
+
+		public MyImplementor(int iWidth, int iHeight)
         {
             super(iWidth, iHeight);
         }
@@ -230,7 +234,31 @@ public class ViewerPanel extends JPanel implements Observer{
             createGrid();// Grid erzeugen
             helperNode.attachChild(gridNode);// Grid an "helperNode" anhaengen
             helperNode.setLightCombineMode(LightCombineMode.Off);// eliminiere jeglichen Lichteinfluss
-                        
+            
+            //Licht erzeugen
+            // Erzeugen eines LightState an welchen alle Pointlights und Directional Lights
+            // hinzugefuegt werden muessen, damit sie sichtbar sind
+    		lightState = DisplaySystem.getDisplaySystem().getRenderer().createLightState();
+    		lightState.detachAll();
+    		lightState.setEnabled(true);
+    		root.setRenderState(lightState);
+    		root.updateRenderState();
+    		
+            ColorRGBA diffuseRGBA = new ColorRGBA(ColorRGBA.white);
+	        
+	        ColorRGBA ambientRGBA = new ColorRGBA(ColorRGBA.white);
+			
+			DirectionalLight dl = new DirectionalLight();
+    	    dl.setDirection(new Vector3f(-0.5f,-1,-0.8f));
+    	    dl.setDiffuse(diffuseRGBA);
+            dl.setAmbient(ambientRGBA);
+            dl.setSpecular(new ColorRGBA(0.0f, 0.0f, 0.0f, 1.0f));
+    	    dl.setEnabled(true);	   
+    	    dl.setShadowCaster(true);
+    	    
+    	    lightState.attach(dl);
+            
+            
             root.attachChild(helperNode);// "helperNode" an "root" anhaengen
             
          // Maus- und Tastatureingaben aktivieren
