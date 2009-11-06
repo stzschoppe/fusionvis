@@ -5,5 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jME 2.0 Complete"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jme"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/shell"/>
+	<classpathentry kind="lib" path="res"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
