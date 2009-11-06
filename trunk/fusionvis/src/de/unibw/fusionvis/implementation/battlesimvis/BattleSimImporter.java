@@ -14,6 +14,7 @@ import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
 import de.unibw.fusionvis.datamodel.properties.ContainerProperty;
 import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.importer.ImporterPanel;
+import de.unibw.fusionvis.mapper.Mapper;
 
 /**
  * <p>
@@ -31,9 +32,10 @@ public class BattleSimImporter extends Importer {
 	 * 
 	 * @param logger Übergeordneter Logger
 	 *            Pfad zur XML-Datei
+	 * @param mapper Mapper, der den 3d-Baum erzeugt
 	 */
-	public BattleSimImporter(Logger logger) {
-		super(logger);
+	public BattleSimImporter(Logger logger, Mapper mapper) {
+		super(logger, mapper);
 		this.panel = new ImporterPanel(this);
 		id = "Name";
 		position = "Location";

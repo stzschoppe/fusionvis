@@ -31,6 +31,7 @@ import de.unibw.fusionvis.datamodel.properties.DateProperty;
 import de.unibw.fusionvis.datamodel.properties.FloatProperty;
 import de.unibw.fusionvis.datamodel.properties.IntProperty;
 import de.unibw.fusionvis.datamodel.properties.StringProperty;
+import de.unibw.fusionvis.mapper.Mapper;
 
 /**
  * <p>
@@ -46,6 +47,8 @@ public abstract class Importer extends Observable {
 	protected ImporterPanel panel;
 
 	protected Logger logger;
+	
+	private Mapper mapper;
 
 	/** Datensatz */
 	protected DataSet dataSet = null;
@@ -71,8 +74,11 @@ public abstract class Importer extends Observable {
 
 	protected String id = "Name";
 
-	public Importer(Logger logger) {
+	private com.jme.scene.Node dataNode;
+
+	public Importer(Logger logger, Mapper mapper) {
 		this.logger = logger;
+		this.mapper = mapper;
 		panel = new ImporterPanel(this);
 	}
 
@@ -85,6 +91,9 @@ public abstract class Importer extends Observable {
 			builder = factory.newDocumentBuilder();
 			document = builder.parse(file);
 			buildDataSet();
+			
+			//Wurzel Erzeugen
+			dataNode = mapper.getDataRoot(dataSet);
 			// ImporterPanel aktualisieren
 			setChanged();
 			notifyObservers(dataSet);
@@ -247,6 +256,13 @@ public abstract class Importer extends Observable {
 		}
 		throw new ParseException("Kein Date\t" + formatString + "\t"
 				+ stringToParse, 0);
+	}
+
+	/**
+	 * @return Knoten der 3D-Daten
+	 */
+	public com.jme.scene.Node getDataNode() {
+		return dataNode;
 	}
 
 }

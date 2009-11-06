@@ -3,9 +3,12 @@ package de.unibw.fusionvis.implementation.battlesimvis;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jme.math.Vector3f;
+
 import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.FusionVisForm;
 import de.unibw.fusionvis.importer.ImporterPanel;
+import de.unibw.fusionvis.mapper.Mapper;
 import de.unibw.fusionvis.viewer.ViewerPanel;
 
 public class BattleSimVisForm extends FusionVisForm {
@@ -22,7 +25,7 @@ public class BattleSimVisForm extends FusionVisForm {
 
 	public static void main(String[] args) throws Exception {
 		final FusionVis model = new BattleSimVis(
-				new BattleSimImporter(BattleSimVis.getLogger()),
+				new BattleSimImporter(BattleSimVis.getLogger(), new Mapper(new Vector3f(300, 200, 300))),
 				null, null);
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
