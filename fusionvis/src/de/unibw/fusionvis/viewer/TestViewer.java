@@ -1,5 +1,8 @@
 package de.unibw.fusionvis.viewer;
 
+import java.net.URL;
+
+import jmetest.TutorialGuide.HelloMousePick;
 import jmetest.flagrushtut.Lesson1;
 
 import com.jme.app.SimpleGame;
@@ -93,7 +96,7 @@ public  class TestViewer extends SimpleGame {
         // attach the light to a lightState
         lightState.attach(light3);
 
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 27; i++) {
 			createPoint();
 		}
 		// rootNode.setLightCombineMode(Spatial.LightCombineMode.Off);
@@ -110,28 +113,38 @@ public  class TestViewer extends SimpleGame {
 		float h = upperBound - y;
 		float r = .3f * h;
 		
-		Texture texture1 = TextureManager.loadTexture("res\\img\\fr.gif",
+		URL fr = TestViewer.class.getClassLoader().getResource(
+        "de/unibw/fusionvis/img/fr.gif" );
+		URL ho = TestViewer.class.getClassLoader().getResource(
+        "de/unibw/fusionvis/img/ho.gif" );
+		URL frperceived = TestViewer.class.getClassLoader().getResource(
+        "de/unibw/fusionvis/img/frperceived.gif" );
+		URL hoperceived = TestViewer.class.getClassLoader().getResource(
+        "de/unibw/fusionvis/img/hoperceived.gif" );
+		
+		
+		Texture texture1 = TextureManager.loadTexture(fr,
 				Texture.MinificationFilter.Trilinear,
 				Texture.MagnificationFilter.Bilinear);
 		TextureState friendly = display.getRenderer().createTextureState();
 		friendly.setEnabled(true);
 		friendly.setTexture(texture1);
 		
-		Texture texture2 = TextureManager.loadTexture("res\\img\\frperceived.gif",
+		Texture texture2 = TextureManager.loadTexture(frperceived,
 				Texture.MinificationFilter.Trilinear,
 				Texture.MagnificationFilter.Bilinear);
 		TextureState friendlyPerceived = display.getRenderer().createTextureState();
 		friendlyPerceived.setEnabled(true);
 		friendlyPerceived.setTexture(texture2);
 		
-		Texture texture3 = TextureManager.loadTexture("res\\img\\hoperceived.gif",
+		Texture texture3 = TextureManager.loadTexture(hoperceived,
 				Texture.MinificationFilter.Trilinear,
 				Texture.MagnificationFilter.Bilinear);
 		TextureState hostilePerceived = display.getRenderer().createTextureState();
 		hostilePerceived.setEnabled(true);
 		hostilePerceived.setTexture(texture3);
 		
-		Texture texture4 = TextureManager.loadTexture("res\\img\\ho.gif",
+		Texture texture4 = TextureManager.loadTexture(ho,
 				Texture.MinificationFilter.Trilinear,
 				Texture.MagnificationFilter.Bilinear);
 		TextureState hostile = display.getRenderer().createTextureState();
