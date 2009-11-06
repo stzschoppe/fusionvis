@@ -460,10 +460,11 @@ public class ViewerPanel extends JPanel implements Observer{
 	@Override
 	public void update(Observable o, Object arg) {
 		Importer importer = (Importer)o;
+		Node dataNode = importer.getDataNode();
 		root.detachAllChildren();
 		root.attachChild(helperNode);
-		root.attachChild(importer.getDataNode());
-		System.out.println(importer.getDataNode().getChildren());
+		root.attachChild(dataNode);
+		//System.out.println(importer.getDataNode(DisplaySystem.getDisplaySystem()).getChildren());
 		
 	}
 
