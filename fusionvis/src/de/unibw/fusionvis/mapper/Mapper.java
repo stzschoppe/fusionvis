@@ -6,42 +6,48 @@ import java.util.Iterator;
 
 import com.jme.bounding.BoundingSphere;
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial.LightCombineMode;
+import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Sphere;
 
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
 
 public class Mapper {
-	private Node dataRoot = null;
+	private Node dataNode = null;
 	private DataSet dataSet;
 	private Vector3f maximalDimenVector3f;
 
-	public Mapper(DataSet dataSet,
-			Vector3f maximalDimenVector3f) {
+	public Mapper(Vector3f maximalDimenVector3f) {
 		this.dataSet = dataSet;
 		this.maximalDimenVector3f = maximalDimenVector3f;
 	}
 
 	// Abstract
 	public Node getDataRoot(DataSet dataSet) {
-		dataRoot  = new Node("dataRoot");
-		
+		this.dataSet = dataSet;
+		dataNode = new Node("dataRoot");
+		dataNode.setLightCombineMode(LightCombineMode.Off);// eliminiere jeglichen Lichteinfluss
+
 		Vector3f[] transform = getCoefficient();
 		Vector3f factor = transform[0];
 		Vector3f offset = transform[1];
+		
 
 		for (Data data : dataSet.getData()) {
-			Sphere sphere = new Sphere(data.getId(), new Vector3f(getPosition(
-					data, transform).x, getPosition(data, transform).y,
-					getPosition(data, transform).z), 50, 50, 5f);
+			Box box = new Box(data.getId(), getPosition(
+					data, transform), 5, 5, 5);
 
-			sphere.setModelBound(new BoundingSphere());
-			sphere.updateModelBound();
-			dataRoot.attachChild(sphere);
+			box.setSolidColor(ColorRGBA.black);
+			box.setModelBound(new BoundingSphere());
+			box.updateModelBound();
+			System.out.println(box.center);
+			dataNode.attachChild(box);
 		}
 
-		return dataRoot;
+		return dataNode;
 	}
 
 	/**
@@ -119,30 +125,34 @@ public class Mapper {
 			y = 1;
 		}
 
-		float xOffset = 0 - lonMax;
-		float yOffset = 0 - timeMax.getTimeInMillis();
-		float zOffset = 0 - latMax;
+		Vector3f offset = new Vector3f(- lonMin, - timeMin.getTimeInMillis(), -latMin);
+		Vector3f factor = new Vector3f(x, y, z);
+		Vector3f[] result = {factor, offset};
 
-		return new Vector3f[] { new Vector3f(x, y, z),
-				new Vector3f(xOffset, yOffset, zOffset) };
+//		System.out.println("Faktor " + factor);
+//		System.out.println("Offset " + offset);
+		return result;
 	}
 
 	private Vector3f getPosition(Data data, Vector3f[] transform) {
 		float x = (data.getPosition().getComponent("Lon").getValueAsFloat() + transform[1].x)
-				/ transform[0].x;
+				* transform[0].x;
 		float z = (data.getPosition().getComponent("Lat").getValueAsFloat() + transform[1].z)
-				/ transform[0].z;
+				* transform[0].z;
 		float y = (data.getPosition().getComponent("LastModified")
 				.getValueAsFloat() + transform[1].y)
-				/ transform[0].y;
+				* transform[0].y;
+//		System.out.println(new Vector3f(x, y, z));
 		return new Vector3f(x, y, z);
+		
 	}
-	
-	public Node getDataRoot(){
-		if (dataRoot == null) {
-			return getDataRoot(dataSet);
+
+	public Node getDataRoot() {
+		if (dataNode == null) {
+			throw new UnsupportedOperationException(
+					"Mapper nicht initialisiert, getter mir Argument aufrufen.");
 		} else {
-			return dataRoot;
+			return dataNode;
 		}
 	}
 }

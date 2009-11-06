@@ -9,6 +9,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -42,7 +44,9 @@ import com.jme.util.GameTaskQueueManager;
 import com.jmex.awt.input.AWTMouseInput;
 import com.jmex.awt.lwjgl.LWJGLAWTCanvasConstructor;
 
-public class ViewerPanel extends JPanel{
+import de.unibw.fusionvis.importer.Importer;
+
+public class ViewerPanel extends JPanel implements Observer{
 
     final Logger logger; //= Logger.getLogger(ViewerPanel.class.getName());
     static final long serialVersionUID = 1L;
@@ -205,7 +209,7 @@ public class ViewerPanel extends JPanel{
         public void simpleSetup() 
         {        	
         	// Setze die Hintergrundfarbe fuer das OpenGL Fenster
-            renderer.setBackgroundColor(ColorRGBA.black);
+            renderer.setBackgroundColor(ColorRGBA.white);
             
             // Setup Camera
             cam = impl.getCamera();
@@ -424,5 +428,15 @@ public class ViewerPanel extends JPanel{
         zAxis.setCastsShadows(false);            
         gridNode.attachChild(zAxis);
     }
+
+	@Override
+	public void update(Observable o, Object arg) {
+		Importer importer = (Importer)o;
+		root.detachAllChildren();
+		root.attachChild(helperNode);
+		root.attachChild(importer.getDataNode());
+		System.out.println(importer.getDataNode().getChildren());
+		
+	}
 
 }

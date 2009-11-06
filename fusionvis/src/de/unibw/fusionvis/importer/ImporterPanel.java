@@ -39,7 +39,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	/** Creates new form ImporterPanel */
 	public ImporterPanel(Importer importer) {
 		initComponents();
-		importer.addObserver(this);
+		//importer.addObserver(this);
 		this.importer = importer;
 	}
 

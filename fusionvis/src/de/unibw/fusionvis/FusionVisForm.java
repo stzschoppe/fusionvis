@@ -43,6 +43,8 @@ public class FusionVisForm extends javax.swing.JFrame {
     public FusionVisForm(FusionVis model, ImporterPanel importerPanel, ViewerPanel viewerPanel) {
     	this.model = model;
     	initComponents(importerPanel, viewerPanel);
+    	model.importer.addObserver(importerPanel);
+    	model.importer.addObserver(viewerPanel);
     	logger = FusionVis.getLogger();
     }
 
