@@ -1,8 +1,12 @@
 package de.unibw.fusionvis.viewer;
 
+import jmetest.flagrushtut.Lesson1;
+
 import com.jme.app.SimpleGame;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingSphere;
+import com.jme.image.Image;
+import com.jme.image.Texture;
 import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
@@ -15,11 +19,13 @@ import com.jme.scene.shape.Cylinder;
 import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.MaterialState;
+import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
+import com.jme.util.TextureManager;
 
 public  class TestViewer extends SimpleGame {
 	private static int numberOfPoints = 0;
-	private final boolean cones = true;
+	private final boolean cones = false;
 	private Node gridNode;
 	private Node helperNode;
 	private Node root;
@@ -27,17 +33,17 @@ public  class TestViewer extends SimpleGame {
     /**
      * The amount of opacity (0 = fully transparent or invisible).
      */
-    private float opacityAmount = 0.4f;
+    private float opacityAmount = 0.2f;
  
     public static void main(String[] args) {
     	TestViewer main = new TestViewer();
-		main.setConfigShowMode(ConfigShowMode.AlwaysShow);
+		main.setConfigShowMode(ConfigShowMode.NeverShow);
 		main.start();
 	}
 
 	protected void simpleInitGame() {
 		// set the background color to light gray
-        display.getRenderer().setBackgroundColor(ColorRGBA.blue);
+        display.getRenderer().setBackgroundColor(ColorRGBA.white);
 
         // rootNode einer globalen Knotenvariable zuweisen, um in "nested classes" darauf zuzugreifen
         root = rootNode;
@@ -56,15 +62,38 @@ public  class TestViewer extends SimpleGame {
  
         // our light
         final PointLight light = new PointLight();
+        light.setAttenuate(false);
         light.setDiffuse(ColorRGBA.white);
         light.setSpecular(ColorRGBA.white);
-        light.setLocation(new Vector3f(100.0f, 100.0f, 100.0f));
+        light.setLocation(new Vector3f(500.0f, 500.0f, 500.0f));
         light.setEnabled(true);
  
         // attach the light to a lightState
         lightState.attach(light);
+        
+        // our light
+        final PointLight light2 = new PointLight();
+        light2.setAttenuate(false);
+        light2.setDiffuse(ColorRGBA.white);
+        light2.setSpecular(ColorRGBA.white);
+        light2.setLocation(new Vector3f(-500.0f, -500.0f, -500.0f));
+        light2.setEnabled(true);
+ 
+        // attach the light to a lightState
+        lightState.attach(light2);
+        
+        // our light
+        final PointLight light3 = new PointLight();
+        light3.setAttenuate(false);
+        light3.setDiffuse(ColorRGBA.white);
+        light3.setSpecular(ColorRGBA.white);
+        light3.setLocation(new Vector3f(-500.0f, 500.0f, -500.0f));
+        light3.setEnabled(true);
+ 
+        // attach the light to a lightState
+        lightState.attach(light3);
 
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 1000; i++) {
 			createPoint();
 		}
 		// rootNode.setLightCombineMode(Spatial.LightCombineMode.Off);
@@ -80,15 +109,56 @@ public  class TestViewer extends SimpleGame {
 		float[] rot = { (float) Math.PI / 2, (float) Math.PI / 2, 0 };
 		float h = upperBound - y;
 		float r = .3f * h;
+		
+		Texture texture1 = TextureManager.loadTexture("res\\img\\fr.gif",
+				Texture.MinificationFilter.Trilinear,
+				Texture.MagnificationFilter.Bilinear);
+		TextureState friendly = display.getRenderer().createTextureState();
+		friendly.setEnabled(true);
+		friendly.setTexture(texture1);
+		
+		Texture texture2 = TextureManager.loadTexture("res\\img\\frperceived.gif",
+				Texture.MinificationFilter.Trilinear,
+				Texture.MagnificationFilter.Bilinear);
+		TextureState friendlyPerceived = display.getRenderer().createTextureState();
+		friendlyPerceived.setEnabled(true);
+		friendlyPerceived.setTexture(texture2);
+		
+		Texture texture3 = TextureManager.loadTexture("res\\img\\hoperceived.gif",
+				Texture.MinificationFilter.Trilinear,
+				Texture.MagnificationFilter.Bilinear);
+		TextureState hostilePerceived = display.getRenderer().createTextureState();
+		hostilePerceived.setEnabled(true);
+		hostilePerceived.setTexture(texture3);
+		
+		Texture texture4 = TextureManager.loadTexture("res\\img\\ho.gif",
+				Texture.MinificationFilter.Trilinear,
+				Texture.MagnificationFilter.Bilinear);
+		TextureState hostile = display.getRenderer().createTextureState();
+		hostile.setEnabled(true);
+		hostile.setTexture(texture4);
+		
 		Sphere sphere = new Sphere("Point " + numberOfPoints, new Vector3f(x,
-				y, z), 50, 50, 5f);
+				y, z), 5, 5, 5f);
 
 		sphere.setModelBound(new BoundingSphere());
 		sphere.updateModelBound();
-		if (numberOfPoints % 3 == 1) {
-			sphere.setDefaultColor(ColorRGBA.red.clone());
-		} else
-			sphere.setDefaultColor(ColorRGBA.blue.clone());
+		if (numberOfPoints % 4 == 1) {
+			sphere.setSolidColor(ColorRGBA.red.clone());
+			sphere.setRenderState(hostile);
+		} else if (numberOfPoints % 4 == 0) {
+			sphere.setSolidColor(ColorRGBA.blue.clone());
+			sphere.setRenderState(friendly);
+		} else if (numberOfPoints % 4 == 2) {
+			sphere.setSolidColor(ColorRGBA.gray.clone());
+			sphere.setRenderState(friendlyPerceived);
+		} else {
+			sphere.setSolidColor(ColorRGBA.orange.clone());
+			sphere.setRenderState(hostilePerceived);
+		}
+		sphere.updateRenderState();
+		
+		
 		if (cones) {
 	        final BlendState alphaState = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
 	        alphaState.setBlendEnabled(true);
