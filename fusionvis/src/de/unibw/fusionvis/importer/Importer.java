@@ -267,7 +267,6 @@ public abstract class Importer extends Observable {
 	 */
 	public com.jme.scene.Node getDataNode() {
 		com.jme.scene.Node dataNode = mapper.getDataRoot(dataSet);
-		System.out.println(dataSet);
 		mapper.texture(dataNode, DisplaySystem.getDisplaySystem());
 		this.dataNode = dataNode;
 		return this.dataNode;
