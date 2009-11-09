@@ -49,7 +49,7 @@ public class Mapper {
 			box.setSolidColor(ColorRGBA.black);
 			box.setModelBound(new BoundingSphere());
 			box.updateModelBound();
-			System.out.println(box.center);
+			//System.out.println(box.center);
 			dataNode.attachChild(box);
 		}
 
