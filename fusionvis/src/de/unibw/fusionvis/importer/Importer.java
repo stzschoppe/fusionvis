@@ -124,6 +124,8 @@ public abstract class Importer extends Observable {
 	 */
 	public void setDataSet(DataSet dataSet) {
 		this.dataSet = dataSet;
+		setChanged();
+		notifyObservers(dataSet);
 	}
 
 	/**
@@ -264,8 +266,11 @@ public abstract class Importer extends Observable {
 	 * @return Knoten der 3D-Daten
 	 */
 	public com.jme.scene.Node getDataNode() {
+		com.jme.scene.Node dataNode = mapper.getDataRoot(dataSet);
+		System.out.println(dataSet);
 		mapper.texture(dataNode, DisplaySystem.getDisplaySystem());
-		return dataNode;
+		this.dataNode = dataNode;
+		return this.dataNode;
 		
 	}
 	

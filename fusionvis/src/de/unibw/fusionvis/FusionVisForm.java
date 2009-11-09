@@ -65,7 +65,7 @@ public class FusionVisForm extends javax.swing.JFrame {
 			fusionvisImporterPanel = importerPanel;
 		}
         if (viewerPanel==null) {
-			fusionvisViewerPanel = new ViewerPanel(FusionVis.getLogger());
+			fusionvisViewerPanel = new ViewerPanel(FusionVis.getLogger(), model.importer);
 		}
         else {
         	fusionvisViewerPanel = viewerPanel;
