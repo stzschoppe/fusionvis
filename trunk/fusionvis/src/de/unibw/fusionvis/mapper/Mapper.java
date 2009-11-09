@@ -165,6 +165,9 @@ public class Mapper {
 
 	// Abstract
 	public void texture(Node dataNode, DisplaySystem display) {
+		if (dataNode.getChildren() == null) {
+			return;
+		}
 		URL fr = TestViewer.class.getClassLoader().getResource(
 				"de/unibw/fusionvis/img/fr.gif");
 		URL ho = TestViewer.class.getClassLoader().getResource(

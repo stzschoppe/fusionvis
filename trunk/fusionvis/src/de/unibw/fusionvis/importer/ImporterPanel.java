@@ -39,7 +39,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	/** Creates new form ImporterPanel */
 	public ImporterPanel(Importer importer) {
 		initComponents();
-		//importer.addObserver(this);
+		//importer.addObserver(this); //XXX Was habe ich mir dabei gedacht
 		this.importer = importer;
 	}
 
@@ -329,8 +329,10 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		if (importerFilterKeyText.getText().equals("")) {
 			// Nichts tun
 		} else {
-			update(importer, model.filterBy(importerFilterKeyText.getText(),
-					importerFilterValueText.getText()));
+			model = model.filterBy(importerFilterKeyText.getText(),
+					importerFilterValueText.getText());
+			importer.setDataSet(model);
+			
 			FusionVis.getLogger().log(Level.INFO, model.getData().size() +" Datensätze mit angegebener Eigenschaft");
 		}
 	}// GEN-LAST:event_importerFilterButtonMouseClicked

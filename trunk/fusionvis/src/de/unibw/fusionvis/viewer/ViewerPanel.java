@@ -69,9 +69,10 @@ public class ViewerPanel extends JPanel implements Observer{
     Camera cam;
 	int camSpeed = 100;
 
-    public ViewerPanel(final Logger logger)
+    public ViewerPanel(final Logger logger, Importer importer)
     {    	
     	this.logger = logger;
+    	importer.addObserver(this);
         try 
         {
             init();	// initialisiere Glidefenster und GUI
@@ -459,13 +460,12 @@ public class ViewerPanel extends JPanel implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
+		System.out.println("Was here");
 		Importer importer = (Importer)o;
 		Node dataNode = importer.getDataNode();
 		root.detachAllChildren();
 		root.attachChild(helperNode);
 		root.attachChild(dataNode);
-		//System.out.println(importer.getDataNode(DisplaySystem.getDisplaySystem()).getChildren());
-		
 	}
 
 }
