@@ -43,14 +43,16 @@ public class Mapper {
 		Vector3f offset = transform[1];
 
 		for (Data data : dataSet.getData()) {
-			Sphere box = new Sphere(data.getId(), getPosition(data, transform),
+			Sphere sphere = new Sphere(data.getId(), new Vector3f(0,0,0),
 					10, 10, 5);
-
-			box.setSolidColor(ColorRGBA.black);
-			box.setModelBound(new BoundingSphere());
-			box.updateModelBound();
+			sphere.setLocalTranslation(getPosition(data, transform));
+			sphere.updateGeometricState(0,false);
+			sphere.setModelBound(new BoundingSphere());
+			sphere.updateModelBound();
 			//System.out.println(box.center);
-			dataNode.attachChild(box);
+			dataNode.attachChild(sphere);
+			dataNode.updateGeometricState(0,false);
+			dataNode.updateRenderState();
 		}
 
 		return dataNode;
