@@ -10,8 +10,10 @@ import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingSphere;
 import com.jme.image.Image;
 import com.jme.image.Texture;
+import com.jme.intersection.PickResults;
 import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
+import com.jme.math.Ray;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
@@ -33,6 +35,7 @@ public  class TestViewer extends SimpleGame {
 	private Node helperNode;
 	private Node root;
 	private MaterialState materialState;
+	private PickResults pickResults; 
     /**
      * The amount of opacity (0 = fully transparent or invisible).
      */
@@ -181,7 +184,7 @@ public  class TestViewer extends SimpleGame {
 	        alphaState.setTestFunction(BlendState.TestFunction.GreaterThan);
 	        alphaState.setEnabled(true);
 	        
-	        // the sphere material taht will be modified to make the sphere
+	        // the sphere material that will be modified to make the sphere
 	        // look opaque then transparent then opaque and so on
 	        materialState = display.getRenderer().createMaterialState();
 	        materialState.setAmbient(new ColorRGBA(0.0f, 0.0f, 0.0f, opacityAmount));

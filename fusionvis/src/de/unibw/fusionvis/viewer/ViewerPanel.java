@@ -18,6 +18,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.bounding.BoundingSphere;
 import com.jme.input.FirstPersonHandler;
 import com.jme.input.InputHandler;
 import com.jme.input.InputSystem;
@@ -30,14 +31,24 @@ import com.jme.input.action.InputAction;
 import com.jme.input.action.InputActionEvent;
 import com.jme.input.action.KeyStrafeDownAction;
 import com.jme.input.action.KeyStrafeUpAction;
+import com.jme.intersection.PickResults;
+import com.jme.intersection.TrianglePickResults;
 import com.jme.light.DirectionalLight;
+import com.jme.math.Ray;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
+import com.jme.scene.Geometry;
 import com.jme.scene.Line;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.scene.Spatial.LightCombineMode;
+import com.jme.scene.shape.Box;
+import com.jme.scene.state.BlendState;
 import com.jme.scene.state.LightState;
+import com.jme.scene.state.MaterialState;
 import com.jme.system.DisplaySystem;
 import com.jme.system.canvas.JMECanvas;
 import com.jme.system.canvas.SimpleCanvasImpl;
@@ -61,6 +72,8 @@ public class ViewerPanel extends JPanel implements Observer{
     Node root;
     Node gridNode;
     Node helperNode;
+	private Geometry spatial;
+	private Node selectionNode;
     
     InputHandler input;	
 	MouseLookHandler mouseLook;
@@ -68,6 +81,9 @@ public class ViewerPanel extends JPanel implements Observer{
     
     Camera cam;
 	int camSpeed = 100;
+	
+	private PickResults pr;
+	private String selectionId;
 
     public ViewerPanel(final Logger logger, Importer importer)
     {    	
@@ -236,6 +252,43 @@ public class ViewerPanel extends JPanel implements Observer{
             helperNode.attachChild(gridNode);// Grid an "helperNode" anhaengen
             helperNode.setLightCombineMode(LightCombineMode.Off);// eliminiere jeglichen Lichteinfluss
             
+            // Knoten und Box für das Highlightning beim Mausklick erzeugen
+            selectionNode = new Node("selectionNode");
+            
+            float alpha = 0.2f;
+	        final BlendState alphaState = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
+	        alphaState.setBlendEnabled(true);
+	        alphaState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
+	        alphaState.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
+	        alphaState.setTestEnabled(true);
+	        alphaState.setTestFunction(BlendState.TestFunction.GreaterThan);
+	        alphaState.setEnabled(true);
+	        
+	        // the sphere material that will be modified to make the sphere
+	        // look opaque then transparent then opaque and so on
+	        MaterialState materialState = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
+	        materialState.setAmbient(new ColorRGBA(0.0f, 0.0f, 0.0f, alpha));
+	        materialState.setDiffuse(new ColorRGBA(0.1f, 0.5f, 0.8f, alpha));
+	        materialState.setSpecular(new ColorRGBA(1.0f, 1.0f, 1.0f, alpha));
+	        materialState.setShininess(128.0f);
+	        materialState.setEmissive(new ColorRGBA(0.0f, 0.0f, 0.0f, alpha));
+	        materialState.setEnabled(true);
+	 
+	        // IMPORTANT: this is used to handle the internal sphere faces when
+	        // setting them to transparent, try commenting this line to see what
+	        // happens
+	        materialState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
+
+            Box box = new Box("selectionBox", new Vector3f(0, 0, 0), 5f, 5f, 5f);
+            box.setModelBound(new BoundingSphere());
+            box.updateModelBound();
+            
+            box.setRenderState(materialState);
+            box.setRenderState(alphaState);
+            box.updateRenderState();
+            box.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
+			selectionNode.attachChild(box);
+            
             //Licht erzeugen
             // Erzeugen eines LightState an welchen alle Pointlights und Directional Lights
             // hinzugefuegt werden muessen, damit sie sichtbar sind
@@ -258,6 +311,8 @@ public class ViewerPanel extends JPanel implements Observer{
     	    dl.setShadowCaster(true);
     	    
     	    lightState.attach(dl);
+    	    
+    	    pr = new TrianglePickResults(); 
             
             
             root.attachChild(helperNode);// "helperNode" an "root" anhaengen
@@ -389,7 +444,7 @@ public class ViewerPanel extends JPanel implements Observer{
             	{
             		if(iae.getTriggerIndex()==0)	// Linke Maustaste losgelassen
             		{
-            			
+            			mousePicking();
             		}
             		if(iae.getTriggerIndex()==1)	// Rechte Maustaste losgelassen
             		{
@@ -466,6 +521,58 @@ public class ViewerPanel extends JPanel implements Observer{
 		root.detachAllChildren();
 		root.attachChild(helperNode);
 		root.attachChild(dataNode);
+	}
+	
+	/**Funktion erzeugt Rays fuer Mausklicks im glCanvas */
+	public void mousePicking()
+	{
+
+		int xScreen = glCanvas.getMousePosition().x;
+		int yScreen = glCanvas.getHeight()-glCanvas.getMousePosition().y;
+		
+		Vector2f screenPos = new Vector2f(xScreen, yScreen);
+		Vector3f worldCoordsStart = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPos, 0);
+		Vector3f worldCoordsEnd = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPos, 1);
+		
+		Vector3f startPoint = worldCoordsStart;
+		Vector3f endPoint = worldCoordsEnd.subtractLocal(worldCoordsStart);
+		
+		Ray ray = new Ray(startPoint,endPoint.subtractLocal(startPoint));
+		
+//        // Hilfslinien um MouseRays zu visualisieren
+//		ColorRGBA[] col = new ColorRGBA[2];
+//		col[0] = ColorRGBA.orange;
+//		Line line = new Line("line",new Vector3f[]{startPoint,endPoint.subtractLocal(startPoint)},null,col,null);
+//		line.setLightCombineMode(LightCombineMode.Off);
+//        root.attachChild(line);  
+		
+		pr = new TrianglePickResults();
+		pr.setCheckDistance(true);
+		
+		root.findPick(ray, pr);
+		System.out.println(pr.getNumber());
+		if (pr.getNumber() > 0)
+		{
+			float distance = pr.getPickData(0).getDistance()*2;
+			root.detachChild(selectionNode);
+			selectionId = null;
+			
+			for (int i = 0; i < pr.getNumber(); i++)
+			{
+				if (pr.getPickData(i).getDistance() < distance)
+				{
+					Spatial pickData = pr.getPickData(i).getTargetMesh();
+					distance = pr.getPickData(i).getDistance();
+					Spatial selectionBox = selectionNode.getChild("selectionBox");
+					System.out.println(selectionBox);
+					selectionBox.setLocalTranslation((pickData.getLocalTranslation()));
+					selectionId = pickData.getName();
+					root.attachChild(selectionNode);
+					//System.out.println("############################" +pr.getPickData(i).getTargetMesh() + "############################");
+				}
+			}
+		}
+	
 	}
 
 }

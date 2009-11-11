@@ -44,12 +44,12 @@ public class Mapper {
 
 		for (Data data : dataSet.getData()) {
 			Sphere sphere = new Sphere(data.getId(), new Vector3f(0,0,0),
-					10, 10, 5);
+					15, 15, 5);
 			sphere.setLocalTranslation(getPosition(data, transform));
 			sphere.updateGeometricState(0,false);
 			sphere.setModelBound(new BoundingSphere());
 			sphere.updateModelBound();
-			//System.out.println(box.center);
+			
 			dataNode.attachChild(sphere);
 			dataNode.updateGeometricState(0,false);
 			dataNode.updateRenderState();
