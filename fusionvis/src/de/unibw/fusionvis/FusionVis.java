@@ -25,19 +25,8 @@ public class FusionVis {
 	/** Importer zum Erstellen der Datenstruktur*/
 	public Importer importer;
 	
-	/** Mapper zum Erstellen der graphischen Datenstruktur*/
-	protected Mapper mapper;
-	
-	/** Viewer zum Anzeigen der graphischen Datenstruktur*/
-	protected ViewerPanel viewer;
-	
-	/**
-	 * Konstruktor
-	 */
-	public FusionVis(Importer importer, Mapper mapper, ViewerPanel viewer) {
+	public FusionVis(Importer importer) {
 		this.importer = importer;
-		this.mapper = mapper;
-		this.viewer = viewer;
 		
 		// Initialieren der Shell
 		createCommands();
@@ -111,8 +100,7 @@ public class FusionVis {
 	}
 	
 	/**
-	 * Gibt einen Datensatz über den Logger aus
-	 * @param dataSet
+	 * Gibt alle Datensätze über den Logger aus
 	 */
 	public void commandPrintAll() {
 		logger.log(Level.INFO, this.importer.getDataSet() + "\n");

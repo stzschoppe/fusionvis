@@ -29,8 +29,8 @@ public class BattleSimVis extends FusionVis {
 		}
 	};
 	
-	public BattleSimVis(Importer importer, Mapper mapper, ViewerPanel viewer) throws Exception {
-		super(importer, mapper, viewer);
+	public BattleSimVis(Importer importer) throws Exception {
+		super(importer);
 		
 		// Erzeugen des "latlon" Commands
 		Shell.getInstance().addCommand(new Command("latlon", "gibt den Wertebereich für Latitude und Longitude aus.", commandHandler));

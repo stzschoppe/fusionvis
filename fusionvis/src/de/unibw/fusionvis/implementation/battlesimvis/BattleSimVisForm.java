@@ -18,38 +18,37 @@ public class BattleSimVisForm extends FusionVisForm {
 	 */
 	private static final long serialVersionUID = -8764514617523001648L;
 
-	public BattleSimVisForm(FusionVis model, ImporterPanel importerPanel, ViewerPanel viewerPanel) {
+	public BattleSimVisForm(FusionVis model, ImporterPanel importerPanel,
+			ViewerPanel viewerPanel) {
 		super(model, importerPanel, viewerPanel);
 		setTitle("BattleSimVis");
 	}
 
 	public static void main(String[] args) throws Exception {
-		final FusionVis model = new BattleSimVis(
-				new BattleSimImporter(BattleSimVis.getLogger(), new BattleSimMapper(new Vector3f(300, 200, 300))),
-				null, null);
+		final FusionVis model = new BattleSimVis(new BattleSimImporter(
+				new BattleSimMapper(new Vector3f(300, 200, 300))));
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				Logger logger = BattleSimVis.getLogger();
 				try {
 					// Logger Konfiguration
 					logger.setLevel(Level.ALL);
-					logger.log(Level.INFO, "starte BattleVis..\n");	
-					
-					// Shell starten
-					// Shell.getInstance().run();
-					new BattleSimVisForm(model, new ImporterPanel(model.importer), new ViewerPanel(logger, model.importer)).setVisible(true);
-					
+					logger.log(Level.INFO, "starte BattleVis..\n");
+
+					new BattleSimVisForm(model, new ImporterPanel(
+							model.importer), new ViewerPanel(model.importer))
+							.setVisible(true);
+
 					// Beenden
 					// logger.log(Level.INFO, "beende BattleVis");
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage());
 					logger.log(Level.INFO, "beende BattleVis");
-					logger.log(Level.SEVERE,
-							e.getLocalizedMessage());
+					logger.log(Level.SEVERE, e.getLocalizedMessage());
 				}
-				
+
 				try {
-					
+
 				} catch (Exception e) {
 					BattleSimVis.getLogger().log(Level.SEVERE,
 							e.getLocalizedMessage());

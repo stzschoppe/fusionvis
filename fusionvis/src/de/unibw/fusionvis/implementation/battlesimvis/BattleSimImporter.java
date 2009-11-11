@@ -29,13 +29,10 @@ public class BattleSimImporter extends Importer {
 	/**
 	 * Konstruktor eines Importers für Ausgaben eines Battle Simulators unter
 	 * Angabe der zu importierenden XML-Datei
-	 * 
-	 * @param logger Übergeordneter Logger
-	 *            Pfad zur XML-Datei
 	 * @param mapper Mapper, der den 3d-Baum erzeugt
 	 */
-	public BattleSimImporter(Logger logger, Mapper mapper) {
-		super(logger, mapper);
+	public BattleSimImporter(Mapper mapper) {
+		super(mapper);
 		this.panel = new ImporterPanel(this);
 		id = "Name";
 		position = "Location";
