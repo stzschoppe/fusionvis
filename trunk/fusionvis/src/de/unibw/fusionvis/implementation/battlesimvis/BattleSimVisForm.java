@@ -25,7 +25,7 @@ public class BattleSimVisForm extends FusionVisForm {
 
 	public static void main(String[] args) throws Exception {
 		final FusionVis model = new BattleSimVis(
-				new BattleSimImporter(BattleSimVis.getLogger(), new Mapper(new Vector3f(300, 200, 300))),
+				new BattleSimImporter(BattleSimVis.getLogger(), new BattleSimMapper(new Vector3f(300, 200, 300))),
 				null, null);
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
