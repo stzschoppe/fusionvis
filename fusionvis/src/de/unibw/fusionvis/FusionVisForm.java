@@ -14,6 +14,7 @@ package de.unibw.fusionvis;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
+import javax.swing.JSplitPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import de.unibw.fusionvis.importer.ImporterPanel;
@@ -80,10 +81,15 @@ public class FusionVisForm extends javax.swing.JFrame {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(800, 600));
 
-        getContentPane().add(fusionvisImporterPanel, java.awt.BorderLayout.WEST);
-        
-        getContentPane().add(fusionvisViewerPanel, java.awt.BorderLayout.CENTER);
-        fusionvisViewerPanel.setVisible(true);
+     
+		fusionvisViewerPanel.setVisible(true);
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				fusionvisImporterPanel, fusionvisViewerPanel);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setDividerLocation(200);
+
+		getContentPane()
+				.add(splitPane, java.awt.BorderLayout.CENTER);
         
         fusionvisFileMenu.setText("Datei");
 
@@ -163,6 +169,7 @@ public class FusionVisForm extends javax.swing.JFrame {
     protected javax.swing.JMenuBar fusionvisMenu;
     protected FusionVis model;
     protected static Logger logger;
+    protected JSplitPane splitPane;
     // End of variables declaration//GEN-END:variables
 
 
