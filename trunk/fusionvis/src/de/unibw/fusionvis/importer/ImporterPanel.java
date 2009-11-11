@@ -16,6 +16,7 @@ import java.util.Observer;
 import java.util.logging.Level;
 
 import javax.swing.ListSelectionModel;
+import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -50,7 +51,6 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	 */
 	private void initComponents() {
 
-		importerSplitPane = new javax.swing.JSplitPane();
 		importerOverviewPanel = new javax.swing.JPanel();
 		importerDataSetIdLabel = new javax.swing.JLabel();
 		importerListingPanel = new javax.swing.JPanel();
@@ -66,13 +66,9 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerFilterViewLabel = new javax.swing.JLabel();
 		importerFilterViewComboBox = new javax.swing.JComboBox();
 		importerListScrollPanel = new javax.swing.JScrollPane();
-		importerList = new javax.swing.JList();
-		importerDetailPanel = new javax.swing.JPanel();
-		importerDetailScrollPanel = new javax.swing.JScrollPane();
 		importerDetailTree = new javax.swing.JTree();
-		importerDetailTaxonomy = new javax.swing.JLabel();
 
-		setPreferredSize(new java.awt.Dimension(400, 600));
+		setMinimumSize(new java.awt.Dimension(200, 600));
 		setLayout(new java.awt.BorderLayout());
 
 		// importerSplitPane.setDividerLocation(150);
@@ -285,15 +281,17 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerListingPanel.add(importerFilterPanel,
 				java.awt.BorderLayout.PAGE_START);
 
-		importerList.getSelectionModel().addListSelectionListener(
-				new javax.swing.event.ListSelectionListener() {
-					public void valueChanged(
-							javax.swing.event.ListSelectionEvent evt) {
+		importerDetailTree.getSelectionModel().addTreeSelectionListener(
+				new javax.swing.event.TreeSelectionListener() {
+					
+					@Override
+					public void valueChanged(TreeSelectionEvent evt) {
 						importerListValueChanged(evt);
+						
 					}
 				});
-		importerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		importerListScrollPanel.setViewportView(importerList);
+		
+		importerListScrollPanel.setViewportView(importerDetailTree);
 
 		importerListingPanel.add(importerListScrollPanel,
 				java.awt.BorderLayout.CENTER);
@@ -301,28 +299,14 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerOverviewPanel.add(importerListingPanel,
 				java.awt.BorderLayout.CENTER);
 
-		importerSplitPane.setLeftComponent(importerOverviewPanel);
-
-		importerDetailPanel.setLayout(new java.awt.BorderLayout());
-
 		javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode(
 				"root");
 		importerDetailTree.setModel(new javax.swing.tree.DefaultTreeModel(
 				treeNode1));
-		importerDetailScrollPanel.setViewportView(importerDetailTree);
 
-		importerDetailPanel.add(importerDetailScrollPanel,
-				java.awt.BorderLayout.CENTER);
 
-		importerDetailTaxonomy
-				.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		importerDetailTaxonomy.setText("Details");
-		importerDetailPanel.add(importerDetailTaxonomy,
-				java.awt.BorderLayout.PAGE_START);
 
-		importerSplitPane.setRightComponent(importerDetailPanel);
-
-		add(importerSplitPane, java.awt.BorderLayout.CENTER);
+		add(importerOverviewPanel, java.awt.BorderLayout.CENTER);
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void importerFilterButtonMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_importerFilterButtonMouseClicked
@@ -344,17 +328,17 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	}// GEN-LAST:event_importerFilterViewComboBoxItemStateChanged
 
 	private void importerListValueChanged(
-			javax.swing.event.ListSelectionEvent evt) {// GEN-FIRST:event_importerListValueChanged
-		String id = (String) importerList.getSelectedValue();
-		Data data = model.getDataById(id);
-		importerDetailTree.setModel(new DefaultTreeModel(createJListNode(data)));
+			TreeSelectionEvent evt) {// GEN-FIRST:event_importerListValueChanged
+//FIXME		String id = (String) importerList.getSelectedValue();
+//		Data data = model.getDataById(id);
+//		importerDetailTree.setModel(new DefaultTreeModel(createJListNode(data)));
 	}// GEN-LAST:event_importerListValueChanged
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel importerDataSetIdLabel;
-	private javax.swing.JPanel importerDetailPanel;
-	private javax.swing.JScrollPane importerDetailScrollPanel;
-	private javax.swing.JLabel importerDetailTaxonomy;
+	//private javax.swing.JPanel importerDetailPanel;
+	//private javax.swing.JScrollPane importerDetailScrollPanel;
+	//private javax.swing.JLabel importerDetailTaxonomy;
 	private javax.swing.JTree importerDetailTree;
 	private javax.swing.JButton importerFilterButton;
 	private javax.swing.JLabel importerFilterKeyLabel;
@@ -366,11 +350,11 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	private javax.swing.JComboBox importerFilterViewComboBox;
 	private javax.swing.JLabel importerFilterViewLabel;
 	private javax.swing.JPanel importerFilterViewPanel;
-	private javax.swing.JList importerList;
+	//private javax.swing.JList importerList;
 	private javax.swing.JScrollPane importerListScrollPanel;
 	private javax.swing.JPanel importerListingPanel;
 	private javax.swing.JPanel importerOverviewPanel;
-	private javax.swing.JSplitPane importerSplitPane;
+	//private javax.swing.JSplitPane importerSplitPane;
 	private javax.swing.JSeparator jSeparator1;
 	protected DataSet model;
 	private Importer importer;
