@@ -34,6 +34,7 @@ import com.jme.input.action.KeyStrafeUpAction;
 import com.jme.intersection.PickResults;
 import com.jme.intersection.TrianglePickResults;
 import com.jme.light.DirectionalLight;
+import com.jme.light.PointLight;
 import com.jme.math.Ray;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
@@ -303,6 +304,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	        ColorRGBA ambientRGBA = new ColorRGBA(ColorRGBA.white);
 			
 			DirectionalLight dl = new DirectionalLight();
+			dl.setAttenuate(false);
     	    dl.setDirection(new Vector3f(-0.5f,-1,-0.8f));
     	    dl.setDiffuse(diffuseRGBA);
             dl.setAmbient(ambientRGBA);
@@ -310,7 +312,37 @@ public class ViewerPanel extends JPanel implements Observer{
     	    dl.setEnabled(true);	   
     	    dl.setShadowCaster(true);
     	    
-    	    lightState.attach(dl);
+    	    final PointLight light = new PointLight();
+            light.setAttenuate(false);
+            light.setDiffuse(ColorRGBA.white);
+            light.setSpecular(ColorRGBA.white);
+            light.setLocation(new Vector3f(1500.0f, 1500.0f, 1500.0f));
+            light.setEnabled(true);
+     
+            // attach the light to a lightState
+            lightState.attach(light);
+            
+            // our light
+            final PointLight light2 = new PointLight();
+            light2.setAttenuate(false);
+            light2.setDiffuse(ColorRGBA.white);
+            light2.setSpecular(ColorRGBA.white);
+            light2.setLocation(new Vector3f(-1500.0f, -1500.0f, -1500.0f));
+            light2.setEnabled(true);
+     
+            // attach the light to a lightState
+            lightState.attach(light2);
+            
+            // our light
+            final PointLight light3 = new PointLight();
+            light3.setAttenuate(false);
+            light3.setDiffuse(ColorRGBA.white);
+            light3.setSpecular(ColorRGBA.white);
+            light3.setLocation(new Vector3f(-1500.0f, 1500.0f, -1500.0f));
+            light3.setEnabled(true);
+     
+            // attach the light to a lightState
+            lightState.attach(light3);
     	    
     	    pr = new TrianglePickResults(); 
             
@@ -405,6 +437,7 @@ public class ViewerPanel extends JPanel implements Observer{
             			{
             				// System.out.println("MouseLook ist inaktiv!");
             			}
+            			mousePicking();
             		}
             		if(iae.getTriggerIndex()==1)	// Rechte Maustaste gedrueckt
             		{
@@ -444,7 +477,7 @@ public class ViewerPanel extends JPanel implements Observer{
             	{
             		if(iae.getTriggerIndex()==0)	// Linke Maustaste losgelassen
             		{
-            			mousePicking();
+            			
             		}
             		if(iae.getTriggerIndex()==1)	// Rechte Maustaste losgelassen
             		{
@@ -515,7 +548,6 @@ public class ViewerPanel extends JPanel implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("Was here");
 		Importer importer = (Importer)o;
 		Node dataNode = importer.getDataNode();
 		root.detachAllChildren();
@@ -546,14 +578,13 @@ public class ViewerPanel extends JPanel implements Observer{
 //		line.setLightCombineMode(LightCombineMode.Off);
 //        root.attachChild(line);  
 		
-		pr = new TrianglePickResults();
+		PickResults pr = new TrianglePickResults();
 		pr.setCheckDistance(true);
 		
 		root.findPick(ray, pr);
-		System.out.println(pr.getNumber());
 		if (pr.getNumber() > 0)
 		{
-			float distance = pr.getPickData(0).getDistance()*2;
+			float distance = pr.getPickData(0).getDistance()*3;
 			root.detachChild(selectionNode);
 			selectionId = null;
 			
@@ -564,11 +595,9 @@ public class ViewerPanel extends JPanel implements Observer{
 					Spatial pickData = pr.getPickData(i).getTargetMesh();
 					distance = pr.getPickData(i).getDistance();
 					Spatial selectionBox = selectionNode.getChild("selectionBox");
-					System.out.println(selectionBox);
 					selectionBox.setLocalTranslation((pickData.getLocalTranslation()));
 					selectionId = pickData.getName();
 					root.attachChild(selectionNode);
-					//System.out.println("############################" +pr.getPickData(i).getTargetMesh() + "############################");
 				}
 			}
 		}
