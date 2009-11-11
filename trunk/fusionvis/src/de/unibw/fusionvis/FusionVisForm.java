@@ -11,20 +11,10 @@
 
 package de.unibw.fusionvis;
 
-import java.awt.Canvas;
-import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import org.lwjgl.util.Dimension;
-
-import com.jme.system.DisplaySystem;
-import com.jme.system.canvas.JMECanvas;
-import com.jme.util.GameTaskQueue;
-import com.jme.util.GameTaskQueueManager;
-import com.jmex.awt.lwjgl.LWJGLAWTCanvasConstructor;
 
 import de.unibw.fusionvis.importer.ImporterPanel;
 import de.unibw.fusionvis.viewer.ViewerPanel;
@@ -65,7 +55,7 @@ public class FusionVisForm extends javax.swing.JFrame {
 			fusionvisImporterPanel = importerPanel;
 		}
         if (viewerPanel==null) {
-			fusionvisViewerPanel = new ViewerPanel(FusionVis.getLogger(), model.importer);
+			fusionvisViewerPanel = new ViewerPanel(model.importer);
 		}
         else {
         	fusionvisViewerPanel = viewerPanel;

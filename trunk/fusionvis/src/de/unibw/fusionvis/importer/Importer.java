@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 
 import com.jme.system.DisplaySystem;
 
+import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.datamodel.Type;
@@ -78,8 +79,8 @@ public abstract class Importer extends Observable {
 
 	private com.jme.scene.Node dataNode;
 
-	public Importer(Logger logger, Mapper mapper) {
-		this.logger = logger;
+	public Importer(Mapper mapper) {
+		this.logger = FusionVis.getLogger();
 		this.mapper = mapper;
 		panel = new ImporterPanel(this);
 	}

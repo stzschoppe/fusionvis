@@ -58,6 +58,7 @@ import com.jme.util.GameTaskQueueManager;
 import com.jmex.awt.input.AWTMouseInput;
 import com.jmex.awt.lwjgl.LWJGLAWTCanvasConstructor;
 
+import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.importer.Importer;
 
 public class ViewerPanel extends JPanel implements Observer{
@@ -66,29 +67,28 @@ public class ViewerPanel extends JPanel implements Observer{
     static final long serialVersionUID = 1L;
     Preferences prefs = Preferences.userNodeForPackage(ViewerPanel.class);
     
-    int width = 640, height = 480;
-    MyImplementor impl;
-    Canvas glCanvas;
+    private int width = 640, height = 480;
+    private MyImplementor impl;
+    private Canvas glCanvas;
     
-    Node root;
-    Node gridNode;
-    Node helperNode;
-	private Geometry spatial;
+    private Node root;
+    private Node gridNode;
+    private Node helperNode;
 	private Node selectionNode;
     
-    InputHandler input;	
-	MouseLookHandler mouseLook;
-	KeyboardLookHandler keyboardLook;
+	private InputHandler input;	
+	private MouseLookHandler mouseLook;
+	private KeyboardLookHandler keyboardLook;
     
-    Camera cam;
-	int camSpeed = 100;
+	// private Camera cam;
+	private int camSpeed = 100;
 	
-	private PickResults pr;
 	private String selectionId;
+	private Camera cam;
 
-    public ViewerPanel(final Logger logger, Importer importer)
+    public ViewerPanel(Importer importer)
     {    	
-    	this.logger = logger;
+    	this.logger = FusionVis.getLogger();
     	importer.addObserver(this);
         try 
         {
@@ -344,7 +344,7 @@ public class ViewerPanel extends JPanel implements Observer{
             // attach the light to a lightState
             lightState.attach(light3);
     	    
-    	    pr = new TrianglePickResults(); 
+    	    new TrianglePickResults(); 
             
             
             root.attachChild(helperNode);// "helperNode" an "root" anhaengen
@@ -373,178 +373,227 @@ public class ViewerPanel extends JPanel implements Observer{
         }
     }
     
-    public void createInput()
-    {
-    	// hohle die gegebene Camera!
+    /**Funktion erzeugt Rays fuer Mausklicks im glCanvas */
+		public void mousePicking()
+		{
+	
+			int xScreen = glCanvas.getMousePosition().x;
+			int yScreen = glCanvas.getHeight()-glCanvas.getMousePosition().y;
+			
+			Vector2f screenPos = new Vector2f(xScreen, yScreen);
+			Vector3f worldCoordsStart = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPos, 0);
+			Vector3f worldCoordsEnd = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPos, 1);
+			
+			Vector3f startPoint = worldCoordsStart;
+			Vector3f endPoint = worldCoordsEnd.subtractLocal(worldCoordsStart);
+			
+			Ray ray = new Ray(startPoint,endPoint.subtractLocal(startPoint));
+			
+	//        // Hilfslinien um MouseRays zu visualisieren
+	//		ColorRGBA[] col = new ColorRGBA[2];
+	//		col[0] = ColorRGBA.orange;
+	//		Line line = new Line("line",new Vector3f[]{startPoint,endPoint.subtractLocal(startPoint)},null,col,null);
+	//		line.setLightCombineMode(LightCombineMode.Off);
+	//        root.attachChild(line);  
+			
+			PickResults pr = new TrianglePickResults();
+			pr.setCheckDistance(true);
+			
+			root.findPick(ray, pr);
+			if (pr.getNumber() > 0)
+			{
+				float distance = pr.getPickData(0).getDistance()*3;
+				root.detachChild(selectionNode);
+				selectionId = null;
+				
+				for (int i = 0; i < pr.getNumber(); i++)
+				{
+					if (pr.getPickData(i).getDistance() < distance)
+					{
+						Spatial pickData = pr.getPickData(i).getTargetMesh();
+						distance = pr.getPickData(i).getDistance();
+						Spatial selectionBox = selectionNode.getChild("selectionBox");
+						selectionBox.setLocalTranslation((pickData.getLocalTranslation()));
+						selectionId = pickData.getName();
+						root.attachChild(selectionNode);
+					}
+				}
+			}
+		
+		}
+
+	public void createInput()
+	{
+		// hohle die gegebene Camera!
 		cam = impl.getCamera();		 
 		// weise dem FirstPersonHandler die cam zu
-    	input = new FirstPersonHandler(cam,camSpeed, 1);
-    	
-    	/* An einem FirstPersonHandler (FPH) sind genau 2 Handler angeschlossen:
-    	 * 1 MouseLookHandler und 1 KeyboardLookHandler
-    	 * Der MouseHandler befindet sich an Position 0, der Keyboardhandler an Position 1
-    	 */
+		input = new FirstPersonHandler(cam,camSpeed, 1);
+		
+		/* An einem FirstPersonHandler (FPH) sind genau 2 Handler angeschlossen:
+		 * 1 MouseLookHandler und 1 KeyboardLookHandler
+		 * Der MouseHandler befindet sich an Position 0, der Keyboardhandler an Position 1
+		 */
 				                    	
-    	// speichere MouseLook- und KeyboardLookHandler zuerst global
-    	mouseLook = (MouseLookHandler) input.getFromAttachedHandlers(0);
-    	keyboardLook = (KeyboardLookHandler) input.getFromAttachedHandlers(1);
-    	
-    	/* Weise eine neue Tastenfunktion zu: C fuer "Kamera runter" und SPACE fuer "Kamera rauf".
-    	 * Steuerung nun angenehmer, da das vormalige Binding "Z" viel zu weit entfernt war;
-    	 * vgl. "Spectator Modus" in Unreal Tournament 2004
-    	 */
-    	KeyBindingManager kmanager = KeyBindingManager.getKeyBindingManager();
-    	kmanager.add("Strafe Down",KeyInput.KEY_C);
-    	kmanager.add("Strafe Up",KeyInput.KEY_SPACE);
-    	
-    	// fuege neue Aktionen hinzu
-    	keyboardLook.addAction(new KeyStrafeDownAction(cam,camSpeed),"Strafe Down",true);
-    	keyboardLook.addAction(new KeyStrafeUpAction(cam,camSpeed),"Strafe Up",true);
-    	
-    	// setze die neue Geschwindigkeit fuer die Tastatur
-    	keyboardLook.setActionSpeed(camSpeed);
-    	                        	
-    	input.removeAllFromAttachedHandlers();// entferne alle vorhandenen Handler vom input
-    	
-    	// Erstelle einen neuen FirstPersonHandler aus den modifizierten Handlern
-    	input.addToAttachedHandlers(keyboardLook);
-    	input.addToAttachedHandlers(mouseLook);
-    	
-    	InputAction buttonAction = new InputAction() 
-        {
-    		/* Der MouseLook ist noch fuer alle Maustasten aktiv; wir wollen
-    		 * diesen aber nur fuer die mittlere Maustaste einstellen und muessen
-    		 * ihn deshalb von Maustaste 0 (linke) und Maustaste 1 (rechte)
-    		 * zuerst entfernen!
+		// speichere MouseLook- und KeyboardLookHandler zuerst global
+		mouseLook = (MouseLookHandler) input.getFromAttachedHandlers(0);
+		keyboardLook = (KeyboardLookHandler) input.getFromAttachedHandlers(1);
+		
+		/* Weise eine neue Tastenfunktion zu: C fuer "Kamera runter" und SPACE fuer "Kamera rauf".
+		 * Steuerung nun angenehmer, da das vormalige Binding "Z" viel zu weit entfernt war;
+		 * vgl. "Spectator Modus" in Unreal Tournament 2004
+		 */
+		KeyBindingManager kmanager = KeyBindingManager.getKeyBindingManager();
+		kmanager.add("Strafe Down",KeyInput.KEY_C);
+		kmanager.add("Strafe Up",KeyInput.KEY_SPACE);
+		
+		// fuege neue Aktionen hinzu
+		keyboardLook.addAction(new KeyStrafeDownAction(cam,camSpeed),"Strafe Down",true);
+		keyboardLook.addAction(new KeyStrafeUpAction(cam,camSpeed),"Strafe Up",true);
+		
+		// setze die neue Geschwindigkeit fuer die Tastatur
+		keyboardLook.setActionSpeed(camSpeed);
+		                        	
+		input.removeAllFromAttachedHandlers();// entferne alle vorhandenen Handler vom input
+		
+		// Erstelle einen neuen FirstPersonHandler aus den modifizierten Handlern
+		input.addToAttachedHandlers(keyboardLook);
+		input.addToAttachedHandlers(mouseLook);
+		
+		InputAction buttonAction = new InputAction() 
+	    {
+			/* Der MouseLook ist noch fuer alle Maustasten aktiv; wir wollen
+			 * diesen aber nur fuer die mittlere Maustaste einstellen und muessen
+			 * ihn deshalb von Maustaste 0 (linke) und Maustaste 1 (rechte)
+			 * zuerst entfernen!
 			 */
-    		
-        	boolean mouselookAttached = true;
-    		
-            public void performAction( InputActionEvent iae ) 
-            {
-            	if(iae.getTriggerPressed())	// ...Events bei gedrueckten Maustasten
-            	{
-            		if(iae.getTriggerIndex()==0)	// Linke Maustaste gedrueckt
-            		{
-            			// Falls noch ein MouseLookHandler dranhaengt diesen entfernen
-            			if(mouselookAttached)
-            			{	                            				
-            				// entferne MouseLookHandler (wird nur 1x ausgefuehrt)
-            				input.removeFromAttachedHandlers(input.getFromAttachedHandlers(1));
-                			mouselookAttached = false;
-            			}
-            			else
-            			{
-            				// System.out.println("MouseLook ist inaktiv!");
-            			}
-            			mousePicking();
-            		}
-            		if(iae.getTriggerIndex()==1)	// Rechte Maustaste gedrueckt
-            		{
-            			// Falls noch ein MouseLookHandler dranhaengt diesen entfernen
-            			if(mouselookAttached)
-            			{	                            				
-            				// entferne MouseLookHandler (wird nur 1x ausgefuehrt)
-            				input.removeFromAttachedHandlers(input.getFromAttachedHandlers(1));
-                			mouselookAttached = false;
-            			}
-            			else
-            			{
-            				// System.out.println("MouseLook ist inaktiv!");
-            			}			
-            		}
-            		if(iae.getTriggerIndex()==2)	// Mittlere Maustaste gedrueckt
-            		{
-            			/* Fokus wird wieder auf das glCanvas gelegt damit der MouseLook
-            			 * darin wieder funktioniert; ansonsten bleibt die Kamera starr nach
-            			 * einem Klick auf Swingkomponenten
-            			 */
-            			glCanvas.requestFocus();
-            			
-            			// Beim ersten Klick soll der MouseLookHandler wieder an den "input" angehaengt werden 
-            			if(!mouselookAttached)
-            			{	
-                			input.addToAttachedHandlers(mouseLook);
-                			mouselookAttached = true;                			
-            			}
-            			else
-            			{
-            				
-            			}
-            		}
-            	}
-            	else
-            	{
-            		if(iae.getTriggerIndex()==0)	// Linke Maustaste losgelassen
-            		{
-            			
-            		}
-            		if(iae.getTriggerIndex()==1)	// Rechte Maustaste losgelassen
-            		{
-            			
-            		}
-            		if(iae.getTriggerIndex()==2)	// Mittlere Maustaste losgelassen
-            		{
+			
+	    	boolean mouselookAttached = true;
+			
+	        public void performAction( InputActionEvent iae ) 
+	        {
+	        	if(iae.getTriggerPressed())	// ...Events bei gedrueckten Maustasten
+	        	{
+	        		if(iae.getTriggerIndex()==0)	// Linke Maustaste gedrueckt
+	        		{
+	        			// Falls noch ein MouseLookHandler dranhaengt diesen entfernen
+	        			if(mouselookAttached)
+	        			{	                            				
+	        				// entferne MouseLookHandler (wird nur 1x ausgefuehrt)
+	        				input.removeFromAttachedHandlers(input.getFromAttachedHandlers(1));
+	            			mouselookAttached = false;
+	        			}
+	        			else
+	        			{
+	        				// System.out.println("MouseLook ist inaktiv!");
+	        			}
+	        			mousePicking();
+	        		}
+	        		if(iae.getTriggerIndex()==1)	// Rechte Maustaste gedrueckt
+	        		{
+	        			// Falls noch ein MouseLookHandler dranhaengt diesen entfernen
+	        			if(mouselookAttached)
+	        			{	                            				
+	        				// entferne MouseLookHandler (wird nur 1x ausgefuehrt)
+	        				input.removeFromAttachedHandlers(input.getFromAttachedHandlers(1));
+	            			mouselookAttached = false;
+	        			}
+	        			else
+	        			{
+	        				// System.out.println("MouseLook ist inaktiv!");
+	        			}			
+	        		}
+	        		if(iae.getTriggerIndex()==2)	// Mittlere Maustaste gedrueckt
+	        		{
+	        			/* Fokus wird wieder auf das glCanvas gelegt damit der MouseLook
+	        			 * darin wieder funktioniert; ansonsten bleibt die Kamera starr nach
+	        			 * einem Klick auf Swingkomponenten
+	        			 */
+	        			glCanvas.requestFocus();
+	        			
+	        			// Beim ersten Klick soll der MouseLookHandler wieder an den "input" angehaengt werden 
+	        			if(!mouselookAttached)
+	        			{	
+	            			input.addToAttachedHandlers(mouseLook);
+	            			mouselookAttached = true;                			
+	        			}
+	        			else
+	        			{
+	        				
+	        			}
+	        		}
+	        	}
+	        	else
+	        	{
+	        		if(iae.getTriggerIndex()==0)	// Linke Maustaste losgelassen
+	        		{
+	        			
+	        		}
+	        		if(iae.getTriggerIndex()==1)	// Rechte Maustaste losgelassen
+	        		{
+	        			
+	        		}
+	        		if(iae.getTriggerIndex()==2)	// Mittlere Maustaste losgelassen
+	        		{
+	
+	        		}
+	        	}                	
+	        }
+	    };
+		
+	    // Zuerst allen Maustasten die Funktionen "Pressed" und "Released" zuordnen! Falls man diese Zeile 
+	    // weglaesst funktioniert "Released" bei all jenen Buttons nicht, die REPEAT auf "true" haben!
+	    input.addAction(buttonAction,InputHandler.DEVICE_MOUSE,InputHandler.BUTTON_ALL,InputHandler.AXIS_NONE,false);
+	    
+	    // Anschliessend erlauben wir Maustaste 1 (rechte) und 2 (mittlere) einen Repeat
+		input.addAction(buttonAction,InputHandler.DEVICE_MOUSE,1,InputHandler.AXIS_NONE,true);
+		input.addAction(buttonAction,InputHandler.DEVICE_MOUSE,2,InputHandler.AXIS_NONE,true);
+	}
 
-            		}
-            	}                	
-            }
-        };
-    	
-        // Zuerst allen Maustasten die Funktionen "Pressed" und "Released" zuordnen! Falls man diese Zeile 
-        // weglaesst funktioniert "Released" bei all jenen Buttons nicht, die REPEAT auf "true" haben!
-        input.addAction(buttonAction,InputHandler.DEVICE_MOUSE,InputHandler.BUTTON_ALL,InputHandler.AXIS_NONE,false);
-        
-        // Anschliessend erlauben wir Maustaste 1 (rechte) und 2 (mittlere) einen Repeat
-    	input.addAction(buttonAction,InputHandler.DEVICE_MOUSE,1,InputHandler.AXIS_NONE,true);
-    	input.addAction(buttonAction,InputHandler.DEVICE_MOUSE,2,InputHandler.AXIS_NONE,true);
-    }
-    
-    public void createGrid() 
-    {
-    	gridNode = new Node("gridNode");
-    	
-    	/* Wichtig beim Erstellen des Grids ist, dass auch dessen Linien ModelBounds erhalten.
-         * Wenn das nicht gemacht wird werden die ModelBounds von hinzugefuegten Objekten
-         * (z.B. Box) vererbt und Fehler koennen auftreten wie beispielsweise:
-         * Grid verschwindet sobald die Box ausserhalb des Sichtfelds ist. 
-         */
-
-    	// Gitternetz
-        for (int x = -300; x <= 300; x=x+10) {
-            Line l = new Line("xLine" + x, new Vector3f[]{new Vector3f((float) x, 0f, -300f), new Vector3f((float) x, 0f, 300f)}, null, null, null);
-            l.setSolidColor(ColorRGBA.darkGray);
-            l.setModelBound(new BoundingBox());
-            l.updateModelBound();
-            l.setCastsShadows(false);
-            gridNode.attachChild(l);
-        }
-
-        for (int z = -300; z <= 300; z=z+10) {
-            Line l = new Line("zLine" + z, new Vector3f[]{new Vector3f(-300f, 0f, (float) z), new Vector3f(300f, 0f, (float) z)}, null, null, null);
-            l.setSolidColor(ColorRGBA.darkGray);
-            l.setModelBound(new BoundingBox());
-            l.updateModelBound();
-            l.setCastsShadows(false);
-            gridNode.attachChild(l);
-        }
-        
-        // rote x-Achse
-        final Line xAxis = new Line("xAxis", new Vector3f[]{new Vector3f(-300f, 0f, 0f), new Vector3f(300f, 0f, 0f)}, null, null, null);
-        xAxis.setModelBound(new BoundingBox());
-        xAxis.updateModelBound();
-        xAxis.setSolidColor(ColorRGBA.red);
-        xAxis.setCastsShadows(false);
-        gridNode.attachChild(xAxis);
-
-        // blaue z-Achse
-        final Line zAxis = new Line("zAxis", new Vector3f[]{new Vector3f(0f, 0f, -300f), new Vector3f(0f, 0f, 300f)}, null, null, null);
-        zAxis.setModelBound(new BoundingBox());
-        zAxis.updateModelBound();
-        zAxis.setSolidColor(ColorRGBA.blue);
-        zAxis.setCastsShadows(false);            
-        gridNode.attachChild(zAxis);
-    }
+	public void createGrid() 
+	{
+		gridNode = new Node("gridNode");
+		
+		/* Wichtig beim Erstellen des Grids ist, dass auch dessen Linien ModelBounds erhalten.
+	     * Wenn das nicht gemacht wird werden die ModelBounds von hinzugefuegten Objekten
+	     * (z.B. Box) vererbt und Fehler koennen auftreten wie beispielsweise:
+	     * Grid verschwindet sobald die Box ausserhalb des Sichtfelds ist. 
+	     */
+	
+		// Gitternetz
+	    for (int x = -300; x <= 300; x=x+10) {
+	        Line l = new Line("xLine" + x, new Vector3f[]{new Vector3f((float) x, 0f, -300f), new Vector3f((float) x, 0f, 300f)}, null, null, null);
+	        l.setSolidColor(ColorRGBA.darkGray);
+	        l.setModelBound(new BoundingBox());
+	        l.updateModelBound();
+	        l.setCastsShadows(false);
+	        gridNode.attachChild(l);
+	    }
+	
+	    for (int z = -300; z <= 300; z=z+10) {
+	        Line l = new Line("zLine" + z, new Vector3f[]{new Vector3f(-300f, 0f, (float) z), new Vector3f(300f, 0f, (float) z)}, null, null, null);
+	        l.setSolidColor(ColorRGBA.darkGray);
+	        l.setModelBound(new BoundingBox());
+	        l.updateModelBound();
+	        l.setCastsShadows(false);
+	        gridNode.attachChild(l);
+	    }
+	    
+	    // rote x-Achse
+	    final Line xAxis = new Line("xAxis", new Vector3f[]{new Vector3f(-300f, 0f, 0f), new Vector3f(300f, 0f, 0f)}, null, null, null);
+	    xAxis.setModelBound(new BoundingBox());
+	    xAxis.updateModelBound();
+	    xAxis.setSolidColor(ColorRGBA.red);
+	    xAxis.setCastsShadows(false);
+	    gridNode.attachChild(xAxis);
+	
+	    // blaue z-Achse
+	    final Line zAxis = new Line("zAxis", new Vector3f[]{new Vector3f(0f, 0f, -300f), new Vector3f(0f, 0f, 300f)}, null, null, null);
+	    zAxis.setModelBound(new BoundingBox());
+	    zAxis.updateModelBound();
+	    zAxis.setSolidColor(ColorRGBA.blue);
+	    zAxis.setCastsShadows(false);            
+	    gridNode.attachChild(zAxis);
+	}
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -553,55 +602,6 @@ public class ViewerPanel extends JPanel implements Observer{
 		root.detachAllChildren();
 		root.attachChild(helperNode);
 		root.attachChild(dataNode);
-	}
-	
-	/**Funktion erzeugt Rays fuer Mausklicks im glCanvas */
-	public void mousePicking()
-	{
-
-		int xScreen = glCanvas.getMousePosition().x;
-		int yScreen = glCanvas.getHeight()-glCanvas.getMousePosition().y;
-		
-		Vector2f screenPos = new Vector2f(xScreen, yScreen);
-		Vector3f worldCoordsStart = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPos, 0);
-		Vector3f worldCoordsEnd = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPos, 1);
-		
-		Vector3f startPoint = worldCoordsStart;
-		Vector3f endPoint = worldCoordsEnd.subtractLocal(worldCoordsStart);
-		
-		Ray ray = new Ray(startPoint,endPoint.subtractLocal(startPoint));
-		
-//        // Hilfslinien um MouseRays zu visualisieren
-//		ColorRGBA[] col = new ColorRGBA[2];
-//		col[0] = ColorRGBA.orange;
-//		Line line = new Line("line",new Vector3f[]{startPoint,endPoint.subtractLocal(startPoint)},null,col,null);
-//		line.setLightCombineMode(LightCombineMode.Off);
-//        root.attachChild(line);  
-		
-		PickResults pr = new TrianglePickResults();
-		pr.setCheckDistance(true);
-		
-		root.findPick(ray, pr);
-		if (pr.getNumber() > 0)
-		{
-			float distance = pr.getPickData(0).getDistance()*3;
-			root.detachChild(selectionNode);
-			selectionId = null;
-			
-			for (int i = 0; i < pr.getNumber(); i++)
-			{
-				if (pr.getPickData(i).getDistance() < distance)
-				{
-					Spatial pickData = pr.getPickData(i).getTargetMesh();
-					distance = pr.getPickData(i).getDistance();
-					Spatial selectionBox = selectionNode.getChild("selectionBox");
-					selectionBox.setLocalTranslation((pickData.getLocalTranslation()));
-					selectionId = pickData.getName();
-					root.attachChild(selectionNode);
-				}
-			}
-		}
-	
 	}
 
 }
