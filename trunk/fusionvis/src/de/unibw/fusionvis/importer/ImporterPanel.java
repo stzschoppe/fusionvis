@@ -347,6 +347,10 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 			javax.swing.event.ListSelectionEvent evt) {// GEN-FIRST:event_importerListValueChanged
 		String id = (String) importerList.getSelectedValue();
 		Data data = model.getDataById(id);
+		importerDetailTree.setModel(new DefaultTreeModel(createJListNode(data)));
+	}// GEN-LAST:event_importerListValueChanged
+
+	private DefaultMutableTreeNode createJListNode(Data data) {
 		AbstractProperty property;
 
 		// Wurzel mit Namen des Data Objekts //XXX NullPointerException
@@ -396,12 +400,11 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 			root.add(simpleProperties);
 			root.add(containerProperties);
 			root.add(taxonimies);
-
-			importerDetailTree.setModel(new DefaultTreeModel(root));
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 		}
-	}// GEN-LAST:event_importerListValueChanged
+		return root;
+	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel importerDataSetIdLabel;
@@ -434,6 +437,8 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		DataSet dataSet = (DataSet) arg1;
 		this.model = dataSet;
 		importerDataSetIdLabel.setText(dataSet.getId());
+		
+		
 		importerList.setListData(dataSet.getIds().toArray());
 	}
 
