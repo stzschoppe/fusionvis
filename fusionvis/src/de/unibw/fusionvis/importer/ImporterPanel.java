@@ -350,62 +350,6 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerDetailTree.setModel(new DefaultTreeModel(createJListNode(data)));
 	}// GEN-LAST:event_importerListValueChanged
 
-	private DefaultMutableTreeNode createJListNode(Data data) {
-		AbstractProperty property;
-
-		// Wurzel mit Namen des Data Objekts //XXX NullPointerException
-		DefaultMutableTreeNode root = null;
-
-		try {
-			root = new DefaultMutableTreeNode(data.getId());
-
-			// Position
-			DefaultMutableTreeNode position = new DefaultMutableTreeNode(
-					"Position");
-			property = data.getPosition();
-			for (AbstractProperty component : property
-					.getValueAsContainerProperty().getComponents()) {
-				position.add(extractProperty(component));
-			}
-
-			// Einfache Eigenschaften
-			DefaultMutableTreeNode simpleProperties = new DefaultMutableTreeNode(
-					"Eigenschaften");
-			for (AbstractProperty component : data.getSimpleProperties()) {
-				simpleProperties.add(extractProperty(component));
-			}
-
-			// Zusammengesetzte Eigenschaften
-			DefaultMutableTreeNode containerProperties = new DefaultMutableTreeNode(
-					"Vektoren");
-			for (AbstractProperty component : data.getContainerProperties()) {
-				DefaultMutableTreeNode vector = new DefaultMutableTreeNode(
-						component.getId());
-				for (AbstractProperty vectorComponent : component
-						.getValueAsContainerProperty().getComponents()) {
-					vector.add(extractProperty(vectorComponent));
-				}
-				containerProperties.add(vector);
-			}
-
-			// Taxonomien
-			DefaultMutableTreeNode taxonimies = new DefaultMutableTreeNode(
-					"Taxonomien");
-			for (AbstractProperty component : data.getTaxonomies()) {
-				taxonimies.add(extractProperty(component));
-			}
-
-			// Baum zusammenfügen
-			root.add(position);
-			root.add(simpleProperties);
-			root.add(containerProperties);
-			root.add(taxonimies);
-		} catch (Exception e) {
-			
-		}
-		return root;
-	}
-
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel importerDataSetIdLabel;
 	private javax.swing.JPanel importerDetailPanel;
@@ -438,8 +382,69 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		this.model = dataSet;
 		importerDataSetIdLabel.setText(dataSet.getId());
 		
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataSet.getId());
+		for (Data data : dataSet.getData()) {
+			root.add(createJListNode(data));
+		}
+		importerDetailTree.setModel(new DefaultTreeModel(root));
 		
-		importerList.setListData(dataSet.getIds().toArray());
+		//importerList.setListData(dataSet.getIds().toArray());
+	}
+
+	private DefaultMutableTreeNode createJListNode(Data data) {
+		AbstractProperty property;
+	
+		// Wurzel mit Namen des Data Objekts //XXX NullPointerException
+		DefaultMutableTreeNode root = null;
+	
+		try {
+			root = new DefaultMutableTreeNode(data.getId());
+	
+			// Position
+			DefaultMutableTreeNode position = new DefaultMutableTreeNode(
+					"Position");
+			property = data.getPosition();
+			for (AbstractProperty component : property
+					.getValueAsContainerProperty().getComponents()) {
+				position.add(extractProperty(component));
+			}
+	
+			// Einfache Eigenschaften
+			DefaultMutableTreeNode simpleProperties = new DefaultMutableTreeNode(
+					"Eigenschaften");
+			for (AbstractProperty component : data.getSimpleProperties()) {
+				simpleProperties.add(extractProperty(component));
+			}
+	
+			// Zusammengesetzte Eigenschaften
+			DefaultMutableTreeNode containerProperties = new DefaultMutableTreeNode(
+					"Vektoren");
+			for (AbstractProperty component : data.getContainerProperties()) {
+				DefaultMutableTreeNode vector = new DefaultMutableTreeNode(
+						component.getId());
+				for (AbstractProperty vectorComponent : component
+						.getValueAsContainerProperty().getComponents()) {
+					vector.add(extractProperty(vectorComponent));
+				}
+				containerProperties.add(vector);
+			}
+	
+			// Taxonomien
+			DefaultMutableTreeNode taxonimies = new DefaultMutableTreeNode(
+					"Taxonomien");
+			for (AbstractProperty component : data.getTaxonomies()) {
+				taxonimies.add(extractProperty(component));
+			}
+	
+			// Baum zusammenfügen
+			root.add(position);
+			root.add(simpleProperties);
+			root.add(containerProperties);
+			root.add(taxonimies);
+		} catch (Exception e) {
+			
+		}
+		return root;
 	}
 
 	/**
