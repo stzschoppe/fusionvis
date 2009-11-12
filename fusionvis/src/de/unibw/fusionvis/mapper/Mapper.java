@@ -49,10 +49,11 @@ public abstract class Mapper {
 	protected abstract Vector3f[] getCoefficient(); 
 
 	public Node getDataRoot() {
-		if (dataNode == null) {
+		if (dataSet == null) {
 			throw new UnsupportedOperationException(
 					"Mapper nicht initialisiert, getter mir Argument aufrufen.");
 		} else {
+			dataNode = getDataRoot(dataSet);
 			texture(dataNode, DisplaySystem.getDisplaySystem());
 			return dataNode;
 		}

@@ -41,7 +41,6 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
-import com.jme.scene.Geometry;
 import com.jme.scene.Line;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
@@ -59,6 +58,8 @@ import com.jmex.awt.input.AWTMouseInput;
 import com.jmex.awt.lwjgl.LWJGLAWTCanvasConstructor;
 
 import de.unibw.fusionvis.FusionVis;
+import de.unibw.fusionvis.datamodel.DataSet;
+import de.unibw.fusionvis.implementation.battlesimvis.BattleSimMapper;
 import de.unibw.fusionvis.importer.Importer;
 
 public class ViewerPanel extends JPanel implements Observer{
@@ -598,8 +599,8 @@ public class ViewerPanel extends JPanel implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		Importer importer = (Importer)o;
-		Node dataNode = importer.getDataNode();
+		DataSet dataSet = (DataSet)arg;
+		Node dataNode = (new BattleSimMapper(dataSet, new Vector3f(300, 200, 300))).getDataRoot();
 		root.detachAllChildren();
 		root.attachChild(helperNode);
 		root.attachChild(dataNode);
