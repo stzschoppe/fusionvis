@@ -11,14 +11,17 @@
 
 package de.unibw.fusionvis.importer;
 
+import java.util.Enumeration;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 
-import javax.swing.ListSelectionModel;
+import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.datamodel.Data;
@@ -36,13 +39,13 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	 * 
 	 */
 	private static final long serialVersionUID = -5038004658178727397L;
-
 	/** Creates new form ImporterPanel */
 	public ImporterPanel(Importer importer) {
 		initComponents();
 		// importer.addObserver(this); //XXX Was habe ich mir dabei gedacht
 		this.importer = importer;
-		observableSupport = new ObservableSupport();
+		observableSupportForFilter = new ObservableSupport();
+		observableSupportForSelection = new ObservableSupport();
 	}
 
 	/**
@@ -288,8 +291,10 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 
 					@Override
 					public void valueChanged(TreeSelectionEvent evt) {
-						importerTreeValueChanged(evt);
-
+						DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                        importerDetailTree.getLastSelectedPathComponent();
+						if (node != null)
+								importerTreeValueChanged(node);
 					}
 				});
 
@@ -352,7 +357,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 			importerFilterViewComboBox.setSelectedIndex(3);
 			importerDetailTree.setModel(new DefaultTreeModel(root));
 			// XXX kann wohl weg importer.setDataSet(modelUserDefined);
-			observableSupport.markAndNotify(modelUserDefined);
+			observableSupportForFilter.markAndNotify(modelUserDefined);
 		}
 	}// GEN-LAST:event_importerFilterButtonMouseClicked
 
@@ -369,7 +374,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
-				observableSupport.markAndNotify(modelAll);
+				observableSupportForFilter.markAndNotify(modelAll);
 				break;
 
 			case 1: // Blau
@@ -378,7 +383,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
-				observableSupport.markAndNotify(modelBlue);
+				observableSupportForFilter.markAndNotify(modelBlue);
 				break;
 
 			case 2: // Rot
@@ -387,7 +392,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
-				observableSupport.markAndNotify(modelRed);
+				observableSupportForFilter.markAndNotify(modelRed);
 				break;
 
 			case 3: // Benutzerdefiniert
@@ -396,7 +401,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
-				observableSupport.markAndNotify(modelUserDefined);
+				observableSupportForFilter.markAndNotify(modelUserDefined);
 				break;
 
 			default:
@@ -406,10 +411,9 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 
 	}// GEN-LAST:event_importerFilterViewComboBoxItemStateChanged
 
-	private void importerTreeValueChanged(TreeSelectionEvent evt) {// GEN-FIRST:event_importerListValueChanged
-	// FIXME String id = (String) importerList.getSelectedValue();
-	// Data data = model.getDataById(id);
-	// importerDetailTree.setModel(new DefaultTreeModel(createJListNode(data)));
+	private void importerTreeValueChanged(DefaultMutableTreeNode node) {// GEN-FIRST:event_importerListValueChanged
+		observableSupportForSelection.markAndNotify(node.toString());
+		//TODO
 	}// GEN-LAST:event_importerListValueChanged
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
@@ -440,41 +444,59 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	protected DataSet modelUserDefined;
 	protected Importer importer;
 	protected Object itemSelected;
-	public ObservableSupport observableSupport;
+	public ObservableSupport observableSupportForFilter;
+
+	public ObservableSupport observableSupportForSelection;
 
 	// End of variables declaration//GEN-END:variables
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		DataSet dataSet = (DataSet) arg1;
-		modelAll = dataSet;
-
-		// Alle echten Blauen und die gesichteten Roten
-		modelBlue = modelAll.filterBy("HostilityCode", "FR").filterBy(
-				"Certainty", "Real");
-		modelBlue.addDataSet(modelAll.filterBy("HostilityCode", "HO").filterBy(
-				"Certainty", "Perceived"));
-
-		// Alle echten Roten und die gesichteten Roten
-		modelRed = modelAll.filterBy("HostilityCode", "HO").filterBy(
-				"Certainty", "Real");
-		modelRed.addDataSet(modelAll.filterBy("HostilityCode", "FR").filterBy(
-				"Certainty", "Perceived"));
-
-		// Benutzerdefinierte sicht, die mit den Textfeldern gefiltert werden
-		// kann
-		modelUserDefined = dataSet;
-
-		importerDataSetIdLabel.setText(dataSet.getId());
-
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataSet
-				.getId());
-		for (Data data : dataSet.getData()) {
-			root.add(createJListNode(data));
+		if (arg1 instanceof DataSet) {
+			DataSet dataSet = (DataSet) arg1;
+			modelAll = dataSet;
+			// Alle echten Blauen und die gesichteten Roten
+			modelBlue = modelAll.filterBy("HostilityCode", "FR").filterBy(
+					"Certainty", "Real");
+			modelBlue.addDataSet(modelAll.filterBy("HostilityCode", "HO")
+					.filterBy("Certainty", "Perceived"));
+			// Alle echten Roten und die gesichteten Roten
+			modelRed = modelAll.filterBy("HostilityCode", "HO").filterBy(
+					"Certainty", "Real");
+			modelRed.addDataSet(modelAll.filterBy("HostilityCode", "FR")
+					.filterBy("Certainty", "Perceived"));
+			// Benutzerdefinierte sicht, die mit den Textfeldern gefiltert werden
+			// kann
+			modelUserDefined = dataSet;
+			importerDataSetIdLabel.setText(dataSet.getId());
+			DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataSet
+					.getId());
+			for (Data data : dataSet.getData()) {
+				root.add(createJListNode(data));
+			}
+			importerDetailTree.setModel(new DefaultTreeModel(root));
+			// Viewer informieren
+			observableSupportForFilter.markAndNotify(modelAll);
+		} else if (arg1 instanceof String) {
+			String id = (String)arg1;
+			
+			// Alle Knoten einklappen
+			//expandAll(importerDetailTree, false);
+			
+			// Pfad für die zu expandierende Node heraussuchen
+			DefaultMutableTreeNode root = ((DefaultMutableTreeNode)importerDetailTree.getModel().getRoot());
+			DefaultMutableTreeNode toExpand = null;
+			for (int i = 0; i < root.getChildCount(); i++) {
+				if (root.getChildAt(i).toString().equals(id)) {
+					toExpand = (DefaultMutableTreeNode)root.getChildAt(i);
+					TreeNode[] path = toExpand.getPath();
+					TreePath treePath = new TreePath(path);
+					importerDetailTree.expandPath(treePath);
+					importerDetailTree.setSelectionPath(treePath);
+					importerDetailTree.scrollPathToVisible(treePath);
+					break;
+				}
+			}
 		}
-		importerDetailTree.setModel(new DefaultTreeModel(root));
-
-		// Viewer informieren
-		observableSupport.markAndNotify(modelAll);
 	}
 
 	private DefaultMutableTreeNode createJListNode(Data data) {
@@ -532,6 +554,34 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		}
 		return root;
 	}
+	
+    // If expand is true, expands all nodes in the tree.
+    // Otherwise, collapses all nodes in the tree.
+    public void expandAll(JTree tree, boolean expand) {
+        TreeNode root = (TreeNode)tree.getModel().getRoot();
+    
+        // Traverse tree from root
+        expandAll(tree, new TreePath(root), expand);
+    }
+    private void expandAll(JTree tree, TreePath parent, boolean expand) {
+        // Traverse children
+        TreeNode node = (TreeNode)parent.getLastPathComponent();
+        if (node.getChildCount() >= 0) {
+            for (Enumeration e=node.children(); e.hasMoreElements(); ) {
+                TreeNode n = (TreeNode)e.nextElement();
+                TreePath path = parent.pathByAddingChild(n);
+                expandAll(tree, path, expand);
+            }
+        }
+    
+        // Expansion or collapse must be done bottom-up
+        if (expand) {
+            tree.expandPath(parent);
+        } else {
+            tree.collapsePath(parent);
+        }
+    }
+
 
 	/**
 	 * Extrahiert eine Eigenschaft in Baumformat. Wurzel ist der Name der
