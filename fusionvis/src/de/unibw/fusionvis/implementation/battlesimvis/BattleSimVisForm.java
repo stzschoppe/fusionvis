@@ -26,6 +26,8 @@ public class BattleSimVisForm extends FusionVisForm {
 
 	public static void main(String[] args) throws Exception {
 		final FusionVis model = new BattleSimVis(new BattleSimImporter());
+		final ImporterPanel importerPanel = new ImporterPanel(model.importer);
+		
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				Logger logger = BattleSimVis.getLogger();
@@ -34,8 +36,7 @@ public class BattleSimVisForm extends FusionVisForm {
 					logger.setLevel(Level.ALL);
 					logger.log(Level.INFO, "starte BattleVis..\n");
 
-					new BattleSimVisForm(model, new ImporterPanel(
-							model.importer), new ViewerPanel(model.importer))
+					new BattleSimVisForm(model, importerPanel, new ViewerPanel(importerPanel))
 							.setVisible(true);
 
 					// Beenden
