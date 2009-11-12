@@ -27,6 +27,10 @@ public class BattleSimMapper extends Mapper {
 		super(maximalDimenVector3f);
 	}
 
+	public BattleSimMapper(DataSet dataSet, Vector3f maximalDimenVector3f) {
+		super(dataSet, maximalDimenVector3f);
+	}
+
 	@Override
 	protected Vector3f[] getCoefficient() {
 		// Koeffizienten der einzelnen Dimensionen

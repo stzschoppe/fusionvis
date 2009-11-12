@@ -51,7 +51,7 @@ public abstract class Importer extends Observable {
 
 	protected Logger logger;
 	
-	private Mapper mapper;
+	//private Mapper mapper;
 
 	/** Datensatz */
 	protected DataSet dataSet = null;
@@ -79,9 +79,8 @@ public abstract class Importer extends Observable {
 
 	private com.jme.scene.Node dataNode;
 
-	public Importer(Mapper mapper) {
+	public Importer() {
 		this.logger = FusionVis.getLogger();
-		this.mapper = mapper;
 		panel = new ImporterPanel(this);
 	}
 
@@ -95,8 +94,6 @@ public abstract class Importer extends Observable {
 			document = builder.parse(file);
 			buildDataSet();
 			
-			//Wurzel Erzeugen
-			dataNode = mapper.getDataRoot(dataSet);
 			// ImporterPanel aktualisieren
 			setChanged();
 			notifyObservers(dataSet);
@@ -261,18 +258,6 @@ public abstract class Importer extends Observable {
 		}
 		throw new ParseException("Kein Date\t" + formatString + "\t"
 				+ stringToParse, 0);
-	}
-
-	/**
-	 * @return Knoten der 3D-Daten
-	 */
-	public com.jme.scene.Node getDataNode() {
-		com.jme.scene.Node dataNode = mapper.getDataRoot(dataSet);
-		//mapper.texture(dataNode, DisplaySystem.getDisplaySystem());
-		this.dataNode = dataNode;
-		return this.dataNode;
-		
-	}
-	
+	}	
 
 }
