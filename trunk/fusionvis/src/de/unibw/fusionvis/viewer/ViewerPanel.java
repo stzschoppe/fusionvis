@@ -61,6 +61,7 @@ import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.implementation.battlesimvis.BattleSimMapper;
 import de.unibw.fusionvis.importer.Importer;
+import de.unibw.fusionvis.importer.ImporterPanel;
 
 public class ViewerPanel extends JPanel implements Observer{
 
@@ -87,10 +88,10 @@ public class ViewerPanel extends JPanel implements Observer{
 	private String selectionId;
 	private Camera cam;
 
-    public ViewerPanel(Importer importer)
+    public ViewerPanel(ImporterPanel importerPanel)
     {    	
     	this.logger = FusionVis.getLogger();
-    	importer.addObserver(this);
+    	importerPanel.observableSupport.addObserver(this);
         try 
         {
             init();	// initialisiere Glidefenster und GUI

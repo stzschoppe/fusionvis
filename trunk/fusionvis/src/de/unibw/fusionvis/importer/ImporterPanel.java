@@ -288,7 +288,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 
 					@Override
 					public void valueChanged(TreeSelectionEvent evt) {
-						importerListValueChanged(evt);
+						importerTreeValueChanged(evt);
 
 					}
 				});
@@ -342,16 +342,17 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 			for (Data data : modelUserDefined.getData()) {
 				root.add(createJListNode(data));
 			}
-			importerDetailTree.setModel(new DefaultTreeModel(root));
-
-			importer.setDataSet(modelUserDefined);
-			// XXX Aufhänger für notify
+			
 
 			FusionVis.getLogger().log(
 					Level.INFO,
 					modelUserDefined.getData().size()
 							+ " Datensätze mit angegebener Eigenschaft");
-		importerFilterViewComboBox.setSelectedIndex(3);
+			
+			importerFilterViewComboBox.setSelectedIndex(3);
+			importerDetailTree.setModel(new DefaultTreeModel(root));
+			// XXX kann wohl weg importer.setDataSet(modelUserDefined);
+			observableSupport.markAndNotify(modelUserDefined);
 		}
 	}// GEN-LAST:event_importerFilterButtonMouseClicked
 
@@ -368,7 +369,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
-				//TODO Notify View
+				observableSupport.markAndNotify(modelAll);
 				break;
 
 			case 1: // Blau
@@ -377,7 +378,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
-				//TODO Notify View
+				observableSupport.markAndNotify(modelBlue);
 				break;
 
 			case 2: // Rot
@@ -386,7 +387,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
-				//TODO Notify View
+				observableSupport.markAndNotify(modelRed);
 				break;
 
 			case 3: // Benutzerdefiniert
@@ -395,7 +396,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
-				//TODO Notify View
+				observableSupport.markAndNotify(modelUserDefined);
 				break;
 
 			default:
@@ -405,7 +406,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 
 	}// GEN-LAST:event_importerFilterViewComboBoxItemStateChanged
 
-	private void importerListValueChanged(TreeSelectionEvent evt) {// GEN-FIRST:event_importerListValueChanged
+	private void importerTreeValueChanged(TreeSelectionEvent evt) {// GEN-FIRST:event_importerListValueChanged
 	// FIXME String id = (String) importerList.getSelectedValue();
 	// Data data = model.getDataById(id);
 	// importerDetailTree.setModel(new DefaultTreeModel(createJListNode(data)));
@@ -472,7 +473,8 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		}
 		importerDetailTree.setModel(new DefaultTreeModel(root));
 
-		// importerList.setListData(dataSet.getIds().toArray());
+		// Viewer informieren
+		observableSupport.markAndNotify(modelAll);
 	}
 
 	private DefaultMutableTreeNode createJListNode(Data data) {
