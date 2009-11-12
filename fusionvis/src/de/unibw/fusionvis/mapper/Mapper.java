@@ -27,6 +27,11 @@ public abstract class Mapper {
 	protected Vector3f maximalDimenVector3f;
 
 	public Mapper(Vector3f maximalDimenVector3f) {
+		this.dataSet = null;
+		this.maximalDimenVector3f = maximalDimenVector3f;
+	}
+	
+	public Mapper(DataSet dataSet, Vector3f maximalDimenVector3f) {
 		this.dataSet = dataSet;
 		this.maximalDimenVector3f = maximalDimenVector3f;
 	}
@@ -48,6 +53,7 @@ public abstract class Mapper {
 			throw new UnsupportedOperationException(
 					"Mapper nicht initialisiert, getter mir Argument aufrufen.");
 		} else {
+			texture(dataNode, DisplaySystem.getDisplaySystem());
 			return dataNode;
 		}
 	}
