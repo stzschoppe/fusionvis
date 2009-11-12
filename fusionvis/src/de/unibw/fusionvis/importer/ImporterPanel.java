@@ -40,7 +40,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	/** Creates new form ImporterPanel */
 	public ImporterPanel(Importer importer) {
 		initComponents();
-		//importer.addObserver(this); //XXX Was habe ich mir dabei gedacht
+		// importer.addObserver(this); //XXX Was habe ich mir dabei gedacht
 		this.importer = importer;
 	}
 
@@ -222,17 +222,18 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 				java.awt.BorderLayout.PAGE_START);
 
 		importerFilterViewLabel.setLabelFor(importerFilterViewComboBox);
-		importerFilterViewLabel.setText("View");
+		importerFilterViewLabel.setText("Sicht");
 
 		importerFilterViewComboBox
 				.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-						"GodMode", "Red", "Blue" }));
+						"Alles", "Blau", "Rot", "Benutzerdefiniert" }));
 		importerFilterViewComboBox
 				.addItemListener(new java.awt.event.ItemListener() {
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						importerFilterViewComboBoxItemStateChanged(evt);
 					}
 				});
+		itemSelected = importerFilterViewComboBox.getSelectedItem();
 
 		javax.swing.GroupLayout importerFilterViewPanelLayout = new javax.swing.GroupLayout(
 				importerFilterViewPanel);
@@ -283,14 +284,14 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 
 		importerDetailTree.getSelectionModel().addTreeSelectionListener(
 				new javax.swing.event.TreeSelectionListener() {
-					
+
 					@Override
 					public void valueChanged(TreeSelectionEvent evt) {
 						importerListValueChanged(evt);
-						
+
 					}
 				});
-		
+
 		importerListScrollPanel.setViewportView(importerDetailTree);
 
 		importerListingPanel.add(importerListScrollPanel,
@@ -304,8 +305,6 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerDetailTree.setModel(new javax.swing.tree.DefaultTreeModel(
 				treeNode1));
 
-
-
 		add(importerOverviewPanel, java.awt.BorderLayout.CENTER);
 	}// </editor-fold>//GEN-END:initComponents
 
@@ -313,32 +312,105 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		if (importerFilterKeyText.getText().equals("")) {
 			// Nichts tun
 		} else {
-			model = model.filterBy(importerFilterKeyText.getText(),
-					importerFilterValueText.getText());
-			importer.setDataSet(model);
+			DefaultMutableTreeNode root;
+			switch (importerFilterViewComboBox.getSelectedIndex()) {
+			case 0: // Alles
+				modelUserDefined = modelAll;
+				break;
+
+			case 1: // Blau
+				modelUserDefined = modelBlue;
+				break;
+
+			case 2: // Rot
+				modelUserDefined = modelRed;
+				break;
+
+			case 3: // Benutzerdefiniert
+				// nichts zu machen
+				break;
+
+			default:
+				break;
+			}
 			
-			FusionVis.getLogger().log(Level.INFO, model.getData().size() +" Datensätze mit angegebener Eigenschaft");
+			modelUserDefined = modelUserDefined.filterBy(importerFilterKeyText
+					.getText(), importerFilterValueText.getText());
+			
+			root = new DefaultMutableTreeNode(modelUserDefined.getId());
+			for (Data data : modelUserDefined.getData()) {
+				root.add(createJListNode(data));
+			}
+			importerDetailTree.setModel(new DefaultTreeModel(root));
+
+			// XXX importer.setDataSet(modelUserDefined);
+			// XXX Aufhänger für notify
+
+			FusionVis.getLogger().log(
+					Level.INFO,
+					modelUserDefined.getData().size()
+							+ " Datensätze mit angegebener Eigenschaft");
+		importerFilterViewComboBox.setSelectedIndex(3);
 		}
 	}// GEN-LAST:event_importerFilterButtonMouseClicked
 
 	private void importerFilterViewComboBoxItemStateChanged(
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_importerFilterViewComboBoxItemStateChanged
-		// TODO Method Stub
+		// TODO Erzeugen der Bäume beim Start einmalig zum Performance Gewinn
+		if (!evt.getItem().equals(itemSelected)) {
+			itemSelected = evt.getItem();
+			DefaultMutableTreeNode root;
+			switch (importerFilterViewComboBox.getSelectedIndex()) {
+			case 0: // Alles
+				root = new DefaultMutableTreeNode(modelAll.getId());
+				for (Data data : modelAll.getData()) {
+					root.add(createJListNode(data));
+				}
+				importerDetailTree.setModel(new DefaultTreeModel(root));
+				break;
+
+			case 1: // Blau
+				root = new DefaultMutableTreeNode(modelBlue.getId());
+				for (Data data : modelBlue.getData()) {
+					root.add(createJListNode(data));
+				}
+				importerDetailTree.setModel(new DefaultTreeModel(root));
+				break;
+
+			case 2: // Rot
+				root = new DefaultMutableTreeNode(modelRed.getId());
+				for (Data data : modelRed.getData()) {
+					root.add(createJListNode(data));
+				}
+				importerDetailTree.setModel(new DefaultTreeModel(root));
+				break;
+
+			case 3: // Benutzerdefiniert
+				root = new DefaultMutableTreeNode(modelUserDefined.getId());
+				for (Data data : modelUserDefined.getData()) {
+					root.add(createJListNode(data));
+				}
+				importerDetailTree.setModel(new DefaultTreeModel(root));
+				break;
+
+			default:
+				break;
+			}
+		}
 
 	}// GEN-LAST:event_importerFilterViewComboBoxItemStateChanged
 
-	private void importerListValueChanged(
-			TreeSelectionEvent evt) {// GEN-FIRST:event_importerListValueChanged
-//FIXME		String id = (String) importerList.getSelectedValue();
-//		Data data = model.getDataById(id);
-//		importerDetailTree.setModel(new DefaultTreeModel(createJListNode(data)));
+	private void importerListValueChanged(TreeSelectionEvent evt) {// GEN-FIRST:event_importerListValueChanged
+	// FIXME String id = (String) importerList.getSelectedValue();
+	// Data data = model.getDataById(id);
+	// importerDetailTree.setModel(new DefaultTreeModel(createJListNode(data)));
 	}// GEN-LAST:event_importerListValueChanged
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel importerDataSetIdLabel;
-	//private javax.swing.JPanel importerDetailPanel;
-	//private javax.swing.JScrollPane importerDetailScrollPanel;
-	//private javax.swing.JLabel importerDetailTaxonomy;
+	// private javax.swing.JPanel importerDetailPanel;
+	// private javax.swing.JScrollPane importerDetailScrollPanel;
+	// private javax.swing.JLabel importerDetailTaxonomy;
 	private javax.swing.JTree importerDetailTree;
 	private javax.swing.JButton importerFilterButton;
 	private javax.swing.JLabel importerFilterKeyLabel;
@@ -350,40 +422,62 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	private javax.swing.JComboBox importerFilterViewComboBox;
 	private javax.swing.JLabel importerFilterViewLabel;
 	private javax.swing.JPanel importerFilterViewPanel;
-	//private javax.swing.JList importerList;
+	// private javax.swing.JList importerList;
 	private javax.swing.JScrollPane importerListScrollPanel;
 	private javax.swing.JPanel importerListingPanel;
 	private javax.swing.JPanel importerOverviewPanel;
-	//private javax.swing.JSplitPane importerSplitPane;
+	// private javax.swing.JSplitPane importerSplitPane;
 	private javax.swing.JSeparator jSeparator1;
-	protected DataSet model;
-	private Importer importer;
+	protected DataSet modelAll;
+	protected DataSet modelRed;
+	protected DataSet modelBlue;
+	protected DataSet modelUserDefined;
+	protected Importer importer;
+	protected Object itemSelected;
 
 	// End of variables declaration//GEN-END:variables
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		DataSet dataSet = (DataSet) arg1;
-		this.model = dataSet;
+		modelAll = dataSet;
+
+		// Alle echten Blauen und die gesichteten Roten
+		modelBlue = modelAll.filterBy("HostilityCode", "FR").filterBy(
+				"Certainty", "Real");
+		modelBlue.addDataSet(modelAll.filterBy("HostilityCode", "HO").filterBy(
+				"Certainty", "Perceived"));
+
+		// Alle echten Roten und die gesichteten Roten
+		modelRed = modelAll.filterBy("HostilityCode", "HO").filterBy(
+				"Certainty", "Real");
+		modelRed.addDataSet(modelAll.filterBy("HostilityCode", "FR").filterBy(
+				"Certainty", "Perceived"));
+
+		// Benutzerdefinierte sicht, die mit den Textfeldern gefiltert werden
+		// kann
+		modelUserDefined = dataSet;
+
 		importerDataSetIdLabel.setText(dataSet.getId());
-		
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataSet.getId());
+
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataSet
+				.getId());
 		for (Data data : dataSet.getData()) {
 			root.add(createJListNode(data));
 		}
 		importerDetailTree.setModel(new DefaultTreeModel(root));
-		
-		//importerList.setListData(dataSet.getIds().toArray());
+
+		// importerList.setListData(dataSet.getIds().toArray());
 	}
 
 	private DefaultMutableTreeNode createJListNode(Data data) {
 		AbstractProperty property;
-	
+
 		// Wurzel mit Namen des Data Objekts //XXX NullPointerException
 		DefaultMutableTreeNode root = null;
-	
+
 		try {
 			root = new DefaultMutableTreeNode(data.getId());
-	
+
 			// Position
 			DefaultMutableTreeNode position = new DefaultMutableTreeNode(
 					"Position");
@@ -392,14 +486,14 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					.getValueAsContainerProperty().getComponents()) {
 				position.add(extractProperty(component));
 			}
-	
+
 			// Einfache Eigenschaften
 			DefaultMutableTreeNode simpleProperties = new DefaultMutableTreeNode(
 					"Eigenschaften");
 			for (AbstractProperty component : data.getSimpleProperties()) {
 				simpleProperties.add(extractProperty(component));
 			}
-	
+
 			// Zusammengesetzte Eigenschaften
 			DefaultMutableTreeNode containerProperties = new DefaultMutableTreeNode(
 					"Vektoren");
@@ -412,21 +506,21 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 				}
 				containerProperties.add(vector);
 			}
-	
+
 			// Taxonomien
 			DefaultMutableTreeNode taxonimies = new DefaultMutableTreeNode(
 					"Taxonomien");
 			for (AbstractProperty component : data.getTaxonomies()) {
 				taxonimies.add(extractProperty(component));
 			}
-	
+
 			// Baum zusammenfügen
 			root.add(position);
 			root.add(simpleProperties);
 			root.add(containerProperties);
 			root.add(taxonimies);
 		} catch (Exception e) {
-			
+
 		}
 		return root;
 	}

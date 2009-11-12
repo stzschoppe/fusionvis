@@ -74,7 +74,19 @@ public class DataSet {
 	 * @param data Einzufügender Datensatz
 	 */
 	public void addData(Data data){
-		this.data.add(data);
+		if (!getIds().contains(data.getId())) {
+			this.data.add(data);
+		}
+	}
+	
+	/**
+	 * Fügt die Daten eines Datensatzes zu den vorhandenen hinzu.
+	 * @param dataSet
+	 */
+	public void addDataSet(DataSet dataSet){
+		for (Data data : dataSet.getData()) {
+			this.data.add(data);
+		}
 	}
 	
 	/**
@@ -90,8 +102,11 @@ public class DataSet {
 		result.simpleProperties = (HashMap<String, AbstractProperty>) this.simpleProperties.clone();
 		for (Iterator<Data> iterator = data.iterator(); iterator.hasNext();) {
 			Data tmpData =  iterator.next();
-			if (tmpData.getAbstractProperty(id).getValueAsString().equals(value)) {
-				result.data.add(tmpData);
+			if (tmpData.getAbstractProperty(id) != null) {
+				if (tmpData.getAbstractProperty(id).getValueAsString().equals(
+						value)) {
+					result.data.add(tmpData);
+				}
 			}
 		}
 		return result;
