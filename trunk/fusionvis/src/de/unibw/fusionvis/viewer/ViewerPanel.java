@@ -246,9 +246,10 @@ public class ViewerPanel extends JPanel implements Observer{
             cam = impl.getCamera();
             cam.setFrustumPerspective(45.0f, (float) glCanvas.getWidth() / (float) glCanvas.getHeight(), 1, 10000);
             cam.setUp(new Vector3f(0,1,0));
-            cam.getLocation().y = 50;
-            cam.getLocation().x = 0;
-            cam.getLocation().z = 0;
+            cam.lookAt(new Vector3f(300,0,300), Vector3f.UNIT_Y);
+            cam.getLocation().y = 80;
+            cam.getLocation().x = -150;
+            cam.getLocation().z = -150;
             
             
             
