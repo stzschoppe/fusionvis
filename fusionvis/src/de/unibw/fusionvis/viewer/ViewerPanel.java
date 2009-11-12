@@ -69,6 +69,8 @@ public class ViewerPanel extends JPanel implements Observer{
     static final long serialVersionUID = 1L;
     Preferences prefs = Preferences.userNodeForPackage(ViewerPanel.class);
     
+    private ObservableSupport observableSupport;
+    
     private int width = 640, height = 480;
     private MyImplementor impl;
     private Canvas glCanvas;
@@ -77,6 +79,7 @@ public class ViewerPanel extends JPanel implements Observer{
     private Node gridNode;
     private Node helperNode;
 	private Node selectionNode;
+	private Node dataNode;
     
 	private InputHandler input;	
 	private MouseLookHandler mouseLook;
@@ -89,9 +92,12 @@ public class ViewerPanel extends JPanel implements Observer{
 	private Camera cam;
 
     public ViewerPanel(ImporterPanel importerPanel)
-    {    	
+    {    
+    	observableSupport = new ObservableSupport();
+    	observableSupport.addObserver(importerPanel);
     	this.logger = FusionVis.getLogger();
-    	importerPanel.observableSupport.addObserver(this);
+    	importerPanel.observableSupportForFilter.addObserver(this);
+    	importerPanel.observableSupportForSelection.addObserver(this);
         try 
         {
             init();	// initialisiere Glidefenster und GUI
@@ -259,6 +265,9 @@ public class ViewerPanel extends JPanel implements Observer{
             // Knoten und Box für das Highlightning beim Mausklick erzeugen
             selectionNode = new Node("selectionNode");
             
+            // Knoten für die anzuzeigenden Daten
+            dataNode = new Node("dataNode");
+            
             float alpha = 0.2f;
 	        final BlendState alphaState = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
 	        alphaState.setBlendEnabled(true);
@@ -406,8 +415,7 @@ public class ViewerPanel extends JPanel implements Observer{
 			if (pr.getNumber() > 0)
 			{
 				float distance = pr.getPickData(0).getDistance()*3;
-				root.detachChild(selectionNode);
-				selectionId = null;
+				deselect();
 				
 				for (int i = 0; i < pr.getNumber(); i++)
 				{
@@ -415,15 +423,26 @@ public class ViewerPanel extends JPanel implements Observer{
 					{
 						Spatial pickData = pr.getPickData(i).getTargetMesh();
 						distance = pr.getPickData(i).getDistance();
-						Spatial selectionBox = selectionNode.getChild("selectionBox");
-						selectionBox.setLocalTranslation((pickData.getLocalTranslation()));
-						selectionId = pickData.getName();
-						root.attachChild(selectionNode);
+						select(pickData);
 					}
 				}
 			}
 		
 		}
+
+	public void select(Spatial pickData) {
+		if(pickData==null) return;
+		Spatial selectionBox = selectionNode.getChild("selectionBox");
+		selectionBox.setLocalTranslation((pickData.getLocalTranslation()));
+		selectionId = pickData.getName();
+		root.attachChild(selectionNode);
+		observableSupport.markAndNotify(pickData.getName());
+	}
+
+	public void deselect() {
+		root.detachChild(selectionNode);
+		selectionId = null;
+	}
 
 	public void createInput()
 	{
@@ -600,11 +619,30 @@ public class ViewerPanel extends JPanel implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		DataSet dataSet = (DataSet)arg;
-		Node dataNode = (new BattleSimMapper(dataSet, new Vector3f(300, 200, 300))).getDataRoot();
-		root.detachAllChildren();
-		root.attachChild(helperNode);
-		root.attachChild(dataNode);
+		if (arg instanceof DataSet) { // Datenimport
+			DataSet dataSet = (DataSet) arg;
+			dataNode = (new BattleSimMapper(dataSet, new Vector3f(300,
+					200, 300))).getDataRoot();
+			root.detachAllChildren();
+			root.attachChild(helperNode);
+			root.attachChild(dataNode);
+		} else if (arg instanceof String) { //Selection
+			deselect();
+			String id = (String)arg;
+			Spatial toSelect = dataNode.getChild(id);
+			if(toSelect!=null)
+				select(toSelect);
+			else deselect();
+		}
+	}
+	
+	public class ObservableSupport extends Observable {
+		public ObservableSupport() {
+		}
+		public void markAndNotify(Object o){
+			setChanged();
+			notifyObservers(o);
+		}
 	}
 
 }
