@@ -42,6 +42,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		initComponents();
 		// importer.addObserver(this); //XXX Was habe ich mir dabei gedacht
 		this.importer = importer;
+		observableSupport = new ObservableSupport();
 	}
 
 	/**
@@ -343,7 +344,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 			}
 			importerDetailTree.setModel(new DefaultTreeModel(root));
 
-			// XXX importer.setDataSet(modelUserDefined);
+			importer.setDataSet(modelUserDefined);
 			// XXX Aufhänger für notify
 
 			FusionVis.getLogger().log(
@@ -367,6 +368,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
+				//TODO Notify View
 				break;
 
 			case 1: // Blau
@@ -375,6 +377,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
+				//TODO Notify View
 				break;
 
 			case 2: // Rot
@@ -383,6 +386,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
+				//TODO Notify View
 				break;
 
 			case 3: // Benutzerdefiniert
@@ -391,6 +395,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 					root.add(createJListNode(data));
 				}
 				importerDetailTree.setModel(new DefaultTreeModel(root));
+				//TODO Notify View
 				break;
 
 			default:
@@ -434,6 +439,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	protected DataSet modelUserDefined;
 	protected Importer importer;
 	protected Object itemSelected;
+	public ObservableSupport observableSupport;
 
 	// End of variables declaration//GEN-END:variables
 	@Override
@@ -550,4 +556,14 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		propertyId.add(value);
 		return propertyId;
 	}
+	
+	public class ObservableSupport extends Observable {
+		public ObservableSupport() {
+		}
+		public void markAndNotify(Object o){
+			setChanged();
+			notifyObservers(o);
+		}
+	}
+
 }
