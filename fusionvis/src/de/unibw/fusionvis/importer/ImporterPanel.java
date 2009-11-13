@@ -569,16 +569,17 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		DefaultMutableTreeNode propertyId = new DefaultMutableTreeNode(property
 				.getId());
 
-		// Typknoten mit Typ als Kind
-		DefaultMutableTreeNode type = new DefaultMutableTreeNode("Typ");
-		type.add(new DefaultMutableTreeNode(Type.toString(property.getType())));
-
-		// Wertknoten mit Wert als Kind
-		DefaultMutableTreeNode value = new DefaultMutableTreeNode("Wert");
-		value.add(new DefaultMutableTreeNode(property.getValueAsString()));
-
-		propertyId.add(type);
-		propertyId.add(value);
+//		// Typknoten mit Typ als Kind
+//		DefaultMutableTreeNode type = new DefaultMutableTreeNode("Typ");
+//		type.add(new DefaultMutableTreeNode(Type.toString(property.getType())));
+//
+//		// Wertknoten mit Wert als Kind
+//		DefaultMutableTreeNode value = new DefaultMutableTreeNode("Wert");
+//		value.add(new DefaultMutableTreeNode(property.getValueAsString()));
+//
+//		propertyId.add(type);
+//		propertyId.add(value);
+		propertyId.add(new DefaultMutableTreeNode(property.getValueAsString()));
 		return propertyId;
 	}
 	

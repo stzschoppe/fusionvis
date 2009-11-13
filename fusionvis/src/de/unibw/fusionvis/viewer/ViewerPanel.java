@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.Callable;
@@ -19,6 +20,7 @@ import javax.swing.JPanel;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingSphere;
+import com.jme.image.Texture;
 import com.jme.input.FirstPersonHandler;
 import com.jme.input.InputHandler;
 import com.jme.input.InputSystem;
@@ -49,11 +51,13 @@ import com.jme.scene.shape.Box;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
+import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.system.canvas.JMECanvas;
 import com.jme.system.canvas.SimpleCanvasImpl;
 import com.jme.util.GameTaskQueue;
 import com.jme.util.GameTaskQueueManager;
+import com.jme.util.TextureManager;
 import com.jmex.awt.input.AWTMouseInput;
 import com.jmex.awt.lwjgl.LWJGLAWTCanvasConstructor;
 
@@ -246,10 +250,11 @@ public class ViewerPanel extends JPanel implements Observer{
             cam = impl.getCamera();
             cam.setFrustumPerspective(45.0f, (float) glCanvas.getWidth() / (float) glCanvas.getHeight(), 1, 10000);
             cam.setUp(new Vector3f(0,1,0));
-            cam.lookAt(new Vector3f(300,0,300), Vector3f.UNIT_Y);
-            cam.getLocation().y = 80;
+            cam.lookAt(new Vector3f(150,0,150), Vector3f.UNIT_Y); 
+            cam.getLocation().y = 200;
             cam.getLocation().x = -150;
             cam.getLocation().z = -150;
+            
             
             
             
@@ -269,7 +274,16 @@ public class ViewerPanel extends JPanel implements Observer{
             // Knoten für die anzuzeigenden Daten
             dataNode = new Node("dataNode");
             
-            float alpha = 0.2f;
+            URL yellowURL = TestViewer.class.getClassLoader().getResource(
+			"de/unibw/fusionvis/img/yellow.gif");
+    		Texture texture1 = TextureManager.loadTexture(yellowURL,
+    				Texture.MinificationFilter.Trilinear,
+    				Texture.MagnificationFilter.Bilinear);
+    		TextureState yellow = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
+    		yellow.setEnabled(true);
+    		yellow.setTexture(texture1);
+            
+            float alpha = 0.5f;
 	        final BlendState alphaState = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
 	        alphaState.setBlendEnabled(true);
 	        alphaState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
@@ -299,6 +313,7 @@ public class ViewerPanel extends JPanel implements Observer{
             
             box.setRenderState(materialState);
             box.setRenderState(alphaState);
+            box.setRenderState(yellow);
             box.updateRenderState();
             box.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
 			selectionNode.attachChild(box);
