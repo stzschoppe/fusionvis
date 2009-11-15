@@ -70,14 +70,14 @@ public class FusionVisForm extends javax.swing.JFrame {
         fusionvisInfoMenuItem = new javax.swing.JMenuItem();
 
         fusionvisFileChooser.setApproveButtonText("Importieren");
-        fusionvisFileChooser.setCurrentDirectory(new java.io.File("C:\\Users\\stephan\\workspace_bachelor\\FusionVis\\res"));
-        fusionvisFileChooser.setDialogTitle("XML-Datensatz importieren");
-        fusionvisFileChooser.setFileFilter(new FileNameExtensionFilter("XML-Dateien", "xml")
+		fusionvisFileChooser.setCurrentDirectory(new java.io.File("res"));
+		fusionvisFileChooser.setDialogTitle("XML-Datensatz importieren");
+		fusionvisFileChooser.setFileFilter(new FileNameExtensionFilter(
+				"XML-Dateien", "xml"));
+		fusionvisFileChooser
+				.setSelectedFile(new java.io.File("res\\input.xml"));
 
-        );
-        //fusionvisFileChooser.setSelectedFile(new java.io.File("C:\\Program Files\\NetBeans 6.7.1\\*.xml"));
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(800, 600));
 
@@ -133,7 +133,8 @@ public class FusionVisForm extends javax.swing.JFrame {
 		int returnVal = fusionvisFileChooser.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			fusionvisImporterPanel.setVisible(true);
-			model.commandImportXML(fusionvisFileChooser.getSelectedFile().getAbsolutePath());
+			System.out.println(fusionvisFileChooser.getSelectedFile());
+			model.importer.runImport(fusionvisFileChooser.getSelectedFile());
     }
 
     }//GEN-LAST:event_fusionvisImportMenuItemActionPerformed
