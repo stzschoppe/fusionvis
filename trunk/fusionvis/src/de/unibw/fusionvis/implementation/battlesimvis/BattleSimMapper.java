@@ -1,5 +1,11 @@
 package de.unibw.fusionvis.implementation.battlesimvis;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.asin;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +14,7 @@ import java.util.Iterator;
 
 import com.jme.bounding.BoundingSphere;
 import com.jme.image.Texture;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
@@ -105,8 +112,9 @@ public class BattleSimMapper extends Mapper {
 		Vector3f factor = new Vector3f(x, y, z);
 		Vector3f[] result = { factor, offset };
 
-		// System.out.println("Faktor " + factor);
-		// System.out.println("Offset " + offset);
+		 System.out.println("Latitude: " + distanceonEarth(new Vector2f(lonMin, latMin), new Vector2f(lonMin, latMax)));
+		 System.out.println("Longitude: " + distanceonEarth(new Vector2f(lonMin, latMin), new Vector2f(lonMax, latMin)));
+		 // System.out.println("Offset " + offset);
 		return result;
 	}
 
@@ -123,7 +131,7 @@ public class BattleSimMapper extends Mapper {
 
 		for (Data data : dataSet.getData()) {
 			Sphere sphere = new Sphere(data.getId(), new Vector3f(0, 0, 0), 15,
-					15, 5);
+					15, 5f);
 			sphere.setLocalTranslation(getPosition(data, transform));
 			sphere.updateGeometricState(0, false);
 			sphere.setModelBound(new BoundingSphere());
@@ -217,6 +225,31 @@ public class BattleSimMapper extends Mapper {
 		// System.out.println(new Vector3f(x, y, z));
 		return new Vector3f(x, y, z);
 
+	}
+	
+	/**
+	 * Berechnet den Abstand zweier Punkte auf der Erde unter der
+	 * Annahme, die Erde sei eine Kugel. Die Koordinaten sind in der 
+	 * Reihenfolge Longitude, Latitude anzugeben. Benutzt wird
+	 * die Haversine-Formel.
+	 * @param point1 Koordinaten des ersten Punkts in Grad
+	 * @param point2 Koordinaten des zweiten Punkts in Grad
+	 * @return Ergebnis der Berechnung in Kilometer
+	 */
+	public float distanceonEarth(Vector2f point1, Vector2f point2){
+		double R = 6371.009;
+		
+		double lat1 = point1.y * PI/180;
+		double lat2 = point2.y * PI/180;
+		double deltaLon = (point1.x - point2.x) * PI/180;
+		
+		double x = sin((lat1-lat2)/2); x*=x;
+		double y = sin((deltaLon)/2); y*=y; y*=cos(lat1)*cos(lat2);
+		double z = sqrt(x+y);
+		
+		double distance = 2 * R * asin(z);
+		
+		return (float) distance;
 	}
 
 }
