@@ -1,4 +1,5 @@
 package de.unibw.fusionvis;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,8 +9,6 @@ import shell.Shell;
 import shell.StringParameter;
 import shell.tools.HaltCommand;
 import de.unibw.fusionvis.importer.Importer;
-import de.unibw.fusionvis.mapper.Mapper;
-import de.unibw.fusionvis.viewer.ViewerPanel;
 
 
 /**
@@ -63,7 +62,7 @@ public class FusionVis {
     		
 			@Override
 			public void execute(Command command) {
-				commandImportXML(command.getParameterByName("file").getValueAsString());				
+				commandImportXML(new File(command.getParameterByName("file").getValueAsString()));				
 			}}));
     	//Fügt dem Kommando einen Parameter hinzu
     	importXML.addParameter(new StringParameter("file", "Dateiname der zu importierenden XML-Datei."));	
@@ -90,7 +89,7 @@ public class FusionVis {
 				+ " Datensätze vorhanden.\n");
 	}
 	
-	public void commandImportXML(String file) {
+	public void commandImportXML(File file) {
 		// Initialisierung des Importers
 		logger.log(Level.INFO, "Initialisierung des Importers mit " + file + "\n");
 		importer.runImport(file);

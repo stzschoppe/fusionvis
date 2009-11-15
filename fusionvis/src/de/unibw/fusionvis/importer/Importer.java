@@ -3,6 +3,7 @@
  */
 package de.unibw.fusionvis.importer;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -84,7 +85,7 @@ public abstract class Importer extends Observable {
 		panel = new ImporterPanel(this);
 	}
 
-	public void runImport(String file) {
+	public void runImport(File file) {
 		// Einlesen des Datensatzes
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
@@ -99,15 +100,15 @@ public abstract class Importer extends Observable {
 			notifyObservers(dataSet);
 			
 		} catch (ParserConfigurationException e) {
-			logger.log(Level.SEVERE, "Fehler beim Initialisieren des Importers"
+			logger.log(Level.SEVERE, "Fehler beim Initialisieren des Importers (ParserConfigurationException)"
 					+ "\n" + e.getLocalizedMessage() + "\n");
 		} catch (SAXException e) {
 			logger.log(Level.SEVERE,
-					"Fehler beim Initialisieren des Importers " + "\n"
+					"Fehler beim Initialisieren des Importers (SAXException)" + "\n"
 							+ e.getLocalizedMessage() + "\n");
 		} catch (IOException e) {
 			logger.log(Level.SEVERE,
-					"Fehler beim Initialisieren des Importers " + "\n"
+					"Fehler beim Initialisieren des Importers (IOException)" + "\n"
 							+ e.getLocalizedMessage() + "\n");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Fehler beim Importieren " + "\n"
@@ -135,7 +136,7 @@ public abstract class Importer extends Observable {
 	public DataSet getDataSet() {
 		if (dataSet == null) {
 			if (document == null) {
-				runImport(standardInputFile);
+				runImport(new File(standardInputFile));
 				logger.log(Level.SEVERE, "importiere Standardinput."
 						+ standardInputFile + "\n");
 			}
