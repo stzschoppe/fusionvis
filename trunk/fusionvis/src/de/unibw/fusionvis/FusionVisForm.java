@@ -133,7 +133,6 @@ public class FusionVisForm extends javax.swing.JFrame {
 		int returnVal = fusionvisFileChooser.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			fusionvisImporterPanel.setVisible(true);
-			System.out.println(fusionvisFileChooser.getSelectedFile());
 			model.importer.runImport(fusionvisFileChooser.getSelectedFile());
     }
 
