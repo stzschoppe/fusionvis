@@ -98,7 +98,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	private int camSpeed = 100;
 	
 	public  String selectionId;
-	private Camera cam;
+	public Camera cam;
 
     public ViewerPanel(ImporterPanel importerPanel)
     {    
@@ -261,11 +261,12 @@ public class ViewerPanel extends JPanel implements Observer{
             // Setup Camera
             cam = impl.getCamera();
             cam.setFrustumPerspective(45.0f, (float) glCanvas.getWidth() / (float) glCanvas.getHeight(), 1, 10000);
-            cam.setUp(new Vector3f(0,1,0));
+            //cam.setUp(new Vector3f(0,1,0));
             cam.lookAt(new Vector3f(150,0,150), Vector3f.UNIT_Y); 
             cam.getLocation().y = 200;
             cam.getLocation().x = -150;
             cam.getLocation().z = -150;
+            cam.update();
             
             
             

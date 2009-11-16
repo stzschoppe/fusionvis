@@ -19,6 +19,7 @@ import javax.swing.DefaultListModel;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
@@ -218,6 +219,7 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 										.addContainerGap()));
 
 		add(westPanel, java.awt.BorderLayout.WEST);
+		westPanel.setVisible(false);
 
 		centerPanel.setMinimumSize(new java.awt.Dimension(70, 50));
 		centerPanel.setPreferredSize(new java.awt.Dimension(360, 79));
@@ -592,7 +594,33 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 
 	private void fusionCamViewComboBoxItemStateChanged(
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_fusionCamViewComboBoxItemStateChanged
-		// TODO add your handling code here:
+		switch (fusionCamViewComboBox.getSelectedIndex()) {
+		case 0:
+            viewerPanel.cam.lookAt(new Vector3f(1,-1,1).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
+            viewerPanel.cam.getLocation().y = 200;
+            viewerPanel.cam.getLocation().x = -150;
+            viewerPanel.cam.getLocation().z = -150;
+            viewerPanel.cam.update();
+			break;
+			
+		case 1:            
+			viewerPanel.cam.getLocation().y = 500;
+            viewerPanel.cam.getLocation().x = 180;
+            viewerPanel.cam.getLocation().z = 180;
+            viewerPanel.cam.lookAt(new Vector3f(0,-1,0).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
+            viewerPanel.cam.update();
+			break;
+		case 2:
+			viewerPanel.cam.getLocation().y = 200;
+            viewerPanel.cam.getLocation().x = 450;
+            viewerPanel.cam.getLocation().z = 450;
+            viewerPanel.cam.lookAt(new Vector3f(-1,-1,-1).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
+            viewerPanel.cam.update();
+			break;
+
+		default:
+			break;
+		}
 	}// GEN-LAST:event_fusionCamViewComboBoxItemStateChanged
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
