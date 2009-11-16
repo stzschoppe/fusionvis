@@ -11,6 +11,7 @@
 
 package de.unibw.fusionvis.implementation.battlesimvis;
 
+import java.awt.event.ItemEvent;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -506,11 +507,15 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 		try {
 			coneHeight = Float.parseFloat(fusionHeightTextField.getText());
 			if (!fusionInvisibleRadioButton.isSelected()) {
-				createCone(coneHeight, coneRadius, fusionFutureRadioButton
-						.isSelected());
+				if (fusionFutureRadioButton
+						.isSelected()) {
+					updateFutureCone();
+				} else if (fusionPastRadioButton.isSelected()) {
+					updatePastCone();
+				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			coneHeight = 100;
 		}
 	}// GEN-LAST:event_fusionHeightTextFieldKeyTyped
 
@@ -518,11 +523,15 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 		try {
 			coneRadius = Float.parseFloat(fusionRadiusTextField.getText());
 			if (!fusionInvisibleRadioButton.isSelected()) {
-				createCone(coneHeight, coneRadius, fusionFutureRadioButton
-						.isSelected());
+				if (fusionFutureRadioButton
+						.isSelected()) {
+					updateFutureCone();
+				} else if (fusionPastRadioButton.isSelected()) {
+					updatePastCone();
+				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			coneRadius = 50;
 		}
 	}// GEN-LAST:event_fusionRadiusTextFieldKeyTyped
 
@@ -540,6 +549,10 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 
 	private void fusionFutureRadioButtonItemStateChanged(
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_fusionFutureRadioButtonItemStateChanged
+		updateFutureCone();
+	}// GEN-LAST:event_fusionFutureRadioButtonItemStateChanged
+
+	private void updateFutureCone() {
 		if (viewerPanel.selectionId != null) {
 			Node node = (Node) viewerPanel.dataNode
 					.getChild(viewerPanel.selectionId);
@@ -551,10 +564,14 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			futureConeNode
 					.attachChild(createCone(coneHeight, coneRadius, true));
 		}
-	}// GEN-LAST:event_fusionFutureRadioButtonItemStateChanged
+	}
 
 	private void fusionPastRadioButtonItemStateChanged(
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_fusionPastRadioButtonItemStateChanged
+		updatePastCone();
+	}// GEN-LAST:event_fusionPastRadioButtonItemStateChanged
+
+	private void updatePastCone() {
 		if (viewerPanel.selectionId != null) {
 			Node node = (Node) viewerPanel.dataNode
 					.getChild(viewerPanel.selectionId);
@@ -563,10 +580,10 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			futureConeNode.detachAllChildren();
 			pastConeNode.detachAllChildren();
 
-			futureConeNode
+			pastConeNode
 					.attachChild(createCone(coneHeight, coneRadius, false));
 		}
-	}// GEN-LAST:event_fusionPastRadioButtonItemStateChanged
+	}
 
 	private void fusionCandidateListValueChanged(
 			javax.swing.event.ListSelectionEvent evt) {// GEN-FIRST:event_fusionCandidateListValueChanged
@@ -623,26 +640,28 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			fusionIdLabel.setText(id);
 			Node node = (Node) viewerPanel.dataNode.getChild(id);
 			Node velocityNode = (Node) (node.getChild("velocityNode"));
-			System.out.println(velocityNode.getChildren());
+	
 			Node orientationNode = (Node) (node.getChild("orientationNode"));
 			Node futureConeNode = (Node) (node.getChild("futureConeNode"));
 			Node pastConeNode = (Node) (node.getChild("pastConeNode"));
 
 			fusionVelocityCheckBox
-					.setSelected(velocityNode.getChildren() != null);
+					.setSelected(velocityNode.getChildren().size() != 0);
 			fusionOrientationCheckBox
-					.setSelected(orientationNode.getChildren() != null);
-			fusionInvisibleRadioButton.setSelected(true);
-			fusionFutureRadioButton
-					.setSelected(futureConeNode.getChildren() != null);
-			fusionPastRadioButton
-					.setSelected(pastConeNode.getChildren() != null);
+					.setSelected(orientationNode.getChildren().size() != 0);
+			
+			if (futureConeNode.getChildren().size() != 0)
+				fusionFutureRadioButton.setSelected(true);
+			else if (pastConeNode.getChildren().size() != 0)
+				fusionPastRadioButton.setSelected(true);
+			else
+				fusionInvisibleRadioButton.setSelected(true);
 
 			// TODO fusionCandidateList befüllen
 
-			fusionHeightTextField.setText("100"); // TODO aus den Werten
+			fusionHeightTextField.setText(Float.toString(coneHeight)); // TODO aus den Werten
 			// auslesen
-			fusionRadiusTextField.setText("50");
+			fusionRadiusTextField.setText(Float.toString(coneRadius));
 			fusionCandidateList.setModel(new DefaultListModel());
 		} else {
 
