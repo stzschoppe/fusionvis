@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import com.jme.bounding.BoundingSphere;
 import com.jme.image.Texture;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
@@ -45,8 +46,13 @@ public abstract class Mapper {
 	 * 
 	 * @return Array, an Position 0 stehen die Faktoren, an 1 die Offsets.
 	 */
-	// Abstract
 	protected abstract Vector3f[] getCoefficient(); 
+	
+	/**
+	 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene.
+	 * @return Vector vom Format (Länge|Breite)
+	 */
+	public abstract Vector2f getSize();
 
 	public Node getDataRoot() {
 		if (dataSet == null) {
