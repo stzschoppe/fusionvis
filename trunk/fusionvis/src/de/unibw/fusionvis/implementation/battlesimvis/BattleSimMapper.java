@@ -43,10 +43,12 @@ public class BattleSimMapper extends Mapper {
 		// Koeffizienten der einzelnen Dimensionen
 		float x = 1, y = 1, z = 1;
 
+		Vector2f basePane = getSize();
+		
 		// Spannweite in die Projiziert werden soll
-		float xWidth = maximalDimenVector3f.x;
+		float xWidth = basePane.x/maximalDimenVector3f.x;
 		float yWidth = maximalDimenVector3f.y;
-		float zWidth = maximalDimenVector3f.z;
+		float zWidth = basePane.y/maximalDimenVector3f.z;
 
 		// Bestimmung der Oberen und unteren Grenzen der Dimensionen.
 		float latMin = 90f;
@@ -154,6 +156,7 @@ public class BattleSimMapper extends Mapper {
 			dataNode.updateRenderState();
 		}
 
+		texture(dataNode, DisplaySystem.getDisplaySystem());
 		return dataNode;
 	}
 
@@ -246,10 +249,10 @@ public class BattleSimMapper extends Mapper {
 	 * die Haversine-Formel.
 	 * @param point1 Koordinaten des ersten Punkts in Grad
 	 * @param point2 Koordinaten des zweiten Punkts in Grad
-	 * @return Ergebnis der Berechnung in Kilometer
+	 * @return Ergebnis der Berechnung in Meter
 	 */
 	public float distanceonEarth(Vector2f point1, Vector2f point2){
-		double R = 6371.009;
+		double R = 6371000.785;
 		
 		double lat1 = point1.y * PI/180;
 		double lat2 = point2.y * PI/180;
@@ -264,10 +267,58 @@ public class BattleSimMapper extends Mapper {
 		return (float) distance;
 	}
 	
+	/**
+	 * Sorgt dafür, dass die Liste von Kindern nach dem initialisieren des
+	 * Knotens nicht null, sondern eine leere Liste ist.
+	 * @param node Zu initialisierender Knoten.
+	 * @return Initialisierter Knoten.
+	 */
 	protected Node initializeNode(Node node) {
 		node.attachChild(new Node("Dummy"));
 		node.detachAllChildren();
 		return node;
+	}
+	
+	/**
+	 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene 
+	 * in km.
+	 * @return Vector vom Format (Länge|Breite)
+	 */
+	public Vector2f getSize(){
+		// Bestimmung der Oberen und unteren Grenzen der Dimensionen.
+		float latMin = 90f;
+		float latMax = -90f;
+
+		float lonMin = 180f;
+		float lonMax = -180f;
+
+		ArrayList<Data> dataList = dataSet.getData();
+
+		for (Iterator<Data> iterator = dataList.iterator(); iterator.hasNext();) {
+			Data data = iterator.next();
+
+			if (data.getPosition().getComponent("Lat").getValueAsFloat() < latMin) {
+				latMin = data.getPosition().getComponent("Lat")
+						.getValueAsFloat();
+			} else if (data.getPosition().getComponent("Lat").getValueAsFloat() > latMax) {
+				latMax = data.getPosition().getComponent("Lat")
+						.getValueAsFloat();
+			}
+			if (data.getPosition().getComponent("Lon").getValueAsFloat() < lonMin) {
+				lonMin = data.getPosition().getComponent("Lon")
+						.getValueAsFloat();
+			} else if (data.getPosition().getComponent("Lon").getValueAsFloat() > lonMax) {
+				lonMax = data.getPosition().getComponent("Lon")
+						.getValueAsFloat();
+			}
+		}
+		
+		
+		Vector2f pointUL = new Vector2f(lonMin,latMin); // unten links 
+		Vector2f pointOL = new Vector2f(lonMin,latMax); // oben links
+		Vector2f pointUR = new Vector2f(lonMax,latMin); // unten rechts
+		
+		return new Vector2f(distanceonEarth(pointUL, pointUR), distanceonEarth(pointOL, pointUL));
 	}
 
 }

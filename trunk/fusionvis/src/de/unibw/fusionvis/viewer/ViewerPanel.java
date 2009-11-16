@@ -67,6 +67,7 @@ import de.unibw.fusionvis.implementation.battlesimvis.BattleSimFusionPanel;
 import de.unibw.fusionvis.implementation.battlesimvis.BattleSimMapper;
 import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.importer.ImporterPanel;
+import de.unibw.fusionvis.mapper.Mapper;
 
 public class ViewerPanel extends JPanel implements Observer{
 
@@ -99,9 +100,23 @@ public class ViewerPanel extends JPanel implements Observer{
 	
 	public  String selectionId;
 	public Camera cam;
+	private Mapper mapper;
+	/**
+	 * x und z Komponente geben an, wieviele Unit pro Meter darzustellen sind.
+	 * y gibt an auf welchem Intervall die Zeit in Unit dargestellt wird
+	 * [0|y]
+	 */
+	final Vector3f maximalDimenVector3f = new Vector3f(100,
+			200, 100);
 
+    /**
+     * Konstruktor
+     * @param importerPanel Das ImporterPanel, mit dem beim selektieren zusammengearbeitet
+     * werden soll.
+     */
     public ViewerPanel(ImporterPanel importerPanel)
     {    
+		mapper = new BattleSimMapper(maximalDimenVector3f);
     	observableSupport = new ObservableSupport();
     	observableSupport.addObserver(importerPanel);
     	this.logger = FusionVis.getLogger();
@@ -277,7 +292,7 @@ public class ViewerPanel extends JPanel implements Observer{
             // Knoten "helperNode" erzeugen (fuer Grid)
             helperNode = new Node("helperNode");
             
-            createGrid();// Grid erzeugen
+            createGrid(new Vector2f(500,500), 10);// Grid erzeugen
             helperNode.attachChild(gridNode);// Grid an "helperNode" anhaengen
             helperNode.setLightCombineMode(LightCombineMode.Off);// eliminiere jeglichen Lichteinfluss
             
@@ -603,9 +618,17 @@ public class ViewerPanel extends JPanel implements Observer{
 		input.addAction(buttonAction,InputHandler.DEVICE_MOUSE,2,InputHandler.AXIS_NONE,true);
 	}
 
-	public void createGrid() 
+	/**
+	 * Erzeugt ein Gitter mit angegeben ausmaßen in x und z Richtung
+	 * und angegebener Schrittweite.
+	 * @param dimension Außmaß  (0|0)->(x|z) in Unit 
+	 * @param step Abstand der Linien in Unit
+	 */
+	public void createGrid(Vector2f dimension, float step) 
 	{
 		gridNode = new Node("gridNode");
+		//gridNode.setLightCombineMode(LightCombineMode.Off);
+		float max = Math.max(dimension.x, dimension.y);
 		
 		/* Wichtig beim Erstellen des Grids ist, dass auch dessen Linien ModelBounds erhalten.
 	     * Wenn das nicht gemacht wird werden die ModelBounds von hinzugefuegten Objekten
@@ -614,8 +637,8 @@ public class ViewerPanel extends JPanel implements Observer{
 	     */
 	
 		// Gitternetz
-	    for (int x = -300; x <= 300; x=x+10) {
-	        Line l = new Line("xLine" + x, new Vector3f[]{new Vector3f((float) x, 0f, -300f), new Vector3f((float) x, 0f, 300f)}, null, null, null);
+	    for (float x = step; x <= max; x=x+step) {
+	        Line l = new Line("xLine" + x, new Vector3f[]{new Vector3f((float) x, 0f, 0f), new Vector3f((float) x, 0f, max)}, null, null, null);
 	        l.setSolidColor(ColorRGBA.darkGray);
 	        l.setModelBound(new BoundingBox());
 	        l.updateModelBound();
@@ -623,8 +646,8 @@ public class ViewerPanel extends JPanel implements Observer{
 	        gridNode.attachChild(l);
 	    }
 	
-	    for (int z = -300; z <= 300; z=z+10) {
-	        Line l = new Line("zLine" + z, new Vector3f[]{new Vector3f(-300f, 0f, (float) z), new Vector3f(300f, 0f, (float) z)}, null, null, null);
+	    for (float z = step; z <= max; z=z+step) {
+	        Line l = new Line("zLine" + z, new Vector3f[]{new Vector3f(0f, 0f, (float) z), new Vector3f(max, 0f, (float) z)}, null, null, null);
 	        l.setSolidColor(ColorRGBA.darkGray);
 	        l.setModelBound(new BoundingBox());
 	        l.updateModelBound();
@@ -633,7 +656,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	    }
 	    
 	    // rote x-Achse
-	    final Line xAxis = new Line("xAxis", new Vector3f[]{new Vector3f(-300f, 0f, 0f), new Vector3f(300f, 0f, 0f)}, null, null, null);
+	    final Line xAxis = new Line("xAxis", new Vector3f[]{new Vector3f(0f, 0f, 0f), new Vector3f(max, 0f, 0f)}, null, null, null);
 	    xAxis.setModelBound(new BoundingBox());
 	    xAxis.updateModelBound();
 	    xAxis.setSolidColor(ColorRGBA.red);
@@ -641,7 +664,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	    gridNode.attachChild(xAxis);
 	
 	    // blaue z-Achse
-	    final Line zAxis = new Line("zAxis", new Vector3f[]{new Vector3f(0f, 0f, -300f), new Vector3f(0f, 0f, 300f)}, null, null, null);
+	    final Line zAxis = new Line("zAxis", new Vector3f[]{new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, max)}, null, null, null);
 	    zAxis.setModelBound(new BoundingBox());
 	    zAxis.updateModelBound();
 	    zAxis.setSolidColor(ColorRGBA.blue);
@@ -653,10 +676,13 @@ public class ViewerPanel extends JPanel implements Observer{
 	public void update(Observable o, Object arg) {
 		if (arg instanceof DataSet) { // Datenimport
 			DataSet dataSet = (DataSet) arg;
-			dataNode = (new BattleSimMapper(dataSet, new Vector3f(300,
-					200, 300))).getDataRoot();
-			root.detachAllChildren();
-			root.attachChild(helperNode);
+			root.detachChild(dataNode);
+			helperNode.detachChild(gridNode);
+			
+			dataNode = mapper.getDataRoot(dataSet);
+			createGrid(new Vector2f(mapper.getSize().x/maximalDimenVector3f.x, mapper.getSize().y/maximalDimenVector3f.z), 100);
+			
+			helperNode.attachChild(gridNode);
 			root.attachChild(dataNode);
 		} else if (arg instanceof String) { //Selection
 			deselect();
