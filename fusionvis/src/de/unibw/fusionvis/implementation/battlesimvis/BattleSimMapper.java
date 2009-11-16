@@ -136,8 +136,15 @@ public class BattleSimMapper extends Mapper {
 			sphere.updateGeometricState(0, false);
 			sphere.setModelBound(new BoundingSphere());
 			sphere.updateModelBound();
+			
+			Node sphereNode = new Node(data.getId());
+			sphereNode.attachChild(sphere);
+			sphereNode.attachChild(new Node("orientationNode"));
+			sphereNode.attachChild(new Node("velocityNode"));
+			sphereNode.attachChild(new Node("futureConeNode"));
+			sphereNode.attachChild(new Node("pastConeNode"));
 
-			dataNode.attachChild(sphere);
+			dataNode.attachChild(sphereNode);
 			dataNode.updateGeometricState(0, false);
 			dataNode.updateRenderState();
 		}

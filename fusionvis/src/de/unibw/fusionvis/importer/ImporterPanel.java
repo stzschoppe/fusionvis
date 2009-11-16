@@ -438,7 +438,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	private javax.swing.JPanel importerOverviewPanel;
 	// private javax.swing.JSplitPane importerSplitPane;
 	private javax.swing.JSeparator jSeparator1;
-	protected DataSet modelAll;
+	public DataSet modelAll;
 	protected DataSet modelRed;
 	protected DataSet modelBlue;
 	protected DataSet modelUserDefined;
