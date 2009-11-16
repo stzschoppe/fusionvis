@@ -138,11 +138,16 @@ public class BattleSimMapper extends Mapper {
 			sphere.updateModelBound();
 			
 			Node sphereNode = new Node(data.getId());
+			Node orientationNode = initializeNode(new Node("orientationNode"));
+			Node velocityNode = initializeNode(new Node("velocityNode"));
+			Node futureConeNode = initializeNode(new Node("futureConeNode"));
+			Node pastConeNode = initializeNode(new Node("pastConeNode"));
+			
 			sphereNode.attachChild(sphere);
-			sphereNode.attachChild(new Node("orientationNode"));
-			sphereNode.attachChild(new Node("velocityNode"));
-			sphereNode.attachChild(new Node("futureConeNode"));
-			sphereNode.attachChild(new Node("pastConeNode"));
+			sphereNode.attachChild(orientationNode);
+			sphereNode.attachChild(velocityNode);
+			sphereNode.attachChild(futureConeNode);
+			sphereNode.attachChild(pastConeNode);
 
 			dataNode.attachChild(sphereNode);
 			dataNode.updateGeometricState(0, false);
@@ -257,6 +262,12 @@ public class BattleSimMapper extends Mapper {
 		double distance = 2 * R * asin(z);
 		
 		return (float) distance;
+	}
+	
+	protected Node initializeNode(Node node) {
+		node.attachChild(new Node("Dummy"));
+		node.detachAllChildren();
+		return node;
 	}
 
 }
