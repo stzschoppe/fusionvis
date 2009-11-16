@@ -80,13 +80,15 @@ public class ViewerPanel extends JPanel implements Observer{
     private MyImplementor impl;
     private Canvas glCanvas;
     
-    private BattleSimFusionPanel fusionPanel;
+    private BattleSimFusionPanel fusionPanel; //XXX zu strikte Spezialisierung
+    
+    public ImporterPanel importerPanel;
     
     private Node root;
     private Node gridNode;
     private Node helperNode;
 	private Node selectionNode;
-	private Node dataNode;
+	public Node dataNode;
     
 	private InputHandler input;	
 	private MouseLookHandler mouseLook;
@@ -95,7 +97,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	// private Camera cam;
 	private int camSpeed = 100;
 	
-	private String selectionId;
+	public  String selectionId;
 	private Camera cam;
 
     public ViewerPanel(ImporterPanel importerPanel)
@@ -103,6 +105,7 @@ public class ViewerPanel extends JPanel implements Observer{
     	observableSupport = new ObservableSupport();
     	observableSupport.addObserver(importerPanel);
     	this.logger = FusionVis.getLogger();
+    	this.importerPanel = importerPanel;
     	importerPanel.observableSupportForFilter.addObserver(this);
     	importerPanel.observableSupportForSelection.addObserver(this);
         try 
@@ -153,6 +156,7 @@ public class ViewerPanel extends JPanel implements Observer{
 		
 		fusionPanel = new BattleSimFusionPanel(this);
 		this.observableSupport.addObserver(fusionPanel);
+		importerPanel.observableSupportForFilter.addObserver(fusionPanel);
 		add(fusionPanel, BorderLayout.SOUTH);
                 
         // Groesse vom Fenster
@@ -456,6 +460,9 @@ public class ViewerPanel extends JPanel implements Observer{
 
 	public void select(Spatial pickData) {
 		if(pickData==null) return;
+		if (pickData.getName().equals("selectionBox")) {
+			return;
+		}
 		Spatial selectionBox = selectionNode.getChild("selectionBox");
 		selectionBox.setLocalTranslation((pickData.getLocalTranslation()));
 		selectionId = pickData.getName();
@@ -653,7 +660,7 @@ public class ViewerPanel extends JPanel implements Observer{
 		} else if (arg instanceof String) { //Selection
 			deselect();
 			String id = (String)arg;
-			Spatial toSelect = dataNode.getChild(id);
+			Spatial toSelect = ((Node)dataNode.getChild(id)).getChild(id);
 			if(toSelect!=null)
 				select(toSelect);
 			else deselect();
