@@ -63,6 +63,7 @@ import com.jmex.awt.lwjgl.LWJGLAWTCanvasConstructor;
 
 import de.unibw.fusionvis.FusionVis;
 import de.unibw.fusionvis.datamodel.DataSet;
+import de.unibw.fusionvis.implementation.battlesimvis.BattleSimFusionPanel;
 import de.unibw.fusionvis.implementation.battlesimvis.BattleSimMapper;
 import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.importer.ImporterPanel;
@@ -78,6 +79,8 @@ public class ViewerPanel extends JPanel implements Observer{
     private int width = 640, height = 480;
     private MyImplementor impl;
     private Canvas glCanvas;
+    
+    private BattleSimFusionPanel fusionPanel;
     
     private Node root;
     private Node gridNode;
@@ -146,6 +149,11 @@ public class ViewerPanel extends JPanel implements Observer{
 
 		setLayout(new BorderLayout());
 		add(getGlCanvas(), BorderLayout.CENTER);
+		
+		
+		fusionPanel = new BattleSimFusionPanel(this);
+		this.observableSupport.addObserver(fusionPanel);
+		add(fusionPanel, BorderLayout.SOUTH);
                 
         // Groesse vom Fenster
         setSize(new Dimension(800, 600));
