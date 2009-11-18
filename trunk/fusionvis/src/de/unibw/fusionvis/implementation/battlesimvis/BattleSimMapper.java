@@ -30,12 +30,12 @@ import de.unibw.fusionvis.viewer.TestViewer;
 
 public class BattleSimMapper extends Mapper {
 
-	public BattleSimMapper(Vector3f maximalDimenVector3f) {
-		super(maximalDimenVector3f);
+	public BattleSimMapper(Vector3f maximalDimenVector3f, float unitSize) {
+		super(maximalDimenVector3f, unitSize);
 	}
 
-	public BattleSimMapper(DataSet dataSet, Vector3f maximalDimenVector3f) {
-		super(dataSet, maximalDimenVector3f);
+	public BattleSimMapper(DataSet dataSet, Vector3f maximalDimenVector3f, float unitSize) {
+		super(dataSet, maximalDimenVector3f, unitSize);
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class BattleSimMapper extends Mapper {
 
 		for (Data data : dataSet.getData()) {
 			Sphere sphere = new Sphere(data.getId(), new Vector3f(0, 0, 0), 15,
-					15, 5f);
+					15, unitSize);
 			sphere.setLocalTranslation(getPosition(data, transform));
 			sphere.updateGeometricState(0, false);
 			sphere.setModelBound(new BoundingSphere());

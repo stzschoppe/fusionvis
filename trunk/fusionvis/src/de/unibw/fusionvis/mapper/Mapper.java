@@ -26,15 +26,18 @@ public abstract class Mapper {
 	protected Node dataNode = null;
 	protected DataSet dataSet;
 	protected Vector3f maximalDimenVector3f;
+	protected float unitSize;
 
-	public Mapper(Vector3f maximalDimenVector3f) {
+	public Mapper(Vector3f maximalDimenVector3f,  float unitSize) {
 		this.dataSet = null;
 		this.maximalDimenVector3f = maximalDimenVector3f;
+		this.unitSize = unitSize;
 	}
 	
-	public Mapper(DataSet dataSet, Vector3f maximalDimenVector3f) {
+	public Mapper(DataSet dataSet, Vector3f maximalDimenVector3f, float unitSize) {
 		this.dataSet = dataSet;
 		this.maximalDimenVector3f = maximalDimenVector3f;
+		this.unitSize = unitSize;
 	}
 
 	// Abstract
