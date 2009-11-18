@@ -101,6 +101,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	public  String selectionId;
 	public Camera cam;
 	private Mapper mapper;
+	private float unitSize;
 	/**
 	 * x und z Komponente geben an, wieviele Unit pro Meter darzustellen sind.
 	 * y gibt an auf welchem Intervall die Zeit in Unit dargestellt wird
@@ -114,10 +115,11 @@ public class ViewerPanel extends JPanel implements Observer{
      * @param importerPanel Das ImporterPanel, mit dem beim selektieren zusammengearbeitet
      * werden soll.
      */
-    public ViewerPanel(ImporterPanel importerPanel)
+    public ViewerPanel(ImporterPanel importerPanel, float unitSize)
     {    
-		mapper = new BattleSimMapper(maximalDimenVector3f);
-    	observableSupport = new ObservableSupport();
+		mapper = new BattleSimMapper(maximalDimenVector3f, unitSize);
+    	this.unitSize = unitSize;
+		observableSupport = new ObservableSupport();
     	observableSupport.addObserver(importerPanel);
     	this.logger = FusionVis.getLogger();
     	this.importerPanel = importerPanel;
@@ -335,7 +337,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	        // happens
 	        materialState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
 
-            Box box = new Box("selectionBox", new Vector3f(0, 0, 0), 5f, 5f, 5f);
+            Box box = new Box("selectionBox", new Vector3f(0, 0, 0), unitSize, unitSize, unitSize);
             box.setModelBound(new BoundingSphere());
             box.updateModelBound();
             
