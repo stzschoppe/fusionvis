@@ -12,6 +12,7 @@
 package de.unibw.fusionvis.implementation.battlesimvis;
 
 import java.awt.event.ItemEvent;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -29,6 +30,7 @@ import com.jme.scene.state.BlendState;
 import com.jme.scene.state.MaterialState;
 import com.jme.system.DisplaySystem;
 
+import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.viewer.ViewerPanel;
 
@@ -53,6 +55,7 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	 */
 	public BattleSimFusionPanel(ViewerPanel viewerPanel) {
 		this.viewerPanel = viewerPanel;
+		coneHeight = viewerPanel.getMaximalDimenVector3f().y;
 		initComponents();
 	}
 
@@ -259,11 +262,6 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 						fusionRadiusTextFieldActionPerformed(evt);
 					}
 				});
-		fusionRadiusTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-			public void keyTyped(java.awt.event.KeyEvent evt) {
-				fusionRadiusTextFieldKeyTyped(evt);
-			}
-		});
 
 		fusionButtonGroup.add(fusionFutureRadioButton);
 		fusionFutureRadioButton.setText("zukünftig");
@@ -506,6 +504,7 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	}// GEN-LAST:event_fusionVectorCheckBoxItemStateChanged
 
 	private void fusionHeightTextFieldKeyTyped(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_fusionHeightTextFieldKeyTyped
+		float tempHeight = coneHeight;
 		try {
 			coneHeight = Float.parseFloat(fusionHeightTextField.getText());
 			if (!fusionInvisibleRadioButton.isSelected()) {
@@ -517,25 +516,10 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 				}
 			}
 		} catch (Exception e) {
-			coneHeight = 100;
+			coneHeight = tempHeight;
 		}
 	}// GEN-LAST:event_fusionHeightTextFieldKeyTyped
 
-	private void fusionRadiusTextFieldKeyTyped(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_fusionRadiusTextFieldKeyTyped
-		try {
-			coneRadius = Float.parseFloat(fusionRadiusTextField.getText());
-			if (!fusionInvisibleRadioButton.isSelected()) {
-				if (fusionFutureRadioButton
-						.isSelected()) {
-					updateFutureCone();
-				} else if (fusionPastRadioButton.isSelected()) {
-					updatePastCone();
-				}
-			}
-		} catch (Exception e) {
-			coneRadius = 50;
-		}
-	}// GEN-LAST:event_fusionRadiusTextFieldKeyTyped
 
 	private void fusionInvisibleRadioButtonItemStateChanged(
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_fusionInvisibleRadioButtonItemStateChanged
@@ -546,6 +530,8 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			Node pastConeNode = (Node) (node.getChild("pastConeNode"));
 			futureConeNode.detachAllChildren();
 			pastConeNode.detachAllChildren();
+			pastCones.remove(viewerPanel.selectionId);
+			futureCones.remove(viewerPanel.selectionId);
 		}
 	}// GEN-LAST:event_fusionInvisibleRadioButtonItemStateChanged
 
@@ -562,9 +548,10 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			Node pastConeNode = (Node) (node.getChild("pastConeNode"));
 			futureConeNode.detachAllChildren();
 			pastConeNode.detachAllChildren();
-
+			pastCones.remove(viewerPanel.selectionId);
+			futureCones.add(viewerPanel.selectionId);
 			futureConeNode
-					.attachChild(createCone(coneHeight, coneRadius, true));
+					.attachChild(createCone(coneHeight, true));
 		}
 	}
 
@@ -581,9 +568,12 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			Node pastConeNode = (Node) (node.getChild("pastConeNode"));
 			futureConeNode.detachAllChildren();
 			pastConeNode.detachAllChildren();
-
+			
+			futureCones.remove(viewerPanel.selectionId);
+			pastCones.add(viewerPanel.selectionId);
+			
 			pastConeNode
-					.attachChild(createCone(coneHeight, coneRadius, false));
+					.attachChild(createCone(coneHeight, false));
 		}
 	}
 
@@ -597,23 +587,23 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 		switch (fusionCamViewComboBox.getSelectedIndex()) {
 		case 0:
             viewerPanel.cam.lookAt(new Vector3f(1,-1,1).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
-            viewerPanel.cam.getLocation().y = 200;
-            viewerPanel.cam.getLocation().x = -150;
-            viewerPanel.cam.getLocation().z = -150;
+            viewerPanel.cam.getLocation().y = 20;
+            viewerPanel.cam.getLocation().x = -15;
+            viewerPanel.cam.getLocation().z = -15;
             viewerPanel.cam.update();
 			break;
 			
 		case 1:            
-			viewerPanel.cam.getLocation().y = 500;
-            viewerPanel.cam.getLocation().x = 180;
-            viewerPanel.cam.getLocation().z = 180;
+			viewerPanel.cam.getLocation().y = 50;
+            viewerPanel.cam.getLocation().x = 18;
+            viewerPanel.cam.getLocation().z = 18;
             viewerPanel.cam.lookAt(new Vector3f(0,-1,0).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
             viewerPanel.cam.update();
 			break;
 		case 2:
-			viewerPanel.cam.getLocation().y = 200;
-            viewerPanel.cam.getLocation().x = 450;
-            viewerPanel.cam.getLocation().z = 450;
+			viewerPanel.cam.getLocation().y = 20;
+            viewerPanel.cam.getLocation().x = 45;
+            viewerPanel.cam.getLocation().z = 45;
             viewerPanel.cam.lookAt(new Vector3f(-1,-1,-1).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
             viewerPanel.cam.update();
 			break;
@@ -649,8 +639,10 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	// End of variables declaration//GEN-END:variables
 
 	private ViewerPanel viewerPanel;
-	private float coneHeight = 100;
-	private float coneRadius = 50;
+	private float coneHeight;
+	
+	private HashSet<String> futureCones = new HashSet<String>();
+	private HashSet<String> pastCones  = new HashSet<String>();
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -678,9 +670,9 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			fusionOrientationCheckBox
 					.setSelected(orientationNode.getChildren().size() != 0);
 			
-			if (futureConeNode.getChildren().size() != 0)
+			if (futureCones.contains(id))
 				fusionFutureRadioButton.setSelected(true);
-			else if (pastConeNode.getChildren().size() != 0)
+			else if (pastCones.contains(id))
 				fusionPastRadioButton.setSelected(true);
 			else
 				fusionInvisibleRadioButton.setSelected(true);
@@ -689,7 +681,6 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 
 			fusionHeightTextField.setText(Float.toString(coneHeight)); // TODO aus den Werten
 			// auslesen
-			fusionRadiusTextField.setText(Float.toString(coneRadius));
 			fusionCandidateList.setModel(new DefaultListModel());
 		} else {
 
@@ -701,15 +692,21 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	 * 
 	 * @param height
 	 *            Höhe des Kegels in Unit.
-	 * @param radius
-	 *            Radius des Kegels in Unit.
 	 * @param intoFuture
 	 *            Gibt an, ob der Kegel nach oben (<code>true</code>) oder nach
 	 *            unten (<code>false</code>) geöffnet ist.
 	 * @return
 	 */
-	private Spatial createCone(float height, float radius, boolean intoFuture) {
+	private Spatial createCone(float height, boolean intoFuture) {
 		String id = viewerPanel.selectionId;
+		float velocity = 0;
+		
+		// Geschwindigkeit in km/h auslesen
+		Data data = viewerPanel.importerPanel.modelAll.getDataById(id);
+		if (data != null) {
+			velocity = data.getContainerProperty("Velocity").getValueAsContainerProperty().getComponent("XVelocity").getValueAsFloat();
+		}
+		
 		final BlendState alphaState = DisplaySystem.getDisplaySystem()
 				.getRenderer().createBlendState();
 		alphaState.setBlendEnabled(true);
@@ -740,6 +737,9 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 		// setting them to transparent, try commenting this line to see what
 		// happens
 		materialState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
+		
+		float coneRadius = (float) (height * velocity /3.6);
+		System.out.println("XXX " + coneRadius);
 
 		Cylinder cone = new Cylinder("cone " + viewerPanel.selectionId, 15, 15,
 				2, -4, false);
@@ -755,11 +755,11 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			cone.setLocalRotation(new Quaternion(rot1));
 			cone.setLocalTranslation(spatial.getLocalTranslation().x, spatial
 					.getLocalTranslation().y
-					+ coneHeight / 2, spatial.getLocalTranslation().z);
+					+ height / 2, spatial.getLocalTranslation().z);
 		} else {
 			cone.setLocalRotation(new Quaternion(rot2));
 			cone.setLocalTranslation(spatial.getLocalTranslation().x, spatial
-					.getLocalTranslation().y - coneHeight / 2, spatial.getLocalTranslation().z);
+					.getLocalTranslation().y - height / 2, spatial.getLocalTranslation().z);
 
 		}
 

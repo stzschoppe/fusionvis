@@ -29,6 +29,17 @@ import de.unibw.fusionvis.mapper.Mapper;
 import de.unibw.fusionvis.viewer.TestViewer;
 
 public class BattleSimMapper extends Mapper {
+	
+	float latMin = 90f;
+	float latMax = -90f;
+
+	float lonMin = 180f;
+	float lonMax = -180f;
+
+	GregorianCalendar timeMin = new GregorianCalendar(3000, 11, 31); // 31.Dezember.3000
+	GregorianCalendar timeMax = new GregorianCalendar(0, 0, 1); // 1.Januar
+	// im Jahre
+	// 0
 
 	public BattleSimMapper(Vector3f maximalDimenVector3f, float unitSize) {
 		super(maximalDimenVector3f, unitSize);
@@ -39,7 +50,7 @@ public class BattleSimMapper extends Mapper {
 	}
 
 	@Override
-	protected Vector3f[] getCoefficient() {
+	protected Vector3f getCoefficient() {
 		// Koeffizienten der einzelnen Dimensionen
 		float x = 1, y = 1, z = 1;
 
@@ -47,18 +58,17 @@ public class BattleSimMapper extends Mapper {
 		
 		// Spannweite in die Projiziert werden soll
 		float xWidth = basePane.x/maximalDimenVector3f.x;
-		float yWidth = maximalDimenVector3f.y;
 		float zWidth = basePane.y/maximalDimenVector3f.z;
 
 		// Bestimmung der Oberen und unteren Grenzen der Dimensionen.
-		float latMin = 90f;
-		float latMax = -90f;
+		latMin = 90f;
+		latMax = -90f;
 
-		float lonMin = 180f;
-		float lonMax = -180f;
+		lonMin = 180f;
+		lonMax = -180f;
 
-		GregorianCalendar timeMin = new GregorianCalendar(3000, 11, 31); // 31.Dezember.3000
-		GregorianCalendar timeMax = new GregorianCalendar(0, 0, 1); // 1.Januar
+		timeMin = new GregorianCalendar(3000, 11, 31); // 31.Dezember.3000
+		timeMax = new GregorianCalendar(0, 0, 1); // 1.Januar
 		// im Jahre
 		// 0
 
@@ -90,6 +100,8 @@ public class BattleSimMapper extends Mapper {
 				timeMax = data.getPosition().getComponent("LastModified")
 						.getValueAsDate();
 			}
+			System.out.println(data.getId() + " " + data.getPosition().getComponent("LastModified")
+					.getValueAsDate().getTimeInMillis());
 		}
 
 		if (lonMax != lonMin) {
@@ -102,6 +114,7 @@ public class BattleSimMapper extends Mapper {
 		} else {
 			z = 1;
 		}
+		float yWidth = (timeMax.getTimeInMillis()-timeMin.getTimeInMillis()) / (maximalDimenVector3f.y*1000);
 		if (timeMax.getTimeInMillis() != timeMin.getTimeInMillis()) {
 			y = yWidth
 					/ (timeMax.getTimeInMillis() - timeMin.getTimeInMillis());
@@ -112,12 +125,11 @@ public class BattleSimMapper extends Mapper {
 		Vector3f offset = new Vector3f(-lonMin, -timeMin.getTimeInMillis(),
 				-latMin);
 		Vector3f factor = new Vector3f(x, y, z);
-		Vector3f[] result = { factor, offset };
 
-		 System.out.println("Latitude: " + distanceonEarth(new Vector2f(lonMin, latMin), new Vector2f(lonMin, latMax)));
-		 System.out.println("Longitude: " + distanceonEarth(new Vector2f(lonMin, latMin), new Vector2f(lonMax, latMin)));
-		 // System.out.println("Offset " + offset);
-		return result;
+//		 System.out.println("Latitude: " + distanceonEarth(new Vector2f(lonMin, latMin), new Vector2f(lonMin, latMax)));
+//		 System.out.println("Longitude: " + distanceonEarth(new Vector2f(lonMin, latMin), new Vector2f(lonMax, latMin)));
+//		 System.out.println(yWidth +" Offset " + y);
+		return factor;
 	}
 
 	@Override
@@ -127,14 +139,12 @@ public class BattleSimMapper extends Mapper {
 		// dataNode.setLightCombineMode(LightCombineMode.Off);// eliminiere
 		// jeglichen Lichteinfluss
 
-		Vector3f[] transform = getCoefficient();
-		Vector3f factor = transform[0];
-		Vector3f offset = transform[1];
+		Vector3f factor = getCoefficient();
 
 		for (Data data : dataSet.getData()) {
 			Sphere sphere = new Sphere(data.getId(), new Vector3f(0, 0, 0), 15,
 					15, unitSize);
-			sphere.setLocalTranslation(getPosition(data, transform));
+			sphere.setLocalTranslation(getPosition(data, factor));
 			sphere.updateGeometricState(0, false);
 			sphere.setModelBound(new BoundingSphere());
 			sphere.updateModelBound();
@@ -229,14 +239,14 @@ public class BattleSimMapper extends Mapper {
 		}
 	}
 
-	private Vector3f getPosition(Data data, Vector3f[] transform) {
-		float x = (data.getPosition().getComponent("Lon").getValueAsFloat() + transform[1].x)
-				* transform[0].x;
-		float z = (data.getPosition().getComponent("Lat").getValueAsFloat() + transform[1].z)
-				* transform[0].z;
+	private Vector3f getPosition(Data data, Vector3f transform) {
+		float x = (data.getPosition().getComponent("Lon").getValueAsFloat() -lonMin)
+				* transform.x;
+		float z = (data.getPosition().getComponent("Lat").getValueAsFloat() - latMin)
+				* transform.z;
 		float y = (data.getPosition().getComponent("LastModified")
-				.getValueAsFloat() + transform[1].y)
-				* transform[0].y;
+				.getValueAsDate().getTimeInMillis() - timeMin.getTimeInMillis())
+				* transform.y;
 		// System.out.println(new Vector3f(x, y, z));
 		return new Vector3f(x, y, z);
 
@@ -319,6 +329,30 @@ public class BattleSimMapper extends Mapper {
 		Vector2f pointUR = new Vector2f(lonMax,latMin); // unten rechts
 		
 		return new Vector2f(distanceonEarth(pointUL, pointUR), distanceonEarth(pointOL, pointUL));
+	}
+
+	public float getLatMin() {
+		return latMin;
+	}
+
+	public float getLatMax() {
+		return latMax;
+	}
+
+	public float getLonMin() {
+		return lonMin;
+	}
+
+	public float getLonMax() {
+		return lonMax;
+	}
+
+	public GregorianCalendar getTimeMin() {
+		return timeMin;
+	}
+
+	public GregorianCalendar getTimeMax() {
+		return timeMax;
 	}
 
 }
