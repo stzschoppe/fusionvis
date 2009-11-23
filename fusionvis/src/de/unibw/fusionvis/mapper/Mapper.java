@@ -49,7 +49,7 @@ public abstract class Mapper {
 	 * 
 	 * @return Array, an Position 0 stehen die Faktoren, an 1 die Offsets.
 	 */
-	protected abstract Vector3f[] getCoefficient(); 
+	protected abstract Vector3f getCoefficient(); 
 	
 	/**
 	 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene.

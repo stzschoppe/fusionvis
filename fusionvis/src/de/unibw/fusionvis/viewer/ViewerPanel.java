@@ -48,6 +48,8 @@ import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.Spatial.LightCombineMode;
 import com.jme.scene.shape.Box;
+import com.jme.scene.shape.Cylinder;
+import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
@@ -96,19 +98,18 @@ public class ViewerPanel extends JPanel implements Observer{
 	private KeyboardLookHandler keyboardLook;
     
 	// private Camera cam;
-	private int camSpeed = 100;
+	private int camSpeed = 50;
 	
 	public  String selectionId;
 	public Camera cam;
 	private Mapper mapper;
 	private float unitSize;
 	/**
-	 * x und z Komponente geben an, wieviele Unit pro Meter darzustellen sind.
-	 * y gibt an auf welchem Intervall die Zeit in Unit dargestellt wird
-	 * [0|y]
+	 * x und z Komponente geben an, wieviele Meter pro Unit darzustellen sind.
+	 * y gibt an wieviele Sekunden pro Unit dargestellt werden.
 	 */
-	final Vector3f maximalDimenVector3f = new Vector3f(100,
-			200, 100);
+	public final Vector3f maximalDimenVector3f = new Vector3f(100,
+			20, 100);
 
     /**
      * Konstruktor
@@ -117,7 +118,7 @@ public class ViewerPanel extends JPanel implements Observer{
      */
     public ViewerPanel(ImporterPanel importerPanel, float unitSize)
     {    
-		mapper = new BattleSimMapper(maximalDimenVector3f, unitSize);
+		mapper = new BattleSimMapper(getMaximalDimenVector3f(), unitSize);
     	this.unitSize = unitSize;
 		observableSupport = new ObservableSupport();
     	observableSupport.addObserver(importerPanel);
@@ -280,9 +281,9 @@ public class ViewerPanel extends JPanel implements Observer{
             cam.setFrustumPerspective(45.0f, (float) glCanvas.getWidth() / (float) glCanvas.getHeight(), 1, 10000);
             //cam.setUp(new Vector3f(0,1,0));
             cam.lookAt(new Vector3f(150,0,150), Vector3f.UNIT_Y); 
-            cam.getLocation().y = 200;
-            cam.getLocation().x = -150;
-            cam.getLocation().z = -150;
+            cam.getLocation().y = 20;
+            cam.getLocation().x = -15;
+            cam.getLocation().z = -15;
             cam.update();
             
             
@@ -477,10 +478,7 @@ public class ViewerPanel extends JPanel implements Observer{
 		}
 
 	public void select(Spatial pickData) {
-		if(pickData==null) return;
-		if (pickData.getName().equals("selectionBox")) {
-			return;
-		}
+		if(!(pickData instanceof Sphere)) return;
 		Spatial selectionBox = selectionNode.getChild("selectionBox");
 		selectionBox.setLocalTranslation((pickData.getLocalTranslation()));
 		selectionId = pickData.getName();
@@ -682,7 +680,7 @@ public class ViewerPanel extends JPanel implements Observer{
 			helperNode.detachChild(gridNode);
 			
 			dataNode = mapper.getDataRoot(dataSet);
-			createGrid(new Vector2f(mapper.getSize().x/maximalDimenVector3f.x, mapper.getSize().y/maximalDimenVector3f.z), 100);
+			createGrid(new Vector2f(mapper.getSize().x/getMaximalDimenVector3f().x, mapper.getSize().y/getMaximalDimenVector3f().z), 10);
 			
 			helperNode.attachChild(gridNode);
 			root.attachChild(dataNode);
@@ -696,6 +694,13 @@ public class ViewerPanel extends JPanel implements Observer{
 		}
 	}
 	
+	/**
+	 * @return the maximalDimenVector3f
+	 */
+	public Vector3f getMaximalDimenVector3f() {
+		return maximalDimenVector3f;
+	}
+
 	public class ObservableSupport extends Observable {
 		public ObservableSupport() {
 		}

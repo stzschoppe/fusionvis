@@ -65,6 +65,7 @@ public class DateProperty extends AbstractProperty {
 	}
 
 	@Override
+	@Deprecated
 	public int getValueAsInt() {
 		return (int)value.getTimeInMillis();
 	}
@@ -116,6 +117,7 @@ public class DateProperty extends AbstractProperty {
 	}
 
 	@Override
+	@Deprecated
 	public float getValueAsFloat() {
 		return value.getTimeInMillis();
 	}
