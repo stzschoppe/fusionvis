@@ -674,14 +674,21 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			fusionOrientationCheckBox.setSelected(orientationNode.getChildren()
 					.size() != 0);
 
-			if (futureCones.contains(id))
+			if (futureCones.contains(id)) {
 				fusionFutureRadioButton.setSelected(true);
-			else if (pastCones.contains(id))
+				Cylinder cone = (Cylinder) futureConeNode.getChild("cone " + id);
+				//fusionCandidateList.setListData(detectSpheresInCone(cone, true).toArray());
+			}
+			else if (pastCones.contains(id)){
 				fusionPastRadioButton.setSelected(true);
-			else
+				Cylinder cone = (Cylinder) pastConeNode.getChild("cone " + id);
+				//fusionCandidateList.setListData(detectSpheresInCone(cone, true).toArray());
+			}
+			else {
 				fusionInvisibleRadioButton.setSelected(true);
+				fusionCandidateList.setModel(new DefaultListModel());
+			}
 
-			// TODO fusionCandidateList befüllen
 
 			fusionHeightTextField.setText(Float.toString(maxConeHeight)); // TODO
 																			// aus
@@ -788,8 +795,67 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 
 		cone.setModelBound(new BoundingBox());
 		cone.updateModelBound();
+		
+		fusionCandidateList.setListData(detectSpheresInCone(cone, intoFuture).toArray());
 
 		return cone;
+	}
+
+	private HashSet<String> detectSpheresInCone(Cylinder cone, boolean up) {
+		HashSet<String> result = new HashSet<String>();
+		final Vector3f coneStart = new Vector3f(cone.getLocalTranslation());
+		Vector3f edgePoint;
+		Vector3f coneYAxis;
+		if (up) {
+			coneStart.setY(coneStart.getY()- (cone.getHeight() / 2));
+			edgePoint = new Vector3f(coneStart);
+			edgePoint.y += cone.getHeight();
+			edgePoint.x += cone.getRadius2();
+			coneYAxis = Vector3f.UNIT_Y.multLocal(-1);
+		} else {
+			coneStart.setY(coneStart.getY()+ (cone.getHeight() / 2));
+			edgePoint = coneStart.clone();
+			edgePoint.y -= cone.getHeight();
+			edgePoint.x += cone.getRadius2();
+			coneYAxis = Vector3f.UNIT_Y;
+		}
+		for (String id : viewerPanel.importerPanel.modelAll.getIds()) {
+
+			Spatial spatial = ((Node) viewerPanel.dataNode.getChild(id))
+			.getChild(id);
+			Vector3f pointToTest = spatial.getLocalTranslation();
+			if (up) {
+				if (spatial == null || pointToTest.y <= coneStart.y + 0.0005) {
+					continue; //Punkt liegt unterhalb des Cones
+				}
+			} else {
+				if (spatial == null || pointToTest.y >= coneStart.y + 0.0005) {
+					continue; //Punkt liegt unterhalb des Cones
+				}
+			}
+			Vector3f edgeVector = coneStart.subtract(edgePoint).normalize();
+			Vector3f testVector = coneStart.subtract(pointToTest).normalize();
+			
+			float angleCone = coneYAxis.angleBetween(edgeVector);
+			float angleTest = coneYAxis.angleBetween(testVector);
+			
+			if (angleTest<angleCone) {
+				//Collision
+				result.add(id);
+			}
+//			System.out.println("\n==="+id+"===");
+//			System.out.println("cone.getLocalTranslation() "+cone.getLocalTranslation());
+//			System.out.println("coneStart " +coneStart);
+//			System.out.println("edgePoint " +edgePoint);
+//			System.out.println("pointToTest " +pointToTest);
+//			System.out.println("coneYAxis " +coneYAxis);
+//			System.out.println("testVector " +testVector);
+//			System.out.println("edgeVector " +edgeVector);
+//			System.out.println("angleTest " +angleTest);
+//			System.out.println("angleCone " +angleCone);
+		}
+
+		return result;
 	}
 
 }
