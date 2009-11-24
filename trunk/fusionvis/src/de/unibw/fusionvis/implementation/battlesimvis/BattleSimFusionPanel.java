@@ -526,6 +526,7 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			pastCones.remove(viewerPanel.selectionId);
 			futureCones.remove(viewerPanel.selectionId);
 		}
+		fusionCandidateList.setModel(new DefaultListModel());
 	}// GEN-LAST:event_fusionInvisibleRadioButtonItemStateChanged
 
 	private void fusionFutureRadioButtonItemStateChanged(
