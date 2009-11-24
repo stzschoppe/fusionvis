@@ -11,6 +11,7 @@
 
 package de.unibw.fusionvis.implementation.battlesimvis;
 
+import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.util.HashSet;
 import java.util.Observable;
@@ -432,47 +433,40 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 
 		add(centerPanel, java.awt.BorderLayout.CENTER);
 
-		northLabel.setMinimumSize(new java.awt.Dimension(5, 5));
+		fusionHeightLabel.setVisible(false);
+		fusionHeightTextField.setVisible(false);
+		fusionRadiusLabel.setVisible(false);
+		fusionRadiusTextField.setVisible(false);
+		
+		northLabel.setMinimumSize(new java.awt.Dimension(100, 5));
 
 		fusionIdLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 		fusionIdLabel.setText("Id");
+		fusionIdLabel.setSize(200, 17);
+        fusionIdLabel.setMaximumSize(new java.awt.Dimension(17, 400));
+        fusionIdLabel.setPreferredSize(new java.awt.Dimension(17, 400));
+        fusionIdLabel.setMinimumSize(new java.awt.Dimension(17, 400));
+		
+        javax.swing.GroupLayout northLabelLayout = new javax.swing.GroupLayout(northLabel);
+        northLabel.setLayout(northLabelLayout);
+        northLabelLayout.setHorizontalGroup(
+            northLabelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(fusionSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+            .addGroup(northLabelLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(fusionIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        northLabelLayout.setVerticalGroup(
+            northLabelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(northLabelLayout.createSequentialGroup()
+                .addComponent(fusionIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fusionSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
-		javax.swing.GroupLayout northLabelLayout = new javax.swing.GroupLayout(
-				northLabel);
-		northLabel.setLayout(northLabelLayout);
-		northLabelLayout.setHorizontalGroup(northLabelLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						northLabelLayout.createSequentialGroup().addGap(10, 10,
-								10).addComponent(fusionIdLabel,
-								javax.swing.GroupLayout.PREFERRED_SIZE, 136,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(362, Short.MAX_VALUE))
-				.addComponent(fusionSeparator3,
-						javax.swing.GroupLayout.DEFAULT_SIZE, 508,
-						Short.MAX_VALUE));
-		northLabelLayout
-				.setVerticalGroup(northLabelLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								northLabelLayout
-										.createSequentialGroup()
-										.addComponent(
-												fusionIdLabel,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												29,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												fusionSeparator3,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												2,
-												javax.swing.GroupLayout.PREFERRED_SIZE)));
-
-		add(northLabel, java.awt.BorderLayout.NORTH);
-	}// </editor-fold>//GEN-END:initComponents
+        add(northLabel, java.awt.BorderLayout.NORTH);
+    }// </editor-fold>//GEN-END:initComponents
 
 	private void fusionVectorCheckBoxActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fusionVectorCheckBoxActionPerformed
