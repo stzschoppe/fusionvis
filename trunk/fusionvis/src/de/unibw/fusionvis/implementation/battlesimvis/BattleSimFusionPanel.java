@@ -55,7 +55,8 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	 */
 	public BattleSimFusionPanel(ViewerPanel viewerPanel) {
 		this.viewerPanel = viewerPanel;
-		coneHeight = viewerPanel.getMaximalDimenVector3f().y;
+		maxConeHeight = ((BattleSimMapper) viewerPanel.mapper).getTimeSpan()
+				/ viewerPanel.getMaximalDimenVector3f().y;
 		initComponents();
 	}
 
@@ -480,12 +481,12 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 
 	private void fusionHeightTextFieldActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fusionHeightTextFieldActionPerformed
-//TODO
+	// TODO
 	}// GEN-LAST:event_fusionHeightTextFieldActionPerformed
 
 	private void fusionRadiusTextFieldActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fusionRadiusTextFieldActionPerformed
-//TODO
+	// TODO
 	}// GEN-LAST:event_fusionRadiusTextFieldActionPerformed
 
 	private void fusionCamViewComboBoxActionPerformed(
@@ -504,22 +505,20 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	}// GEN-LAST:event_fusionVectorCheckBoxItemStateChanged
 
 	private void fusionHeightTextFieldKeyTyped(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_fusionHeightTextFieldKeyTyped
-		float tempHeight = coneHeight;
+		float tempHeight = maxConeHeight;
 		try {
-			coneHeight = Float.parseFloat(fusionHeightTextField.getText());
+			maxConeHeight = Float.parseFloat(fusionHeightTextField.getText());
 			if (!fusionInvisibleRadioButton.isSelected()) {
-				if (fusionFutureRadioButton
-						.isSelected()) {
+				if (fusionFutureRadioButton.isSelected()) {
 					updateFutureCone();
 				} else if (fusionPastRadioButton.isSelected()) {
 					updatePastCone();
 				}
 			}
 		} catch (Exception e) {
-			coneHeight = tempHeight;
+			maxConeHeight = tempHeight;
 		}
 	}// GEN-LAST:event_fusionHeightTextFieldKeyTyped
-
 
 	private void fusionInvisibleRadioButtonItemStateChanged(
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_fusionInvisibleRadioButtonItemStateChanged
@@ -541,6 +540,8 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	}// GEN-LAST:event_fusionFutureRadioButtonItemStateChanged
 
 	private void updateFutureCone() {
+		maxConeHeight = ((BattleSimMapper) viewerPanel.mapper).getTimeSpan()
+				/ viewerPanel.getMaximalDimenVector3f().y;
 		if (viewerPanel.selectionId != null) {
 			Node node = (Node) viewerPanel.dataNode
 					.getChild(viewerPanel.selectionId);
@@ -550,8 +551,7 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			pastConeNode.detachAllChildren();
 			pastCones.remove(viewerPanel.selectionId);
 			futureCones.add(viewerPanel.selectionId);
-			futureConeNode
-					.attachChild(createCone(coneHeight, true));
+			futureConeNode.attachChild(createCone(true));
 		}
 	}
 
@@ -561,6 +561,8 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	}// GEN-LAST:event_fusionPastRadioButtonItemStateChanged
 
 	private void updatePastCone() {
+		maxConeHeight = ((BattleSimMapper) viewerPanel.mapper).getTimeSpan()
+				/ viewerPanel.getMaximalDimenVector3f().y;
 		if (viewerPanel.selectionId != null) {
 			Node node = (Node) viewerPanel.dataNode
 					.getChild(viewerPanel.selectionId);
@@ -568,12 +570,11 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			Node pastConeNode = (Node) (node.getChild("pastConeNode"));
 			futureConeNode.detachAllChildren();
 			pastConeNode.detachAllChildren();
-			
+
 			futureCones.remove(viewerPanel.selectionId);
 			pastCones.add(viewerPanel.selectionId);
-			
-			pastConeNode
-					.attachChild(createCone(coneHeight, false));
+
+			pastConeNode.attachChild(createCone(false));
 		}
 	}
 
@@ -586,26 +587,29 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_fusionCamViewComboBoxItemStateChanged
 		switch (fusionCamViewComboBox.getSelectedIndex()) {
 		case 0:
-            viewerPanel.cam.lookAt(new Vector3f(1,-1,1).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
-            viewerPanel.cam.getLocation().y = 20;
-            viewerPanel.cam.getLocation().x = -15;
-            viewerPanel.cam.getLocation().z = -15;
-            viewerPanel.cam.update();
+			viewerPanel.cam.lookAt(new Vector3f(1, -1, 1).normalizeLocal()
+					.multLocal(1000), Vector3f.UNIT_Y);
+			viewerPanel.cam.getLocation().y = 20;
+			viewerPanel.cam.getLocation().x = -15;
+			viewerPanel.cam.getLocation().z = -15;
+			viewerPanel.cam.update();
 			break;
-			
-		case 1:            
+
+		case 1:
 			viewerPanel.cam.getLocation().y = 50;
-            viewerPanel.cam.getLocation().x = 18;
-            viewerPanel.cam.getLocation().z = 18;
-            viewerPanel.cam.lookAt(new Vector3f(0,-1,0).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
-            viewerPanel.cam.update();
+			viewerPanel.cam.getLocation().x = 18;
+			viewerPanel.cam.getLocation().z = 18;
+			viewerPanel.cam.lookAt(new Vector3f(0, -1, 0).normalizeLocal()
+					.multLocal(1000), Vector3f.UNIT_Y);
+			viewerPanel.cam.update();
 			break;
 		case 2:
 			viewerPanel.cam.getLocation().y = 20;
-            viewerPanel.cam.getLocation().x = 45;
-            viewerPanel.cam.getLocation().z = 45;
-            viewerPanel.cam.lookAt(new Vector3f(-1,-1,-1).normalizeLocal().multLocal(1000), Vector3f.UNIT_Y); 
-            viewerPanel.cam.update();
+			viewerPanel.cam.getLocation().x = 45;
+			viewerPanel.cam.getLocation().z = 45;
+			viewerPanel.cam.lookAt(new Vector3f(-1, -1, -1).normalizeLocal()
+					.multLocal(1000), Vector3f.UNIT_Y);
+			viewerPanel.cam.update();
 			break;
 
 		default:
@@ -639,10 +643,10 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	// End of variables declaration//GEN-END:variables
 
 	private ViewerPanel viewerPanel;
-	private float coneHeight;
-	
+	private float maxConeHeight;
+
 	private HashSet<String> futureCones = new HashSet<String>();
-	private HashSet<String> pastCones  = new HashSet<String>();
+	private HashSet<String> pastCones = new HashSet<String>();
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -660,16 +664,16 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			fusionIdLabel.setText(id);
 			Node node = (Node) viewerPanel.dataNode.getChild(id);
 			Node velocityNode = (Node) (node.getChild("velocityNode"));
-	
+
 			Node orientationNode = (Node) (node.getChild("orientationNode"));
 			Node futureConeNode = (Node) (node.getChild("futureConeNode"));
 			Node pastConeNode = (Node) (node.getChild("pastConeNode"));
 
-			fusionVelocityCheckBox
-					.setSelected(velocityNode.getChildren().size() != 0);
-			fusionOrientationCheckBox
-					.setSelected(orientationNode.getChildren().size() != 0);
-			
+			fusionVelocityCheckBox.setSelected(velocityNode.getChildren()
+					.size() != 0);
+			fusionOrientationCheckBox.setSelected(orientationNode.getChildren()
+					.size() != 0);
+
 			if (futureCones.contains(id))
 				fusionFutureRadioButton.setSelected(true);
 			else if (pastCones.contains(id))
@@ -679,7 +683,10 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 
 			// TODO fusionCandidateList befüllen
 
-			fusionHeightTextField.setText(Float.toString(coneHeight)); // TODO aus den Werten
+			fusionHeightTextField.setText(Float.toString(maxConeHeight)); // TODO
+																			// aus
+																			// den
+																			// Werten
 			// auslesen
 			fusionCandidateList.setModel(new DefaultListModel());
 		} else {
@@ -690,23 +697,23 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 	/**
 	 * Erzeugt einen Kegel von angegebener Höhe und Radius.
 	 * 
-	 * @param height
-	 *            Höhe des Kegels in Unit.
 	 * @param intoFuture
 	 *            Gibt an, ob der Kegel nach oben (<code>true</code>) oder nach
 	 *            unten (<code>false</code>) geöffnet ist.
 	 * @return
 	 */
-	private Spatial createCone(float height, boolean intoFuture) {
+	private Spatial createCone(boolean intoFuture) {
 		String id = viewerPanel.selectionId;
 		float velocity = 0;
-		
+
 		// Geschwindigkeit in km/h auslesen
 		Data data = viewerPanel.importerPanel.modelAll.getDataById(id);
 		if (data != null) {
-			velocity = data.getContainerProperty("Velocity").getValueAsContainerProperty().getComponent("XVelocity").getValueAsFloat();
+			velocity = data.getContainerProperty("Velocity")
+					.getValueAsContainerProperty().getComponent("XVelocity")
+					.getValueAsFloat();
 		}
-		
+
 		final BlendState alphaState = DisplaySystem.getDisplaySystem()
 				.getRenderer().createBlendState();
 		alphaState.setBlendEnabled(true);
@@ -737,16 +744,24 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 		// setting them to transparent, try commenting this line to see what
 		// happens
 		materialState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
-		
-		float coneRadius = (float) (height * velocity /3.6);
-		System.out.println("XXX " + coneRadius);
 
-		Cylinder cone = new Cylinder("cone " + viewerPanel.selectionId, 15, 15,
+		Cylinder cone = new Cylinder("cone " + viewerPanel.selectionId, 50, 50,
 				2, -4, false);
-		cone.updateGeometry(20, 20, 0, coneRadius, height, false, false);
 
 		Spatial spatial = ((Node) viewerPanel.dataNode.getChild(id))
 				.getChild(id);
+
+		float coneHeigth;
+		if (intoFuture) {
+			coneHeigth = maxConeHeight - spatial.getLocalTranslation().y;
+		} else {
+			coneHeigth = maxConeHeight
+					- (maxConeHeight - spatial.getLocalTranslation().y);
+		}
+		float coneRadius = (float) (coneHeigth
+				* viewerPanel.getMaximalDimenVector3f().y * velocity / 3.6)
+				/ viewerPanel.getMaximalDimenVector3f().x;
+		cone.updateGeometry(50, 50, 0, coneRadius, coneHeigth, false, false);
 
 		// Drehung des Kegels berechnen
 		float[] rot1 = { (float) Math.PI / 2, (float) Math.PI / 2, 0 };
@@ -755,11 +770,12 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			cone.setLocalRotation(new Quaternion(rot1));
 			cone.setLocalTranslation(spatial.getLocalTranslation().x, spatial
 					.getLocalTranslation().y
-					+ height / 2, spatial.getLocalTranslation().z);
+					+ coneHeigth / 2, spatial.getLocalTranslation().z);
 		} else {
 			cone.setLocalRotation(new Quaternion(rot2));
 			cone.setLocalTranslation(spatial.getLocalTranslation().x, spatial
-					.getLocalTranslation().y - height / 2, spatial.getLocalTranslation().z);
+					.getLocalTranslation().y
+					- coneHeigth / 2, spatial.getLocalTranslation().z);
 
 		}
 

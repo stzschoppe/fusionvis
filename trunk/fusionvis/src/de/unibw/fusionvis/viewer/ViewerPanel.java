@@ -98,18 +98,20 @@ public class ViewerPanel extends JPanel implements Observer{
 	private KeyboardLookHandler keyboardLook;
     
 	// private Camera cam;
-	private int camSpeed = 50;
+	private int camSpeed = 25;
 	
 	public  String selectionId;
 	public Camera cam;
-	private Mapper mapper;
+	public Mapper mapper;
 	private float unitSize;
 	/**
 	 * x und z Komponente geben an, wieviele Meter pro Unit darzustellen sind.
+	 * Die Werte müssen gleich sein, da sonst ungewollte Verzerrungen bei 
+	 * Bewegungstrichtern enstehen.
 	 * y gibt an wieviele Sekunden pro Unit dargestellt werden.
 	 */
-	public final Vector3f maximalDimenVector3f = new Vector3f(100,
-			20, 100);
+	public final Vector3f maximalDimenVector3f = new Vector3f(10,
+			2, 10);
 
     /**
      * Konstruktor

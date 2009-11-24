@@ -354,5 +354,9 @@ public class BattleSimMapper extends Mapper {
 	public GregorianCalendar getTimeMax() {
 		return timeMax;
 	}
+	
+	public float getTimeSpan() {
+		return (float) ((timeMax.getTimeInMillis()-timeMin.getTimeInMillis()) * 0.001);
+	}
 
 }
