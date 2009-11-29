@@ -1,0 +1,141 @@
+\chapter{Installationsanleitungen}
+An dieser Stelle wird erläutert, wie die mitgelieferte Software zu installieren und zu konfigurieren ist. Erfahrene Benutzer
+können diesen Teil überspringen und die Software nach ihren Vorlieben installieren. Dieser Teil dient nur als Anhalt und hat
+nicht den Anspruch einer vollständigen Anleitung. Vielmehr werden die wichtigsten Schritte erläutert und eine Möglichkeit zur
+Konfiguration aufgezeigt.
+
+Die entsprechenden Programme auf der beiliegenden CD sind für ein Windowsbetriebssystem ausgelegt. Das Testsystem war dabei
+Windows XP SP 2 32-bit. Die Software ist auch unter anderen Betriebssystemen erhältlich. Für eine Installationsanleitung für weitere
+Betriebsysteme wird auf das Internet verwiesen.
+
+\section{Java}
+
+\begin{enumerate}
+	\item Führen Sie die Datei \emph{jdk-6u16-windows-i586.exe} aus.
+	\item Sollte sich eine Sicherheitswarnung öffnen, wählen Sie "`Ausführen"'.
+	\item Folgen Sie den Anweisungen des Installationsdialogs.
+	\item Fügen Sie nach der Installation die Umgebungsvariable \emph{JAVA\_HOME} hinzu, falls diese noch nicht existiert: \\
+		Start $\Longrightarrow$ Systemeinstellungen $\Longrightarrow$ System $\Longrightarrow$ Erweitert $\Longrightarrow$ Umgebungsvariablen 
+		$\Longrightarrow$ Systemvariablen $\Longrightarrow$ Neu \\
+		Der Inhalt der Variable ist das Installationsverzeichnis des JDK. Nach der Veränderung muss die Konsole neu gestartet werden.
+	\item Fügen Sie das Verzeichnis "`\$JAVA\_HOME\$/bin"' der PATH Variable hinzu.
+	\item Falls gewünscht, kann nun noch die Datei \emph{jre-6u16-windows-i586.exe} ausgeführt werden.
+	\item Der Installationsverlauf ist analog, jedoch ist keine weitere Variable nötig.
+	\item Starten Sie Ihr System neu.
+\end{enumerate}
+
+\section{Eclipse}
+
+\begin{enumerate}
+	\item Entpacken Sie die Datei \emph{eclipse-rcp-galileo-win32.zip} mit einem Programm Ihrer Wahl in ein Verzeichnis Ihrer Wahl.
+	\item Führen Sie die \emph{eclipse.exe} im Verzeichnis "`eclipse"' aus.
+	\item Definieren Sie einen Ordner als Ihren Workspace.
+	\item Installieren Sie das EclipseCORBA Plug-in: \\
+		Help $\Longrightarrow$ Install New Software ... $\Longrightarrow$ Add \\
+		Name: EclipseCORBA \\ 
+		Location: http://eclipsecorba.sf.net/update \\
+		Wählen Sie alle Items im Menü aus und folgen Sie dem Dialogverlauf.
+\end{enumerate}
+
+\section{JacORB}
+
+\begin{enumerate}
+	\item Entpacken Sie die Datei \emph{jacorb-2.3.1-src.zip} mit einem Programm Ihrer Wahl in ein Verzeichnis Ihrer Wahl.
+	\item Fügen Sie die Variable \emph{JACORB\_HOME} zu den Umgebungsvariablen des Systems hinzu.
+	\item Fügen Sie das Verzeichnis "`\$JACORB\_HOME\$/bin"' der PATH Variable hinzu.
+	\item Öffnen Sie die Datei \emph{orb.properties} im Verzeichnis "`\$JACORB\_HOME\$/etc"' mit einem Programm Ihrer Wahl.
+	\item Ändern Sie die Variable \emph{jacorb.config.dir} auf "`\$JACORB\_HOME\$/etc"' ab.
+	\item Ändern Sie die Variable \emph{ORBinitRef.NameService} ab, auf einen Ordner Ihrer Wahl mit Schreibrechten. Es ist möglich
+		die Voreinstellung mit "`file:/c:/NS\_Ref"' beizubehalten.
+	\item Ändern Sie die Variable \emph{jacorb.naming.ior\_filename} ab, auf den selben Ordner wie \emph{ORBinitRef.NameService}.
+	\item Kopieren Sie die geänderte \emph{orb.properties} in Ihr Benutzerverzeichnis, in "`\$JAVA\_HOME\$/lib"' und in "`\$JAVA\_HOME\$/jre6/lib"'
+	\item Ersetzen Sie beim Kopiervorgang eine eventuell bereits vorhandene \emph{orb.properties}.
+	\item Öffnen Sie die Datei \emph{jacorb.properties} im Verzeichnis "`\$JACORB\_HOME\$/etc"' mit einem Programm Ihrer Wahl.
+	\item Ändern Sie analog die Variable \emph{jacorb.naming.ior\_filename} und die Variable \emph{ORBinitRef.NameService}.
+	\item Testen Sie die Einstellungen, indem Sie die Konsole aufrufen. Bei Eingabe des Kommandos ns, sollte der NameServer von JacORB starten.	
+	\item Bei weitergehender Konfiguration konsultieren Sie die Datei ProgrammingGuide.pdf im Verzeichnis "`\$JACORB\_HOME\$/doc"'
+\end{enumerate}
+
+\section{OpenORB}
+
+\begin{enumerate}
+	\item Kopieren Sie aus dem Verzeichnis "`CD:/OpenORB"' alle Ordner bis auf den Ordner \emph{src} in ein Verzeichnis Ihrer Wahl.
+	\item Fügen Sie die Variable \emph{TCOO\_HOME} zu den Umgebungsvariablen des Systems hinzu. Diese enthält das Verzeichnis, in das Sie
+		die Ordner kopiert haben.
+	\item Öffnen Sie im Verzeichnis "`\$TCOO\_HOME\$/OpenORB/config"' die Datei \emph{OpenORB.xml} mit einem Programm Ihrer Wahl.
+	\item Editieren Sie die Datei, wie im unten stehenden Listing zu erkennen. 
+	\item Geben Sie folgende Kommandos in die Konsole ein: \\
+		cd \$TCOO\_HOME\$/tools/bin \\
+		updateConfig OpenORB OpenORB.xml
+	\item Öffnen Sie im Verzeichnis "`\$TCOO\_HOME\$/OpenORB/config"' die Datei \emph{trader.xml} mit einem Programm Ihrer Wahl.
+	\item Ändern Sie den Namen des TradingServers in einen beliebig gewählten Namen um.
+	\item Geben Sie folgende Kommandos in die Konsole ein: \\
+		cd \$TCOO\_HOME\$/tools/bin \\
+		updateConfig TradingService trader.xml
+	\item Erstellen Sie eine Batchdatei mit folgendem Inhalt: \\
+		cd \$TCOO\_HOME\$
+		java \\
+		-Xbootclasspath/p:/OpenORB/lib/endorsed/openorb\_orb\_omg-1.4.0.jar \\
+		-Dopenorb.home.path=\$TCOO\_HOME\$ \\
+		-jar /tools/lib/launcher.jar org.openorb.trader.Server
+	\item Ab dem Kommando \emph{java} muss alles in einer Zeile stehen.
+	\item Der Aufruf dieser Datei startet den Trading Server, der auf den JacORB Naming Server zugreift.
+\end{enumerate}
+
+\begin{verbatim}
+...
+<profile name="default" xlink:href="$(openorb.home)config/
+default.xml#default">
+  <property name="NameService" value="file:/c:/NS_Ref" />
+</profile>
+...
+\end{verbatim}
+
+\section{Managementframework}
+
+\begin{enumerate}
+	\item Öffnen Sie Eclipse.
+	\item Importieren Sie das Projekt \emph{ManagementFramework} in Ihren Workspace: \\
+		File $\Longrightarrow$ Import $\Longrightarrow$ Existing Projects into Workspace \\
+		Wählen Sie das Verzeichnis "`CD:/Implementierung/ManagementFramework"' als \emph{root directory}. \\
+		Bestätigen Sie dies mit \emph{Finish}.
+	\item Passen Sie im \emph{Build Path} des Projekts die Referenz auf die log4j-1.2.15.jar entsprechend ihres Systems an.
+	\item Öffnen Sie das \emph{Run} Profil der Klasse \emph{start/starter.java}: \\
+		Rechtsklick auf starter.java $\Longrightarrow$ Run As $\Longrightarrow$ Run Configurations... 
+	\item Geben Sie im Tab \emph{Arguments} im Feld \emph{VM arguments} Folgendes ein: \\
+		-Djava.endorsed.dirs=[PATH\_TO\_JACORB]/bin \\
+		-Djacorb.home=[PATH\_TO\_JACORB]
+	\item Fügen Sie im Tab \emph{Classpath} unter \emph{Bootstrap Entries} folgende externe JARs hinzu: \\
+		backport-util-concurrent.jar \\
+		jacorb.jar \\
+		logkit-1.2.jar \\
+		slf4j-api-1.5.6.jar \\
+		slf4j-jdk14-1.5.6.jar \\
+		Diese befinden sich im Verzeichnis "`\$JACORB\_HOME\$/lib"'.
+	\item Bestätigen Sie mit \emph{Apply} und führen Sie die starter.java mit \emph{Run} aus.
+\end{enumerate}
+
+\section{PluginCore Source}
+	
+\begin{enumerate}
+	\item Öffnen Sie Eclipse.
+	\item Importieren Sie das Projekt \emph{de.inf06.plugin.core} in Ihren Workspace. 
+	\item Passen Sie die folgenden Referenzen im Build Path des Projekts an: \\
+		log4j-1.2.15.jar \\
+		openorb\_trader-1.4.0.jar \\
+		Letztere befindet sich im Verzeichnis "`\$TCOO\_HOME\$/TradingService/lib"'.		
+\end{enumerate}
+
+\section{DCS \& DCDR}
+
+\begin{enumerate}
+	\item Öffnen Sie Eclipse.
+	\item Importieren Sie das Projekt \emph{de.inf06.dcl} in Ihren Workspace. 
+	\item Passen Sie die folgenden Referenzen im Build Path des Projekts an: \\
+		log4j-1.2.15.jar \\
+		openorb\_trader-1.4.0.jar \\
+		jacorb.jar \\
+		SNMP4J.jar
+	\item Passen Sie das \emph{Run} Profil der Klassen \emph{StartDCDR.java} und \emph{StartDCS.java} analog der Klasse \emph{starter.java} des
+	Projekts ManagementFramework an.	
+\end{enumerate}
