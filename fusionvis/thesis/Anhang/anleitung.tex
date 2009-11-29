@@ -1,0 +1,276 @@
+\chapter{Entwicklung eines Managementplugins}
+In dieser Anleitung wird erläutert, wie die in dieser Arbeit spezifizierte Architektur der Managementplugins genutzt werden kann,
+um eigene Managementanwendungen für das verteilte \glsdesc{nms} zu entwickeln. Es wurde sich dabei auf die Erstellung von Anwendungen
+mit der Programmiersprache Java beschränkt. Alle benötigten Programme befinden sich auf der beigelegten CD.
+
+Zunächst beschreibt der erste Abschnitt die Einrichtung eines Java Projektes in Eclipse und die nötigen Einstellungen und Importe. Der zweite
+Abschnitt erläutert die Schritte, die zur Konfiguration eines \glsdesc{nms}s nötig sind und geht auf die Parametrisierung der Architektur ein.
+Anschließend zeigt der dritte Abschnitt das Erstellen der grafischen Benutzeroberfläche sowie das Einrichten eines einfachen EventHandlers. Zum
+Abschluss erläutert der vierte Abschnitt das Hinzufügen eines neuen Plugindienstes und die wichtigsten Eigenschaften des Diensttyps.
+
+\section{Aufsetzen des Projekts}
+Starten Sie zunächst Ihre Eclipse Installation und wählen Sie einen entsprechenden \emph{Workspace} aus. Stellen Sie sicher, dass Sie sich in
+der \emph{Java Perspektive} befinden. Sollte dies nicht der Fall sein, so wechseln Sie in die \emph{Java Perspektive}: \\
+Window $\Longrightarrow$ Open Perspective $\Longrightarrow$ Other $\Longrightarrow$ Java
+
+Erstellen Sie ein neues Java Projekt: \\
+File $\Longrightarrow$ New $\Longrightarrow$ Java Project
+
+Im Folgenden öffnet sich ein Dialog, in welchem Sie Ihr Projekt benennen müssen. Geben Sie dem Projekt einen Namen, beispielsweise
+\emph{de.inf06.plugin.demo}. Belassen Sie alle weiteren Einstellungen, so wie sie vorgegeben sind und bestätigen Sie mit \emph{Finish}.
+
+Ihr Projekt erscheint nun unter dem von Ihnen angegebenen Namen im \emph{Package Explorer} und besteht aus einem Ordner \emph{src} und der
+\emph{JRE System Library}.
+
+Fügen Sie die Ordner \emph{config}, \emph{idl} und \emph{lang} Ihrem Projekt hinzu: \\
+Rechtsklick auf Ihr Projekt $\Longrightarrow$ New $\Longrightarrow$ Folder
+
+Nun sollte Ihr Projekt wie folgt aussehen: 
+
+\begin{center}
+	\includegraphics[width=0.6\textwidth]{Bilder/project1.png}
+\end{center}
+
+Im Ordner \emph{config} werden später die Konfigurationsdateien angelegt, im Ordner \emph{lang} befinden sich die verschiedenen Sprachdateien, die die Übersetzungen
+enthalten und im Ordner \emph{idl} werden die für die Plugidienste benötigten IDL Dateien gespeichert.
+
+Im nächsten Schritt muss der \emph{Build Path} des Projekts angepasst und verschiedene jar-Dateien geladen werden. Fügen Sie also die
+\emph{PluginCore.jar}, die \emph{openorb\_trader-1.4.0.jar} und die \emph{log4j-1.2.15.jar} dem Build Path Ihres Projekts hinzu: \\
+Rechtsklick auf Ihr Projekt $\Longrightarrow$ Build Path $\Longrightarrow$ Configure Build Path...
+
+Es öffnet sich ein Dialog, in dem Sie im Tab \emph{Libraries} über den Button \emph{Add External JARs...} die entsprechenden Dateien hinzufügen. Das Dialogfenster
+sollte dann wie folgt aussehen:
+
+\begin{center}
+	\includegraphics[width=0.7\textwidth]{Bilder/project2.png}
+\end{center}
+
+Ihr Projekt ist nun aufgesetzt und Sie können damit beginnen Managementanwendungen zu implementieren. Im nächsten Abschnitt wird der Ablauf der Erstellung
+und der Konfiguration eines einfachen Managementplugins demonstriert.
+
+\section{Konfiguration des Managementplugins}
+Erstellen Sie in Ihrem Projekt im Ordner \emph{src} das Java Paket \emph{de.inf06.plugin.demo}: \\
+Rechtsklick auf Ihr Projekt $\Longrightarrow$ New $\Longrightarrow$ Package
+
+Erstellen Sie in diesem Paket die neue Java Klasse \emph{DemoPlugin} und lassen Sie diese von der Klasse \emph{de.inf06.plugin.core.Plugin} erben: \\
+Rechtsklick auf das Paket $\Longrightarrow$ New $\Longrightarrow$ Class
+
+\begin{center}
+	\includegraphics[width=0.6\textwidth]{Bilder/project3.png}
+\end{center}
+
+Bestätigen Sie Ihre Einstellungen mit \emph{Finish}. Nun haben Sie Ihre eigene Pluginklasse mit den Methoden \emph{beforeShutdown()}, \emph{initPlugin()} und \emph{run()}, 
+die vorerst nicht benötigt werden. Nachdem nun eine Pluginklasse erzeugt wurde, muss diese auch konfiguriert werden. Dazu benötigen Sie die \emph{pluginconf.xsd} Datei, die sich
+im Projekt \emph{de.inf06.plugin.core} befindet. Aus dieser leiten Sie sich ihre Konfigurationsdatei ab: \\
+Rechtsklick auf den Ordner config $\Longrightarrow$ New $\Longrightarrow$ Other $\Longrightarrow$ XML $\Longrightarrow$ XML
+
+Benennen Sie diese Datei \emph{config.xml} und wählen Sie im Verlauf des Dialogs \emph{Create XML file from an XML schema file} und wählen Sie dafür die bereits erwähnte
+\emph{pluginconf.xsd} aus. Nun verfügen Sie über eine leere Konfigurationsdatei, die es zu befüllen gilt. Für den Anfang genügt das Ausfüllen des Namen und der
+Beschreibung sowie das Setzen der \emph{offerGUI} auf \emph{false}.
+
+Es müssen nun drei Parameter gesetzt werden: \\
+Rechtsklick auf pi:parameters $\Longrightarrow$ Add Child $\Longrightarrow$ parameter
+
+Diese sind im Einzelnen:
+
+\begin{center}
+	\begin{tabular}{|l|l|} \hline
+		Key																& Value															\\ \hline
+		communication.framework.name			& MFwServer.ManagementCommunication	\\ \hline
+		communication.tradingservice.name & COS/TradingService/Kernel					\\ \hline
+		utility.language.default					& German														\\ \hline
+	\end{tabular}
+\end{center}
+
+Der letzte Schritt in der Konfiguration ist das Anlegen der Sprachdateien. Für den Anfang genügt eine Datei für die deutsche Sprache. Dazu verwenden Sie die
+\emph{language.xsd} Datei, die sich ebenfalls im Projekt \emph{de.inf06.plugin.core} im Ordner \emph{config} befindet. Hieraus leiten Sie sich die Datei \emph{langDE.xml} 
+ab und speichern diese im Ordner lang ab. Editieren Sie nun das \emph{pi:language} Element der \emph{config.xml} wie folgt:
+
+\begin{itemize}
+	\item languageID: German
+	\item languageFile: lang$\backslash$langDE.xml
+\end{itemize}
+
+Ihre Managementanwendung ist nun konfiguriert. 
+
+\section{Erstellung der grafischen Benutzeroberfläche}
+Das bereits konfigurierte Managementplugin verfügt noch über keine grafische Benutzeroberfläche. Wie diese hinzugefügt werden kann, wird in diesem Abschnitt erläutert.
+Darüberhinaus wird gezeigt, wie eine einfache Aktion als Antwort auf ein GUI Event zu realisieren ist.
+
+Erstellen Sie ein neues Paket und nennen Sie es \emph{de.inf06.plugin.demo.gui}. Erstellen Sie in diesem Paket die Klasse \emph{GUIConfigurator}, die von \emph{PluginGUIConfigurationBase} 
+erbt. Die entstandene Klasse verfügt über die Methode init(), die erst einmal leer bleibt.
+
+Öffnen Sie nun die \emph{config.xml} Ihres Plugins und setzen \emph{offerGUI} auf \emph{true}. Weiterhin tragen Sie als Wert für \emph{pi:guiConfigurator} den
+vollständigen Namen der eben erzeugten Klasse ein (de.inf06.plugin.demo.gui.GUIConfigurator).
+
+Die Methode \emph{init()} dient zum Hinzufügen von Grafikkomponenten. Fügen Sie folgenden Code in diese Methode ein:
+
+\begin{verbatim}
+String[] related = {"demo.gui.text"};
+addTextfield("demo.gui.text", "Eingabe: ", null);
+addButton("demo.gui.button", "OK", "demoAction", related);
+\end{verbatim}
+
+Dadurch verfügt Ihr Plugin nun über ein Textfeld mit der Beschriftung Eingabe sowie einen Button, der den Inhalt des Textfeldes an einen \emph{EventHandler} namens
+\emph{demoAction} sendet. Dieser muss im Folgenden noch implementiert werden.
+
+Erstellen Sie eine neue Klasse im Paket de.inf06.plugin.demo.gui und nennen Sie diese DemoAction. Die Klasse muss das Java Interface ITriggeredAction implementieren,
+wodurch es die Methode run() erhält. Die Klasse ist wie folgt zu implementieren:
+
+\begin{verbatim}
+public void run(Plugin plugin, String[] args) {
+  if(args!=null && args.length > 0) {
+    System.out.println(args[0]);
+  }
+}
+\end{verbatim}
+
+Bei Aufruf des Handlers wird also das übergebene Argument in der Kommandozeile ausgegeben. Für interessantere Implementierungen wird auf die beigelegten Beispielplugins
+verwiesen. Ihr Managementplugin verfügt damit über eine rudimentäre grafische Benutzeroberfläche.
+
+\section{Hinzufügen eines neuen Dienstes}
+Für das Bereitstellen von Diensten muss zunächst eine IDL Datei spezifiziert werden, die die bereitgestellten Operationen und die dafür benötigten Datenstrukturen enthält.
+Danach muss diese Datei in Java Code kompiliert und in das Managementplugin eingebunden werden. Dazu ist es notwenig, für das Exportieren des Dienstes, einen Diensttyp und
+Diensteigenschaften festzulegen.
+
+Erstellen Sie eine neue IDL Datei im Ordner idl: \\
+Rechtsklick auf den Ordner idl $\Longrightarrow$ New $\Longrightarrow$ IDL File
+
+Nennen Sie die Datei \emph{demoservice.idl} und fügen folgenden IDL Code hinzu:
+
+\begin{verbatim}
+module demoservice {
+  interface Demo {
+    void print();
+  };
+};
+\end{verbatim}
+
+Dies erzeugt ein Interface \emph{Demo} mit der einzigen Operation \emph{print()}. Die IDL Datei muss nun mit dem IDL-Compiler von JacORB umgewandelt werden. Rufen Sie dazu
+die Konsole auf und geben Sie ein: \\
+
+idl [PATH\_TO\_IDL]/demoservice.idl
+
+Nun wurden vom Compiler die entsprechenden Java Klassen erzeugt, die Sie für die Implementierung benötigen.
+
+Erstellen Sie ein neues Java Paket und nennen Sie es \emph{de.inf06.plugin.demo.service}. Erstellen Sie in diesem Paket eine neue Java Klasse \emph{DemoImpl} und lassen Sie
+diese von der erzeugten Klasse \emph{DemoPOA} erben. Die dadurch erzeugte Klasse besitzt nun die Methode \emph{print()}, die nun implementiert werden kann. Die Implementierung
+ist von der eigentlichen Funktion des Dienstes abhängig und ist für das Demoplugin an dieser Stelle unerheblich. Es wird empfohlen sich mit den Beispielanwendungen auf der CD 
+auseinanderzusetzen.
+
+Öffnen Sie nun die \emph{config.xml} Ihres Managementplugins und fügen Sie einen neuen Service hinzu: \\
+Rechtsklick auf pi:services $\Longrightarrow$ Add Child $\Longrightarrow$ service
+
+Nun gilt es den eben implementierten Dienst zu konfigurieren, damit er über den Trading Server gefunden werden kann. Der \emph{ServiceName} gibt den internen Namen
+des Dienstes innerhalb der Architektur an und kann frei gewählt werden. Nennen Sie ihn beispielsweise \emph{DemoService}. Die \emph{ServiceClass} beinhaltet den
+vollen qualifizierten Namen der eben erstellten Java Klasse \emph{DemoImpl}. Das \emph{ServiceEnabled Flag} gibt an, ob der Dienst aktiv ist und sollte auf \emph{true}
+belassen werden.
+
+Der \emph{ServiceTypeName} gibt den Namen des Diensttyps an, unter dem er im Trading Server bekannt ist und kann frei gewählt werden. Als Beispiel können Sie
+\emph{PrintServices} wählen. Das \emph{TypeInterface} muss den Namen des IDL Interfaces enthalten, was in diesem Fall \emph{Demo} ist. In das Feld für
+\emph{TypeInheritance} sollte \emph{null} eingetragen werden.
+
+Es gilt nun die entsprechenden \emph{TypeProperties} zu konfigurieren. In diesem Beispiel soll eine Eigenschaft genügen. Der \emph{PropertyName} kann wieder frei
+gewählt werden und bezeichnet die Eigenschaft. Der \emph{PropertyValue\_Type} kann einen der folgenden primitiven IDL Datentypen annehmen:
+
+\begin{itemize}
+	\item boolean
+	\item char
+	\item double
+	\item fixed
+	\item float
+	\item long
+	\item longlong
+	\item octet
+	\item short
+	\item string
+	\item ulong
+	\item ulonglong
+	\item ushort
+	\item wchar
+	\item wstring
+\end{itemize}
+
+Das Feld \emph{PropertyValue} enthält dazu einen entsprechenden Wert für den gewählten Datentyp. Der \emph{PropertyMode} kann einen der folgenden Werte annehmen:
+
+\begin{itemize}
+	\item normal
+	\item readonly
+	\item mandatory
+	\item mandatory\_readonly
+\end{itemize}
+
+Nach diesen doch umfangreichen Konfigurationen, verfügt Ihr Plugin nun über einen Dienst, den er anderen Plugins zur Verfügung stellen kann.
+
+\section{Vorbereitungen für die Ausführung}
+Im letzten Teil dieser sehr knappen Anleitung wird gezeigt, wie Sie die entsprechende Software auf der CD zu einem lauffähigen Prototypen zusammenstellen
+können. Dazu gilt es zunächst die wichtigsten Dienste zu starten und dann das hier entwickelte Plugin zu integrieren.
+
+Starten Sie die Konsole und geben sie dort: "`ns"' ein, was den Naming Server startet.
+
+Starten Sie nun die in Anhang B erzeugte Batchdatei, die den Trading Server startet.
+
+Starten Sie die Klasse \emph{starter.java} des ManagementFrameworks und melden Sie sich an.
+
+Erstellen Sie im Paket \emph{de.inf06.plugin.demo} die neue Java Klasse \emph{PluginContainer}:
+
+\begin{verbatim}
+public class PluginContainer implements Runnable {
+  private Thread pluginContainer;
+  private volatile boolean running;
+  private long sleepTime = 10000;
+  private Plugin p;
+  
+  public PluginContainer() {
+    p = new DemoPlugin("config/config.xml");
+    p.init();
+  }
+  
+  public void startContainer() {
+    if(pluginContainer==null || !running) {
+      pluginContainer = new Thread(this);
+      pluginContainer.start();
+    }
+  }
+  
+  public void run() {
+    running = true;
+    
+    while(running) {
+      if(p.isMarkForShutdown()) {
+        p.killPlugin();
+      }
+      
+      if(p.isActive()) {
+        p.run();
+      }
+      
+      try {
+        Thread.sleep(sleepTime);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }    
+  }
+  
+  public static void main(String[] args) {
+    PluginContainer pc = new PluginContainer();
+    pc.startContainer();
+  }
+}
+\end{verbatim}
+
+Konfigurieren Sie die \emph{Run}-Eigenschaften analog zu denen der Klasse \emph{starter.java} des ManagementFramework Projekts. Nach der Ausführung dieser Klasse, sollte sich
+das von Ihnen entwickelte Plugin am Managementframework anmelden und die grafische Benutzeroberfläche sichtbar werden.
+
+Auf der CD befinden sich drei weitere Beispielanwendungen, die nur an Ihre Installation angepasst werden müssen. Dies sollte mithilfe der Informationen aus Anhang B
+und Anhang C ohne weiteres möglich sein. Die Beispielanwendungen sind:
+
+\begin{itemize}
+	\item de.inf06.plugin.demo
+	\item de.inf06.plugin.mappingeditor
+	\item de.inf06.plugin.snmp
+\end{itemize}
+
+Die intensive Beschäftigung mit diesen Beispielen sowie das JavaDoc der Architektur und diese Diplomarbeit sollten Sie in die Lage versetzen, mit einer kurzen
+Einarbeitungszeit komplexe Managementanwendungen für das hier vorgestellte \glsdesc{nms} zu entwickeln.
