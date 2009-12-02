@@ -7,43 +7,37 @@ In diesem Kapitel werden der Entwurf und die Implementierung eines Visualisierun
 Abschließend werden interessante Aspekte der Implementierung aufgezeigt, die neben den umgesetzten Implementierungsentscheidungen auch andere Wege aufzeigen sollen.
 
 Dem Leser, der sich vorrangig für den entstandenen Prototyp interessiert, dem sei der Abschnitt [Verweis] empfohlen. Die Details des Frameworks sollten für das Verständnis des Funktionsumfangs und die Bedienung keine Rolle spielen, können aber bei Bedarf nachgeschlagen werden.
-
 \section{Design eines Visualisierungsframeworks}
 Das Ergebnis dieser Arbeit soll nicht nur eine potentielle Visualisierungs-Umgebung sein, sonder ein Framework, das zum einen die Möglichkeit bietet, mit geringem Aufwand Daten anzeigen zu können und auf der anderen Seite aber umfangreiche Erweiterungsmöglichkeiten zulässt.
 Wie das Framework konkret entworfen und umgesetzt wurde, soll im Folgenden dargestellt werden.
-
 \subsection{Eingabedaten und Datenmodell}
 Grundlage für die weitere Arbeit sollen Eingabedaten sein, die bestimmte Voraussetzungen erfüllen. Diese gestellten Bedingungen werden im Folgenden kurz beschrieben. Darauf basierend wird das Datenmodell erläutert, in das die Quelldaten überführt werden sollen.
-
 \subsubsection{Eingabedaten}
 Um Daten dreidimensional visualisieren zu können, müssen diese bestimmte Voraussetzungen erfüllen. Diese sollen hier kurz aufgezeigt werden.
-
 \paragraph{Identifizierbarkeit}
 Unabhängig von der Art der Visualisierung ist es unabdingbar, dass jedes einzelne Datum identifizierbar ist. Aus diesem Grund sollte in den Quelldaten bereits eine eindeutige Benennung vorliegen. Sollte das nicht der Fall sein, muss dieser Misstand beim Importieren der Daten spätestens behoben werden. 
 Probleme, die sich ergeben können, wenn diese Bedingung nicht beachtet wird, sind zum einen, dass keine aussagekräftigen Berechnungen auf den importierten Daten durchgeführt werden können. Auch ist eine Markierung eines gezielten  Datensatzes unmöglich.
-
 \paragraph{Lokalisierbarkeit}
 Aus dem Ziel, die Eingabedaten im dreidimensionalen, kartesischen Raum darzustellen ergibt sich eine ganz logische Voraussetzung: Es sollte mindestens für jede der drei Dimensionen eine Eigenschaft der Daten existieren, die eine Positionierbarkeit möglich macht. Zwar ist es genauso möglich, die Daten auf einer Linie anzuordnen und somit nur eine Positionierungseigenschaft vorauszusetzen oder sich analog auf den zweidimensionalen Raum zu beschränken. Der daraus resultierende Informationsverlust muss aber in Kauf genommen werden.
 Die Voraussetzungen an den Typ der für die Lokalisierung herangezogenen Eigenschaften sind nicht sehr streng. Zwar ist es zielführend, wenn es sich hier um kontinuierliche oder zumindest diskret ganzzahlige  Größen handelt. Ist dies nicht der Fall, so müssen diese lediglich zur Berechnung der Anzeigekoordinaten mit einer geeigneten Abbildungsvorschrift umgerechnet werden.
-
-Beispiele für unmittelbar geeignete Größen:
-\begin{itemize}
-	\item Entfernungsangaben 
-  \item Ortsangaben in Längen- und Breitengrad
-  \item Zeitangaben
-\end{itemize}
-
-Beispiele für mittelbar geeignete Größen:
-\begin{itemize}
-	\item IP [ABK] Adressen
-  \item MAC [ABK] Adressen
-  \item Zeichenketten allgemein
-\end{itemize}
-
+\begin{table*}[!Ht]
+	\centering
+		\begin{tabular}{ | l | l |}
+		\hline
+			\emph{mittelbar geeignet}      & \emph{unmittelbar geeignet}       \\ \hline
+		  IP [ABK] Adressen       & Entfernungsangaben         \\ \hline
+      MAC [ABK] Adressen      & Ortsangaben (Länge/Breite) \\ \hline
+      Zeichenketten allgemein & Zeitangaben \\
+      \hline
+		\end{tabular}
+	\caption{Beispiele für unmittelbar und mittelbar geeignete Größen}
+	\label{tab:mittelUnmittlGroessen}
+\end{table*}
 \paragraph{Weitere Eigenschaften}
+Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der Position und dem Namen, bietet noch keine hohe Anschaulichkeit. Um die in [Verweis, Visualisierungsmöglichkeiten] dargestellten Visualisierungen auch verwenden zu können, braucht es weitere Eigenschaften, die in optische Information umgewandelt werden kann.
 
+Die Art der Daten die für solche zusätzliche Veranschaulichung verwendet kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich gerade zu anbieten, in Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
 \subsubsection{Datenmodell}
-
 \subsection{Übersicht des Frameworks}
 
 \subsection{Beschreibung der Komponenten}
