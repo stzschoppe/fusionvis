@@ -2,19 +2,54 @@
 % entwurf.tex						    			    										       %
 %----------------------------------------------------------------%
 \chapter{Design und Implementierung eines Visualisierungsprototypen}
+In diesem Kapitel werden der Entwurf und die Implementierung eines Visualisierungsframeworks beschrieben. Dazu werden die einzelnen Komponenten des Frameworks beschrieben und ihr Zusammenspiel erläutert. Basierend auf dem Wissen über die Bestandteile können die Möglichkeiten der Erweiterbarkeit und der Individualisierbarkeit skizziert werde. Die Grundlage hierfür stellt zum einen eine prototypische Implementierung einer Visualisierung einer militärischen Lage und des weiteren der Versuch, Daten des NDP [ABK] dreidimensional darzustellen.
 
-\section{Vorstellung der prototypischen Implementierung (Visualisierung einer militärischen Lage)}
+Abschließend werden interessante Aspekte der Implementierung aufgezeigt, die neben den umgesetzten Implementierungsentscheidungen auch andere Wege aufzeigen sollen.
+
+Dem Leser, der sich vorrangig für den entstandenen Prototyp interessiert, dem sei der Abschnitt [Verweis] empfohlen. Die Details des Frameworks sollten für das Verständnis des Funktionsumfangs und die Bedienung keine Rolle spielen, können aber bei Bedarf nachgeschlagen werden.
 
 \section{Design eines Visualisierungsframeworks}
+Das Ergebnis dieser Arbeit soll nicht nur eine potentielle Visualisierungs-Umgebung sein, sonder ein Framework, das zum einen die Möglichkeit bietet, mit geringem Aufwand Daten anzeigen zu können und auf der anderen Seite aber umfangreiche Erweiterungsmöglichkeiten zulässt.
+Wie das Framework konkret entworfen und umgesetzt wurde, soll im Folgenden dargestellt werden.
 
-\subsection{Voraussetzungen an die Eingabedaten}
+\subsection{Eingabedaten und Datenmodell}
+Grundlage für die weitere Arbeit sollen Eingabedaten sein, die bestimmte Voraussetzungen erfüllen. Diese gestellten Bedingungen werden im Folgenden kurz beschrieben. Darauf basierend wird das Datenmodell erläutert, in das die Quelldaten überführt werden sollen.
+
+\subsubsection{Eingabedaten}
+Um Daten dreidimensional visualisieren zu können, müssen diese bestimmte Voraussetzungen erfüllen. Diese sollen hier kurz aufgezeigt werden.
+
+\paragraph{Identifizierbarkeit}
+Unabhängig von der Art der Visualisierung ist es unabdingbar, dass jedes einzelne Datum identifizierbar ist. Aus diesem Grund sollte in den Quelldaten bereits eine eindeutige Benennung vorliegen. Sollte das nicht der Fall sein, muss dieser Misstand beim Importieren der Daten spätestens behoben werden. 
+Probleme, die sich ergeben können, wenn diese Bedingung nicht beachtet wird, sind zum einen, dass keine aussagekräftigen Berechnungen auf den importierten Daten durchgeführt werden können. Auch ist eine Markierung eines gezielten  Datensatzes unmöglich.
+
+\paragraph{Lokalisierbarkeit}
+Aus dem Ziel, die Eingabedaten im dreidimensionalen, kartesischen Raum darzustellen ergibt sich eine ganz logische Voraussetzung: Es sollte mindestens für jede der drei Dimensionen eine Eigenschaft der Daten existieren, die eine Positionierbarkeit möglich macht. Zwar ist es genauso möglich, die Daten auf einer Linie anzuordnen und somit nur eine Positionierungseigenschaft vorauszusetzen oder sich analog auf den zweidimensionalen Raum zu beschränken. Der daraus resultierende Informationsverlust muss aber in Kauf genommen werden.
+Die Voraussetzungen an den Typ der für die Lokalisierung herangezogenen Eigenschaften sind nicht sehr streng. Zwar ist es zielführend, wenn es sich hier um kontinuierliche oder zumindest diskret ganzzahlige  Größen handelt. Ist dies nicht der Fall, so müssen diese lediglich zur Berechnung der Anzeigekoordinaten mit einer geeigneten Abbildungsvorschrift umgerechnet werden.
+
+Beispiele für unmittelbar geeignete Größen:
+\begin{itemize}
+	\item Entfernungsangaben 
+  \item Ortsangaben in Längen- und Breitengrad
+  \item Zeitangaben
+\end{itemize}
+
+Beispiele für mittelbar geeignete Größen:
+\begin{itemize}
+	\item IP [ABK] Adressen
+  \item MAC [ABK] Adressen
+  \item Zeichenketten allgemein
+\end{itemize}
+
+\paragraph{Weitere Eigenschaften}
+
+\subsubsection{Datenmodell}
 
 \subsection{Übersicht des Frameworks}
 
 \subsection{Beschreibung der Komponenten}
 \subsubsection{Importer}
 \paragraph{Anbindung an XML}
-\paragraph{Datenmodell}
+\paragraph{Instanzieren des Datenmodells}
 \subsubsection{Mapper}
 \subsubsection{Viewer}
 
@@ -25,7 +60,7 @@
 \subsubsection{Viewer und Importer}
 \subsubsection{Viewer und Mapper}
 
-
+\section{Vorstellung der prototypischen Implementierung (Visualisierung einer militärischen Lage)}
 \section{Erweiterbarkeit und Individualisierbarkeit}
 
 
