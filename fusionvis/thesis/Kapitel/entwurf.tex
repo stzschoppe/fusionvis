@@ -6,13 +6,14 @@ In diesem Kapitel werden der Entwurf und die Implementierung eines Visualisierun
 
 Abschließend werden interessante Aspekte der Implementierung aufgezeigt, die neben den umgesetzten Implementierungsentscheidungen auch andere Wege aufzeigen sollen.
 
-Dem Leser, der sich vorrangig für den entstandenen Prototyp interessiert, dem sei der Abschnitt [Verweis] empfohlen. Die Details des Frameworks sollten für das Verständnis des Funktionsumfangs und die Bedienung keine Rolle spielen, können aber bei Bedarf nachgeschlagen werden.
+Dem Leser, der sich vorrangig für den entstandenen Prototyp interessiert, dem sei der Abschnitt \ref{ch:Prototyp} empfohlen. Die Details des Frameworks sollten für das Verständnis des Funktionsumfangs und die Bedienung keine Rolle spielen, können aber bei Bedarf nachgeschlagen werden.
 \section{Design eines Visualisierungsframeworks}
 Das Ergebnis dieser Arbeit soll nicht nur eine potentielle Visualisierungs-Umgebung sein, sonder ein Framework, das zum einen die Möglichkeit bietet, mit geringem Aufwand Daten anzeigen zu können und auf der anderen Seite aber umfangreiche Erweiterungsmöglichkeiten zulässt.
 Wie das Framework konkret entworfen und umgesetzt wurde, soll im Folgenden dargestellt werden.
 \subsection{Eingabedaten und Datenmodell}
 Grundlage für die weitere Arbeit sollen Eingabedaten sein, die bestimmte Voraussetzungen erfüllen. Diese gestellten Bedingungen werden im Folgenden kurz beschrieben. Darauf basierend wird das Datenmodell erläutert, in das die Quelldaten überführt werden sollen.
 \subsubsection{Eingabedaten}
+\label{ch:Eingabedaten}
 Um Daten dreidimensional visualisieren zu können, müssen diese bestimmte Voraussetzungen erfüllen. Diese sollen hier kurz aufgezeigt werden.
 \paragraph{Identifizierbarkeit}
 Unabhängig von der Art der Visualisierung ist es unabdingbar, dass jedes einzelne Datum identifizierbar ist. Aus diesem Grund sollte in den Quelldaten bereits eine eindeutige Benennung vorliegen. Sollte das nicht der Fall sein, muss dieser Misstand beim Importieren der Daten spätestens behoben werden. 
@@ -38,11 +39,69 @@ Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der
 
 Die Art der Daten die für solche zusätzliche Veranschaulichung verwendet kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich gerade zu anbieten, in Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
 \subsubsection{Datenmodell}
+\begin{figure}[h!t]
+	\centering
+		\includegraphics[width=0.75\textwidth]{Bilder/DataModelOverview.png}
+	\caption{Übersicht des Datenmodells}
+	\label{fig:DataModelOverview}
+\end{figure}
+
 Das im Rahmen dieser Arbeit entwickelte Datenmodell setzte den Grundstock für das später entworfene Framework und hat zum Ziel, durch generische Gestaltung in der Lage zu sein, unterschiedlichste Quelldaten ohne Anpassung speichern zu können.
 
 Umgesetzt wurden diese Anforderungen durch die Trennung in eine Datensammlung und deren Daten auf der einen, und Eigenschaften auf der anderen Seite. 
 \paragraph{Datensammlung mit Daten}
-Wie in [IMG dataModelOverview] dargestellt, besteht das wesentliche Datenmodell aus zwei Klassen.
+Wie in \ref{fig:DataModelOverview} dargestellt, besteht das wesentliche Datenmodell aus zwei Klassen.
+\begin{description}
+	\item[DataSet] Die Klasse DataSet kapselt die einzelnen Datensätze in Form einer Liste. Diese Klasse ist die zentrale Datenstruktur, die für alle weiteren Prozesse die notwendigen Informationen bereithält. Sie besteht im Wesentlichen aus zwei Bestandteilen. Das erste ist die angesprochene Liste der gespeicherten Daten. Weiterhin kann sie Eigenschaften erfassen, die nicht einem bestimmten Datum zu Eigen sind, sondern global für die gesamte Datensammlung gelten. Das benutzen dieser Eigenschaften ist aber fakultativ um eine hohe Flexibilität zu gewährleisten.
+Die Typisierung der Eigenschaften wird weiter unten dargestellt.
+
+  \item[Data] Die Klasse Data Kapselt ein einzelnes Datum. Wie bereits in \ref{ch:Eingabedaten} dargelegt, sind die notwendigen Bestandteile eines Datensatzes ein Bezeichner, der innerhalb einer Datensammlung eindeutig sein muss, sowie eine Positionsangabe. Diese ist mithilfe einer zusammengesetzten Eigenschaft festgehalten. Das Eigenschaftssystem wird weiter unten noch detailliert beschrieben.
+  
+\begin{figure}[h!b]
+	\centering
+		\includegraphics[width=0.75\textwidth]{Bilder/dataModelData.png}
+	\caption{Aufbau der Klasse Data}
+	\label{fig:dataModelData}
+\end{figure}
+
+
+Zusätzlich zu diesen beiden obligatorischen Angaben erfasst die Data-Klasse weiterhin drei Listen von Eigenschaften.
+\begin{itemize}
+	\item Einfache Eigenschaften
+	\item Zusammengesetzte Eigenschaften
+	\item Taxonomien
+\end{itemize}
+Die einfachen Eigenschaften sind in der Lage textuelle und Numerische Merkmale eines Datensatzes zu erfassen. Sie sind Grundlage die spätere Visualisierung. Die Zusammengesetzten Eigenschaften ermöglichen das Ablegen von vektoriellen Größen, wie zum Beispiel einer Blickrichtung, Geschwindigkeiten, oder Beschleunigungen usw. Auch ist es möglich mit ihrer Hilfe baumartig strukturierte Eigenschaften zu erfassen.
+Die Taxonomien umfassen eine Liste möglicher Klassifikationen, die einem Datensatz zu Eigen sein können. Auch ihre Angabe ist nicht zwingend erforderlich.
+\end{description}
+Der Aufbau einer Data-Klasse kann in \ref{fig:DataModelOverview} nachvollzogen werden.
+
+\paragraph{Eigenschaften}
+Die Eigenschaften der Datensammlung, wie auch die der Daten an sich, sollten so generisch aufgebaut sein, dass sie für möglichst viele unterschiedliche Anwendungsgebiete ohne Änderung und Anpassung übernommen werden können. 
+
+Beim Entwurf fiel auf, dass die auftretenden Eigenschaften nach zwei Kriterien zerfallen. Auf der einen Seite kann nach Dimension der Eigenschaften unterschieden werden. So kann zum Beispiel gespeichert werden, ob die Einheit in einem Schlachtfeldsimulator feindlich, freundlich oder neutral ist. Weiterhin ist es wäre es möglich, eine Gewichtsangabe zu speichern. In beiden fällen handelt es sich um eine einfache, weil eindimensionale, Eigenschaft. 
+
+Im Gegensatz gibt es zusammengesetzte Eigenschaften wie vektorielle Größen. In diesen Bereich fallen auch Gliederungsinformationen, oder Unterstellungsverhältnisse. Eine zusammengesetzte Eigenschaft besteht damit entweder aus einfachen, oder wiederum aus zusammengesetzten Eigenschaften.
+Diese Unterscheidung führte im Entwurf zur Auswahl des Composite-Patterns [Cite Gang of Four] für die Modellierung des Sachverhalts.
+
+Das zweite Kriterium, in das die Informationen der Daten zerfallen, ist der Typ dieser. Um einen Kompromiss zwischen einem kompakten Datenmodell und einem breiten Spektrum unterstützter Typen zu gewährleisten, fiel die Entscheidung auf folgende Datentypen:
+\begin{itemize}
+	\item Boolean
+	\item Char
+	\item Date [ANM]
+	\item Float
+	\item Integer
+	\item String
+\end{itemize}
+Um die grundlegenden Bedürfnisse zu stillen, hätte auch eine Auswahl eines Fließkommadatentyps, mit dem sich auch ganze Zahlen darstellen lassen, und ein Zeichenkettendatentyp, mit dem alle anderen Informationen gespeichert werden können, ausgereicht. Eine noch kleinere Teilmenge, die nur den String-Datentyp umfasst, wäre unter Ausnutzung von programmiersprachenspezifischen Typumwandlungen auch denkbar gewesen. Diese beiden Möglichkeiten wurden aber mit Hinblick auf die komfortablere Handhabung verworfen.
+\begin{figure}[hb]
+	\centering
+		\includegraphics[width=0.75\textwidth]{Bilder/dataModelProperties.png}
+	\caption{Eigenschaftssystem im Datenmodell}
+	\label{fig:dataModelProperties}
+\end{figure}
+
+Der resultierende Entwurf ist in \ref{fig:dataModelProperties} dargestellt.
 
 \subsection{Übersicht des Frameworks}
 
@@ -61,6 +120,7 @@ Wie in [IMG dataModelOverview] dargestellt, besteht das wesentliche Datenmodell 
 \subsubsection{Viewer und Mapper}
 
 \section{Vorstellung der prototypischen Implementierung (Visualisierung einer militärischen Lage)}
+\label{ch:Prototyp}
 \section{Erweiterbarkeit und Individualisierbarkeit}
 
 
