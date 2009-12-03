@@ -21,7 +21,7 @@ Probleme, die sich ergeben können, wenn diese Bedingung nicht beachtet wird, sin
 \paragraph{Lokalisierbarkeit}
 Aus dem Ziel, die Eingabedaten im dreidimensionalen, kartesischen Raum darzustellen ergibt sich eine ganz logische Voraussetzung: Es sollte mindestens für jede der drei Dimensionen eine Eigenschaft der Daten existieren, die eine Positionierbarkeit möglich macht. Zwar ist es genauso möglich, die Daten auf einer Linie anzuordnen und somit nur eine Positionierungseigenschaft vorauszusetzen oder sich analog auf den zweidimensionalen Raum zu beschränken. Der daraus resultierende Informationsverlust muss aber in Kauf genommen werden.
 Die Voraussetzungen an den Typ der für die Lokalisierung herangezogenen Eigenschaften sind nicht sehr streng. Zwar ist es zielführend, wenn es sich hier um kontinuierliche oder zumindest diskret ganzzahlige  Größen handelt. Ist dies nicht der Fall, so müssen diese lediglich zur Berechnung der Anzeigekoordinaten mit einer geeigneten Abbildungsvorschrift umgerechnet werden.
-\begin{table*}[ht]
+\begin{table*}[ht!]
 	\centering
 		\begin{tabular}{ | l | l |}
 		\hline
@@ -39,19 +39,18 @@ Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der
 
 Die Art der Daten die für solche zusätzliche Veranschaulichung verwendet kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich gerade zu anbieten, in Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
 \subsubsection{Datenmodell}
-\begin{figure}[H]
-	\centering
-		\includegraphics[width=0.75\textwidth]{Bilder/DataModelOverview.png}
-	\caption{Übersicht des Datenmodells}
-	\label{fig:DataModelOverview}
-\end{figure}
-
 Das im Rahmen dieser Arbeit entwickelte Datenmodell setzte den Grundstock für das später entworfene Framework und hat zum Ziel, durch generische Gestaltung in der Lage zu sein, unterschiedlichste Quelldaten ohne Anpassung speichern zu können.
 
 Umgesetzt wurden diese Anforderungen durch die Trennung in eine Datensammlung und deren Daten auf der einen, und Eigenschaften auf der anderen Seite. 
 \paragraph{Datensammlung mit Daten}
 Wie in \ref{fig:DataModelOverview} dargestellt, besteht das wesentliche Datenmodell aus zwei Klassen.
 \begin{description}
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.75\textwidth]{Bilder/DataModelOverview.png}
+	\caption{Übersicht des Datenmodells}
+	\label{fig:DataModelOverview}
+\end{figure}
 	\item[DataSet] Die Klasse DataSet kapselt die einzelnen Datensätze in Form einer Liste. Diese Klasse ist die zentrale Datenstruktur, die für alle weiteren Prozesse die notwendigen Informationen bereithält. Sie besteht im Wesentlichen aus zwei Bestandteilen. Das erste ist die angesprochene Liste der gespeicherten Daten. Weiterhin kann sie Eigenschaften erfassen, die nicht einem bestimmten Datum zu Eigen sind, sondern global für die gesamte Datensammlung gelten. Das benutzen dieser Eigenschaften ist aber fakultativ um eine hohe Flexibilität zu gewährleisten.
 Die Typisierung der Eigenschaften wird weiter unten dargestellt.
 
@@ -116,8 +115,6 @@ Das Datenmodell ist an der Stelle der Eigenschaften erweiterbar. Um einen neuen 
 In der Enumeration der Typen ist der neue einzuführen. Weiterhin muss in der abstrakten Klasse die Zugriffs- und Manipulationsmethoden abstrakt definiert werden. Daraus folgt, dass bestehende Typen diese Methoden implementieren müssen. Macht eine Typumwandlung Sinn, dann kann diese umgesetzt werden. Meist können die Methoden jedoch auf das Werfen einer Exception reduziert werden.
 Abschließend muss nun eine neue Typ-Property Klasse erstellt und implementiert werden, die von ihrem abstrakten Vorbild erbt. 
 Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
-
-
 \subsection{Übersicht des Frameworks}
 
 \subsection{Beschreibung der Komponenten}
