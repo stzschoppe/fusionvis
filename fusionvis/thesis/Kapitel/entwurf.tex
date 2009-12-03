@@ -21,7 +21,7 @@ Probleme, die sich ergeben können, wenn diese Bedingung nicht beachtet wird, sin
 \paragraph{Lokalisierbarkeit}
 Aus dem Ziel, die Eingabedaten im dreidimensionalen, kartesischen Raum darzustellen ergibt sich eine ganz logische Voraussetzung: Es sollte mindestens für jede der drei Dimensionen eine Eigenschaft der Daten existieren, die eine Positionierbarkeit möglich macht. Zwar ist es genauso möglich, die Daten auf einer Linie anzuordnen und somit nur eine Positionierungseigenschaft vorauszusetzen oder sich analog auf den zweidimensionalen Raum zu beschränken. Der daraus resultierende Informationsverlust muss aber in Kauf genommen werden.
 Die Voraussetzungen an den Typ der für die Lokalisierung herangezogenen Eigenschaften sind nicht sehr streng. Zwar ist es zielführend, wenn es sich hier um kontinuierliche oder zumindest diskret ganzzahlige  Größen handelt. Ist dies nicht der Fall, so müssen diese lediglich zur Berechnung der Anzeigekoordinaten mit einer geeigneten Abbildungsvorschrift umgerechnet werden.
-\begin{table*}[!Ht]
+\begin{table*}[ht]
 	\centering
 		\begin{tabular}{ | l | l |}
 		\hline
@@ -39,7 +39,7 @@ Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der
 
 Die Art der Daten die für solche zusätzliche Veranschaulichung verwendet kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich gerade zu anbieten, in Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
 \subsubsection{Datenmodell}
-\begin{figure}[h!t]
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{Bilder/DataModelOverview.png}
 	\caption{Übersicht des Datenmodells}
@@ -57,7 +57,7 @@ Die Typisierung der Eigenschaften wird weiter unten dargestellt.
 
   \item[Data] Die Klasse Data Kapselt ein einzelnes Datum. Wie bereits in \ref{ch:Eingabedaten} dargelegt, sind die notwendigen Bestandteile eines Datensatzes ein Bezeichner, der innerhalb einer Datensammlung eindeutig sein muss, sowie eine Positionsangabe. Diese ist mithilfe einer zusammengesetzten Eigenschaft festgehalten. Das Eigenschaftssystem wird weiter unten noch detailliert beschrieben.
   
-\begin{figure}[h!b]
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{Bilder/dataModelData.png}
 	\caption{Aufbau der Klasse Data}
@@ -73,9 +73,9 @@ Zusätzlich zu diesen beiden obligatorischen Angaben erfasst die Data-Klasse weit
 \end{itemize}
 Die einfachen Eigenschaften sind in der Lage textuelle und Numerische Merkmale eines Datensatzes zu erfassen. Sie sind Grundlage die spätere Visualisierung. Die Zusammengesetzten Eigenschaften ermöglichen das Ablegen von vektoriellen Größen, wie zum Beispiel einer Blickrichtung, Geschwindigkeiten, oder Beschleunigungen usw. Auch ist es möglich mit ihrer Hilfe baumartig strukturierte Eigenschaften zu erfassen.
 Die Taxonomien umfassen eine Liste möglicher Klassifikationen, die einem Datensatz zu Eigen sein können. Auch ihre Angabe ist nicht zwingend erforderlich.
-\end{description}
-Der Aufbau einer Data-Klasse kann in \ref{fig:DataModelOverview} nachvollzogen werden.
 
+Der Aufbau einer Data-Klasse kann in \ref{fig:dataModelData} nachvollzogen werden.
+\end{description}
 \paragraph{Eigenschaften}
 Die Eigenschaften der Datensammlung, wie auch die der Daten an sich, sollten so generisch aufgebaut sein, dass sie für möglichst viele unterschiedliche Anwendungsgebiete ohne Änderung und Anpassung übernommen werden können. 
 
@@ -94,14 +94,29 @@ Das zweite Kriterium, in das die Informationen der Daten zerfallen, ist der Typ 
 	\item String
 \end{itemize}
 Um die grundlegenden Bedürfnisse zu stillen, hätte auch eine Auswahl eines Fließkommadatentyps, mit dem sich auch ganze Zahlen darstellen lassen, und ein Zeichenkettendatentyp, mit dem alle anderen Informationen gespeichert werden können, ausgereicht. Eine noch kleinere Teilmenge, die nur den String-Datentyp umfasst, wäre unter Ausnutzung von programmiersprachenspezifischen Typumwandlungen auch denkbar gewesen. Diese beiden Möglichkeiten wurden aber mit Hinblick auf die komfortablere Handhabung verworfen.
-\begin{figure}[hb]
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{Bilder/dataModelProperties.png}
 	\caption{Eigenschaftssystem im Datenmodell}
 	\label{fig:dataModelProperties}
 \end{figure}
 
-Der resultierende Entwurf ist in \ref{fig:dataModelProperties} dargestellt.
+Der resultierende Entwurf ist in \ref{fig:dataModelProperties} dargestellt. Er besteht aus der abstrakten Eigenschaft, den konkreten Implementierungen nach Datentypen und der Zusammengesetzten Eigenschaft.
+
+\begin{description}
+	\item[AbstractProperty] Die abstrakte Klasse dient als Muster für die konkreten Implementierungen. Sie wird über einen Bezeichner eindeutig identifiziert. Es bietet sich hier an, menschenlesbare Namen zu verwenden, die zugleich beschreibenden Charakter haben. Zusätzlich hat jede Eigenschaft einen Typ. Dieser ist bereits in der abstrakten Klasse implementiert, um zur Laufzeit ohne Kenntnis der genauen Implementierung den jeweiligen Typ der Eigenschaft abzufragen.
+Der Satz an abstrakten Methoden bildet die notwendige Schnittstelle um den Wert einer Eigenschaft zu lesen und zu schreiben. Hier stellt sich die Frage, warum eine abstrakte Klasse und nicht etwa ein Interface gewählt wurde. Die Antwort ergibt sich aus der Möglichkeit die Typinformationen und den Bezeichner in der allgemeinen Eigenschaft vorhalten zu können. Das entlastet den Programmierer bei der Umsetzung der konkreten Implementierungen, da er sich darum nicht mehr kümmern muss.
+Aus Sicht des Composite-Patterns stellt AbstractProperty die Component-Klasse dar.
+\item[Typ-Property] Die Implementierungen der abstrakten Klasse tragen in der Umsetzung die Verantwortung, einen zum Typ passenden Wert zu speichern. Dieser wird in der Ausgestaltung der Manipulationsmethoden gesetzt und gelesen. Wo notwendig sind Typumwandlungen durchzuführen, bei unsinnigen Operationen (zum Beispiel das Umwandeln eines bool'schen  in ein Datum) sollten Exceptions geworfen werden.
+Eine Typ-Property ist die im Composite-Pattern als Leaf bezeichnete Klasse.
+\item[ContainerProperty] Die zusammengesetzte Eigenschaft verwaltet ihre zugehörigen Eigenschaften in einer Liste. Sie kann aus Typ-Property-Klassen bestehen, oder wiederum aus zusammengesetzten Eigenschaften. Aus diesem Grund enthält die Liste, die den Wert der ContainerProperty darstellt, nur AbstractProperty-Klassen. Darum stellt diese Klasse den Composite dar.
+\end{description}
+\paragraph{Erweiterbarkeit}
+Das Datenmodell ist an der Stelle der Eigenschaften erweiterbar. Um einen neuen Typ einzuführen müssen vier Schritte durchgeführt werden: 
+In der Enumeration der Typen ist der neue einzuführen. Weiterhin muss in der abstrakten Klasse die Zugriffs- und Manipulationsmethoden abstrakt definiert werden. Daraus folgt, dass bestehende Typen diese Methoden implementieren müssen. Macht eine Typumwandlung Sinn, dann kann diese umgesetzt werden. Meist können die Methoden jedoch auf das Werfen einer Exception reduziert werden.
+Abschließend muss nun eine neue Typ-Property Klasse erstellt und implementiert werden, die von ihrem abstrakten Vorbild erbt. 
+Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
+
 
 \subsection{Übersicht des Frameworks}
 
