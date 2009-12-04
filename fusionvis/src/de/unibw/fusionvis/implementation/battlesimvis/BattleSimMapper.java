@@ -30,14 +30,14 @@ import de.unibw.fusionvis.viewer.TestViewer;
 
 public class BattleSimMapper extends Mapper {
 	
-	float latMin = 90f;
-	float latMax = -90f;
+	private float latMin = 90f;
+	private float latMax = -90f;
 
-	float lonMin = 180f;
-	float lonMax = -180f;
+	private float lonMin = 180f;
+	private float lonMax = -180f;
 
-	GregorianCalendar timeMin = new GregorianCalendar(3000, 11, 31); // 31.Dezember.3000
-	GregorianCalendar timeMax = new GregorianCalendar(0, 0, 1); // 1.Januar
+	private GregorianCalendar timeMin = new GregorianCalendar(3000, 11, 31); // 31.Dezember.3000
+	private GregorianCalendar timeMax = new GregorianCalendar(0, 0, 1); // 1.Januar
 	// im Jahre
 	// 0
 
@@ -121,9 +121,7 @@ public class BattleSimMapper extends Mapper {
 		} else {
 			y = 1;
 		}
-
-		Vector3f offset = new Vector3f(-lonMin, -timeMin.getTimeInMillis(),
-				-latMin);
+		
 		Vector3f factor = new Vector3f(x, y, z);
 
 //		 System.out.println("Latitude: " + distanceonEarth(new Vector2f(lonMin, latMin), new Vector2f(lonMin, latMax)));
@@ -166,15 +164,16 @@ public class BattleSimMapper extends Mapper {
 			dataNode.updateRenderState();
 		}
 
-		texture(dataNode, DisplaySystem.getDisplaySystem());
+		texture(dataNode);
 		return dataNode;
 	}
 
 	@Override
-	public void texture(Node dataNode, DisplaySystem display) {
+	public void texture(Node dataNode) {
 		if (dataNode.getChildren() == null) {
 			return;
 		}
+		DisplaySystem display = DisplaySystem.getDisplaySystem();
 		URL fr = TestViewer.class.getClassLoader().getResource(
 				"de/unibw/fusionvis/img/fr.gif");
 		URL ho = TestViewer.class.getClassLoader().getResource(
