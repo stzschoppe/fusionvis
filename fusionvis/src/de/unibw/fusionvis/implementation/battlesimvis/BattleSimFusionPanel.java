@@ -102,12 +102,6 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 						fusionCamViewComboBoxItemStateChanged(evt);
 					}
 				});
-		fusionCamViewComboBox
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						fusionCamViewComboBoxActionPerformed(evt);
-					}
-				});
 
 		fuisonCamViewLabel.setText("Kamerasicht");
 
@@ -158,12 +152,6 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 				.addItemListener(new java.awt.event.ItemListener() {
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						fusionVectorCheckBoxItemStateChanged(evt);
-					}
-				});
-		fusionVelocityCheckBox
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						fusionVectorCheckBoxActionPerformed(evt);
 					}
 				});
 
@@ -245,12 +233,6 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 		fusionRadiusLabel.setText("Radius");
 
 		fusionHeightTextField.setText("100");
-		fusionHeightTextField
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						fusionHeightTextFieldActionPerformed(evt);
-					}
-				});
 		fusionHeightTextField.addKeyListener(new java.awt.event.KeyAdapter() {
 			public void keyTyped(java.awt.event.KeyEvent evt) {
 				fusionHeightTextFieldKeyTyped(evt);
@@ -258,12 +240,6 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 		});
 
 		fusionRadiusTextField.setText("50");
-		fusionRadiusTextField
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						fusionRadiusTextFieldActionPerformed(evt);
-					}
-				});
 
 		fusionButtonGroup.add(fusionFutureRadioButton);
 		fusionFutureRadioButton.setText("zukünftig");
@@ -468,25 +444,6 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
         add(northLabel, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
 
-	private void fusionVectorCheckBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fusionVectorCheckBoxActionPerformed
-		// TODO add your handling code here:
-	}// GEN-LAST:event_fusionVectorCheckBoxActionPerformed
-
-	private void fusionHeightTextFieldActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fusionHeightTextFieldActionPerformed
-	// TODO
-	}// GEN-LAST:event_fusionHeightTextFieldActionPerformed
-
-	private void fusionRadiusTextFieldActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fusionRadiusTextFieldActionPerformed
-	// TODO
-	}// GEN-LAST:event_fusionRadiusTextFieldActionPerformed
-
-	private void fusionCamViewComboBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fusionCamViewComboBoxActionPerformed
-		// TODO add your handling code here:
-	}// GEN-LAST:event_fusionCamViewComboBoxActionPerformed
 
 	private void fusionOrientationCheckBoxItemStateChanged(
 			java.awt.event.ItemEvent evt) {// GEN-FIRST:event_fusionOrientationCheckBoxItemStateChanged
@@ -672,25 +629,20 @@ public class BattleSimFusionPanel extends javax.swing.JPanel implements
 			if (futureCones.contains(id)) {
 				fusionFutureRadioButton.setSelected(true);
 				Cylinder cone = (Cylinder) futureConeNode.getChild("cone " + id);
-				//fusionCandidateList.setListData(detectSpheresInCone(cone, true).toArray());
+				fusionCandidateList.setListData(detectSpheresInCone(cone, true).toArray());
 			}
 			else if (pastCones.contains(id)){
 				fusionPastRadioButton.setSelected(true);
 				Cylinder cone = (Cylinder) pastConeNode.getChild("cone " + id);
-				//fusionCandidateList.setListData(detectSpheresInCone(cone, true).toArray());
+				fusionCandidateList.setListData(detectSpheresInCone(cone, false).toArray());
 			}
 			else {
 				fusionInvisibleRadioButton.setSelected(true);
 				fusionCandidateList.setModel(new DefaultListModel());
 			}
 
-
-			fusionHeightTextField.setText(Float.toString(maxConeHeight)); // TODO
-																			// aus
-																			// den
-																			// Werten
 			// auslesen
-			fusionCandidateList.setModel(new DefaultListModel());
+			//fusionCandidateList.setModel(new DefaultListModel());
 		} else {
 
 		}
