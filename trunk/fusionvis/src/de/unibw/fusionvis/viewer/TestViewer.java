@@ -2,18 +2,13 @@ package de.unibw.fusionvis.viewer;
 
 import java.net.URL;
 
-import jmetest.TutorialGuide.HelloMousePick;
-import jmetest.flagrushtut.Lesson1;
-
 import com.jme.app.SimpleGame;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingSphere;
-import com.jme.image.Image;
 import com.jme.image.Texture;
 import com.jme.intersection.PickResults;
 import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
-import com.jme.math.Ray;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
