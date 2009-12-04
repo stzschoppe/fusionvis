@@ -48,7 +48,6 @@ import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.Spatial.LightCombineMode;
 import com.jme.scene.shape.Box;
-import com.jme.scene.shape.Cylinder;
 import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.LightState;
@@ -63,11 +62,10 @@ import com.jme.util.TextureManager;
 import com.jmex.awt.input.AWTMouseInput;
 import com.jmex.awt.lwjgl.LWJGLAWTCanvasConstructor;
 
-import de.unibw.fusionvis.FusionVis;
+import de.unibw.fusionvis.FusionVisForm;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.implementation.battlesimvis.BattleSimFusionPanel;
 import de.unibw.fusionvis.implementation.battlesimvis.BattleSimMapper;
-import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.importer.ImporterPanel;
 import de.unibw.fusionvis.mapper.Mapper;
 
@@ -124,7 +122,7 @@ public class ViewerPanel extends JPanel implements Observer{
     	this.unitSize = unitSize;
 		observableSupport = new ObservableSupport();
     	observableSupport.addObserver(importerPanel);
-    	this.logger = FusionVis.getLogger();
+    	this.logger = FusionVisForm.getLogger();
     	this.importerPanel = importerPanel;
     	importerPanel.observableSupportForFilter.addObserver(this);
     	importerPanel.observableSupportForSelection.addObserver(this);

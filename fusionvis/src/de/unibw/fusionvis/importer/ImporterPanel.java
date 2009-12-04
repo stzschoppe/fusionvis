@@ -11,22 +11,19 @@
 
 package de.unibw.fusionvis.importer;
 
-import java.util.Enumeration;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 
-import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import de.unibw.fusionvis.FusionVis;
+import de.unibw.fusionvis.FusionVisForm;
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
-import de.unibw.fusionvis.datamodel.Type;
 import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
 
 /**
@@ -349,7 +346,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 			}
 			
 
-			FusionVis.getLogger().log(
+			FusionVisForm.getLogger().log(
 					Level.INFO,
 					modelUserDefined.getData().size()
 							+ " Datensätze mit angegebener Eigenschaft");

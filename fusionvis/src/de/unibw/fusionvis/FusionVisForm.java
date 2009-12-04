@@ -17,6 +17,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JSplitPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import de.unibw.fusionvis.importer.Importer;
 import de.unibw.fusionvis.importer.ImporterPanel;
 import de.unibw.fusionvis.viewer.ViewerPanel;
 
@@ -26,17 +27,27 @@ import de.unibw.fusionvis.viewer.ViewerPanel;
  */
 public class FusionVisForm extends javax.swing.JFrame {
 
+	/** globaler Logger*/
+	private static Logger logger = Logger.getLogger("FusionVis");
+	
+	/**
+	 * Getter fuer den globalen Logger
+	 * @return the logger
+	 */
+	public static Logger getLogger() {
+		return logger;
+	}
+	
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 5567019550663889694L;
 	/** Creates new form FusionVisForm */
-    public FusionVisForm(FusionVis model, ImporterPanel importerPanel, ViewerPanel viewerPanel) {
-    	this.model = model;
+    public FusionVisForm(Importer importer, ImporterPanel importerPanel, ViewerPanel viewerPanel) {
+    	this.importer = importer;
     	initComponents(importerPanel, viewerPanel);
-    	model.importer.addObserver(importerPanel);
-    	model.importer.addObserver(viewerPanel);
-    	logger = FusionVis.getLogger();
+    	importer.addObserver(importerPanel);
+    	importer.addObserver(viewerPanel);
     }
 
     /** This method is called from within the constructor to
@@ -50,7 +61,7 @@ public class FusionVisForm extends javax.swing.JFrame {
 
         fusionvisFileChooser = new javax.swing.JFileChooser();
         if (importerPanel==null) {
-			fusionvisImporterPanel = new ImporterPanel(model.importer);
+			fusionvisImporterPanel = new ImporterPanel(importer);
 		}
         else {
 			fusionvisImporterPanel = importerPanel;
@@ -133,7 +144,7 @@ public class FusionVisForm extends javax.swing.JFrame {
 		int returnVal = fusionvisFileChooser.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			fusionvisImporterPanel.setVisible(true);
-			model.importer.runImport(fusionvisFileChooser.getSelectedFile());
+			importer.runImport(fusionvisFileChooser.getSelectedFile());
     }
 
     }//GEN-LAST:event_fusionvisImportMenuItemActionPerformed
@@ -167,8 +178,7 @@ public class FusionVisForm extends javax.swing.JFrame {
     protected ViewerPanel fusionvisViewerPanel;
     protected javax.swing.JMenuItem fusionvisInfoMenuItem;
     protected javax.swing.JMenuBar fusionvisMenu;
-    protected FusionVis model;
-    protected static Logger logger;
+    protected Importer importer;
     protected JSplitPane splitPane;
     // End of variables declaration//GEN-END:variables
 

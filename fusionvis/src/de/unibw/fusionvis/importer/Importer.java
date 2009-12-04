@@ -22,9 +22,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.jme.system.DisplaySystem;
-
-import de.unibw.fusionvis.FusionVis;
+import de.unibw.fusionvis.FusionVisForm;
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.datamodel.Type;
@@ -35,7 +33,6 @@ import de.unibw.fusionvis.datamodel.properties.DateProperty;
 import de.unibw.fusionvis.datamodel.properties.FloatProperty;
 import de.unibw.fusionvis.datamodel.properties.IntProperty;
 import de.unibw.fusionvis.datamodel.properties.StringProperty;
-import de.unibw.fusionvis.mapper.Mapper;
 
 /**
  * <p>
@@ -81,7 +78,7 @@ public abstract class Importer extends Observable {
 	private com.jme.scene.Node dataNode;
 
 	public Importer() {
-		this.logger = FusionVis.getLogger();
+		this.logger = FusionVisForm.getLogger();
 		panel = new ImporterPanel(this);
 	}
 
