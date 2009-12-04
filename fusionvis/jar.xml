@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project FusionVis with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="C:/jar/BattleSimVis.jar">
+            <manifest>
+                <attribute name="Main-Class" value="de.unibw.fusionvis.implementation.battlesimvis.BattleSimVisForm"/>
+                <attribute name="Class-Path" value=". BattleSimVis_lib/jme.jar BattleSimVis_lib/jogl.jar BattleSimVis_lib/lwjgl.jar BattleSimVis_lib/jme-awt.jar"/>
+            </manifest>
+            <fileset dir="C:/Users/stephan/workspace_bachelor/FusionVis/bin"/>
+        </jar>
+        <delete dir="C:/jar/BattleSimVis_lib"/>
+        <mkdir dir="C:/jar/BattleSimVis_lib"/>
+        <copy file="C:/Users/stephan/workspace_bachelor/FusionVis/lib/jme.jar" todir="C:/jar/BattleSimVis_lib"/>
+        <copy file="C:/Users/stephan/workspace_bachelor/FusionVis/lib/lib/jogl/jogl.jar" todir="C:/jar/BattleSimVis_lib"/>
+        <copy file="C:/Users/stephan/workspace_bachelor/FusionVis/lib/lib/lwjgl/lwjgl.jar" todir="C:/jar/BattleSimVis_lib"/>
+        <copy file="C:/Users/stephan/workspace_bachelor/FusionVis/lib/jme-awt.jar" todir="C:/jar/BattleSimVis_lib"/>
+    </target>
+</project>
