@@ -27,7 +27,6 @@ public class BattleSimVisForm extends FusionVisForm {
 		
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				Logger logger = FusionVisForm.getLogger();
 				try {
 					// Logger Konfiguration
 					logger.setLevel(Level.ALL);
@@ -47,7 +46,7 @@ public class BattleSimVisForm extends FusionVisForm {
 				try {
 
 				} catch (Exception e) {
-					FusionVisForm.getLogger().log(Level.SEVERE,
+					logger.log(Level.SEVERE,
 							e.getLocalizedMessage());
 				}
 			}

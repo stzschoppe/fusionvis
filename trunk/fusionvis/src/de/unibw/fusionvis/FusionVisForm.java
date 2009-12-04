@@ -28,7 +28,7 @@ import de.unibw.fusionvis.viewer.ViewerPanel;
 public class FusionVisForm extends javax.swing.JFrame {
 
 	/** globaler Logger*/
-	private static Logger logger = Logger.getLogger("FusionVis");
+	protected static Logger logger = Logger.getLogger("FusionVis");
 	
 	/**
 	 * Getter fuer den globalen Logger

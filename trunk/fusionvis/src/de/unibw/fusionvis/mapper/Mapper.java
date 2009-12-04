@@ -1,53 +1,69 @@
 package de.unibw.fusionvis.mapper;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-
-import com.jme.bounding.BoundingSphere;
-import com.jme.image.Texture;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
-import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
-import com.jme.scene.Spatial;
-import com.jme.scene.shape.Sphere;
-import com.jme.scene.state.TextureState;
-import com.jme.system.DisplaySystem;
-import com.jme.util.TextureManager;
 
-import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
-import de.unibw.fusionvis.viewer.TestViewer;
 
+/**
+ * Die Mapperklasse wandelt ein Datenmodell in eine jme-Szene um.
+ * @author stzschoppe
+ *
+ */
 public abstract class Mapper {
+	/**
+	 * Wurzelknoten der Szene.
+	 */
 	protected Node dataNode = null;
+	/**
+	 * Datenmodell
+	 */
 	protected DataSet dataSet;
+	/**
+	 * Maximale Ausmaße der Szene in Unit.
+	 */
 	protected Vector3f maximalDimenVector3f;
+	/**
+	 * Größe der darzustellenden Dateneinheiten (Kreisradius).
+	 */
 	protected float unitSize;
 
+	/**
+	 * Konstruktor
+	 * @param maximalDimenVector3f Maximale Ausmaße der Szene in Unit.
+	 * @param unitSize Größe der darzustellenden Dateneinheiten (Kreisradius).
+	 */
 	public Mapper(Vector3f maximalDimenVector3f,  float unitSize) {
 		this.dataSet = null;
 		this.maximalDimenVector3f = maximalDimenVector3f;
 		this.unitSize = unitSize;
 	}
 	
+	/**
+	 * Konstruktor
+	 * @param dataSet Datenmodell
+	 * @param maximalDimenVector3f Maximale Ausmaße der Szene in Unit.
+	 * @param unitSize Größe der darzustellenden Dateneinheiten (Kreisradius).
+	 */
 	public Mapper(DataSet dataSet, Vector3f maximalDimenVector3f, float unitSize) {
 		this.dataSet = dataSet;
 		this.maximalDimenVector3f = maximalDimenVector3f;
 		this.unitSize = unitSize;
 	}
 
-	// Abstract
+	/**
+	 * Liefert den Wurzelknoten des Szenenbaums, der die darszustellenden Objekte
+	 * enthält.
+	 * @param dataSet Datenmodell, das in eine jme-Szene umgewandelt werden soll.
+	 * @return Wurzelknoten der Szene.
+	 */
 	public abstract Node getDataRoot(DataSet dataSet); 
 
 	/**
-	 * Berechnet Faktoren um die Dimension zu skalieren und den auf einen
-	 * Bereich zwischen 0 und einem angegebenen Maximum zu verschieben.
+	 * Berechnet Faktoren um die Dimensionen zu skalieren. 
 	 * 
-	 * @return Array, an Position 0 stehen die Faktoren, an 1 die Offsets.
+	 * @return Faktoren, der einzelnen Dimensionen.
 	 */
 	protected abstract Vector3f getCoefficient(); 
 	
@@ -57,17 +73,26 @@ public abstract class Mapper {
 	 */
 	public abstract Vector2f getSize();
 
+	/**
+	 * Liefert den Wurzelknoten des Szenenbaums, der die darszustellenden Objekte
+	 * enthält.
+	 * @return Wurzelknoten der Szene.
+	 */
 	public Node getDataRoot() {
 		if (dataSet == null) {
 			throw new UnsupportedOperationException(
 					"Mapper nicht initialisiert, getter mir Argument aufrufen.");
 		} else {
 			dataNode = getDataRoot(dataSet);
-			texture(dataNode, DisplaySystem.getDisplaySystem());
+			texture(dataNode);
 			return dataNode;
 		}
 	}
 
 
-	public abstract void texture(Node dataNode, DisplaySystem display);	
+	/**
+	 * Texturierung der Dateneinheiten des angegebenen DataNodes.
+	 * @param dataNode Wurzelknoten der Dateneinheiten.
+	 */
+	public abstract void texture(Node dataNode);	
 }
