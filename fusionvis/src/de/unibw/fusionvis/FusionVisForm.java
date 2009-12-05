@@ -11,6 +11,8 @@
 
 package de.unibw.fusionvis;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
@@ -118,6 +120,27 @@ public class FusionVisForm extends javax.swing.JFrame {
         fusionvisFileMenu.add(fusionvisImportMenuItem);
 
         fusionvisCloseMenuItem.setText("Beenden");
+        fusionvisCloseMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                fusionvisCloseMenuItemMouseClicked(evt);
+            }
+
+			private void fusionvisCloseMenuItemMouseClicked(MouseEvent evt) {
+				System.exit(ABORT);
+				
+			}
+        });
+        fusionvisCloseMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fusionvisCloseMenuItemActionPerformed(evt);
+            }
+
+			private void fusionvisCloseMenuItemActionPerformed(ActionEvent evt) {
+				System.exit(ABORT);
+				
+			}
+        });
+        
         fusionvisFileMenu.add(fusionvisCloseMenuItem);
 
         fusionvisMenu.add(fusionvisFileMenu);

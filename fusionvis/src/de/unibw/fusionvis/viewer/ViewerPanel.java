@@ -677,20 +677,27 @@ public class ViewerPanel extends JPanel implements Observer{
 		if (arg instanceof DataSet) { // Datenimport
 			DataSet dataSet = (DataSet) arg;
 			root.detachChild(dataNode);
-			helperNode.detachChild(gridNode);
-			
 			dataNode = mapper.getDataRoot(dataSet);
-			createGrid(new Vector2f(mapper.getSize().x/getMaximalDimenVector3f().x, mapper.getSize().y/getMaximalDimenVector3f().z), 10);
-			
-			helperNode.attachChild(gridNode);
+			if (dataSet.getData().size() > 0) {
+				helperNode.detachChild(gridNode);
+				createGrid(new Vector2f(mapper.getSize().x
+						/ getMaximalDimenVector3f().x, mapper.getSize().y
+						/ getMaximalDimenVector3f().z), 10);
+				helperNode.attachChild(gridNode);
+			}
 			root.attachChild(dataNode);
-		} else if (arg instanceof String) { //Selection
+		} else if (arg instanceof String) { // Selection
 			deselect();
-			String id = (String)arg;
-			Spatial toSelect = ((Node)dataNode.getChild(id)).getChild(id);
-			if(toSelect!=null)
+			String id = (String) arg;
+			Spatial toSelect = null;
+			if (((Node) dataNode.getChild(id)) != null)
+				toSelect = ((Node) dataNode.getChild(id)).getChild(id);
+			else
+				deselect();
+			if (toSelect != null)
 				select(toSelect);
-			else deselect();
+			else
+				deselect();
 		}
 	}
 	
