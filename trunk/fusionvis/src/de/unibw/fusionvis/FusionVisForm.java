@@ -20,9 +20,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JSplitPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import de.unibw.fusionvis.importer.Importer;
-import de.unibw.fusionvis.importer.ImporterPanel;
-import de.unibw.fusionvis.viewer.ViewerPanel;
+import de.unibw.fusionvis.backend.Importer;
+import de.unibw.fusionvis.frontend.ImporterPanel;
+import de.unibw.fusionvis.frontend.ViewerPanel;
 
 /**
  *
