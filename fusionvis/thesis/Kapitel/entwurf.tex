@@ -133,20 +133,25 @@ Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
 
 Das erstellte Framework besteht im Wesentlichen aus zwei Teilen. Auf der einen Seite stehen die für den Benutzer sichtbaren Klassen, an denen nicht notwendigerweise eine Anpassung vorgenommen werden muss, um ein lauffähiges Programm zu erstellen. Zu diesen Klassen gehört auf oberster Ebene die FusionVisForm. Diese ist die dem Benutzer angezeigte Programmoberfläche. Sie besteht aus einem Menü mit implementierter Funktion zum Auswählen von XML-Dateien und zum Schließen des Programms. 
 
-Die Form enthält weiterhin zwei Panels, die es dem Benutzer ermöglichen, eine textuelle und eine visuelle Darstellung der Daten zu sehen. Für die textuelle Sicht ist das ImporterPanel vorgesehen. Es bietet die Möglichkeit, die Daten zu nach bestimmten Eigenschaften zu filtern und die Daten mit ihren Eigenschaften in Textform anzuzeigen. Das Model, auf dem gearbeitet wird, ist das in \ref{ch:Datenmodell} beschriebene Datenmodell. Somit ist das ImporterPanel auch völlig unabhängig von dem genauen Inhalt der Daten, solange diese in das beschriebene Model überführt wurden. Dafür ist der Importer zuständig, der im nächsten Abschnitt beschrieben wird.
+Die Form enthält weiterhin zwei Panels, die es dem Benutzer ermöglichen, eine textuelle und eine visuelle Darstellung der Daten zu sehen. 
+\begin{description}
+	\item[ImporterPanel] Für die textuelle Sicht ist das ImporterPanel vorgesehen. Es bietet die Möglichkeit, die Daten zu nach bestimmten Eigenschaften zu filtern und die Daten mit ihren Eigenschaften in Textform anzuzeigen. Das Model, auf dem gearbeitet wird, ist das in \ref{ch:Datenmodell} beschriebene Datenmodell. Somit ist das ImporterPanel auch völlig unabhängig von dem genauen Inhalt der Daten, solange diese in das beschriebene Model überführt wurden. Dafür ist der Importer zuständig, der im nächsten Abschnitt beschrieben wird.
 
-Das zweite Panel ist das ViewerPanel. Es ist verantwortlich für die dreidimensionale Anzeige der Daten. Dazu ist es notwendig, das vorhandene Datenmodell in die Struktur eines Szenenbaums zu überführen. Der Szenenbaum wird in [REF Kapitel 4 jme] beschrieben. Dieser Schritt wird vom Mapper bewerkstelligt, der im nächsten Abschnitt erklärt wird.
+	\item[ViewerPanel]Das zweite Panel ist das ViewerPanel. Es ist verantwortlich für die dreidimensionale Anzeige der Daten. Dazu ist es notwendig, das vorhandene Datenmodell in die Struktur eines Szenenbaums zu überführen. Der Szenenbaum wird in [REF Kapitel 4 jme] beschrieben. Dieser Schritt wird vom Mapper bewerkstelligt, der im nächsten Abschnitt erklärt wird.
 
 Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser beinhaltet eine OpenGL-Anzeigefläche, die die dreidimensionale Darstellung übernimmt und es dem Benutzer erlaubt, sich in den visualisierten Daten zu bewegen, Datensätze mittels Mousepickings (siehe \ref{ch:mousepicking}) auszuwählen und diese somit im ImporterPanel zu inspizieren. Auch der umgekehrte Weg ist möglich, also das Auswählen eines Datums in der textuellen Ansicht, was eine Hervorhebung seiner Visualisierung im ViewerPanel zur Folge hat.
+\end{description}
 
 Zusammenfassen kann man zum Fronend des Frameworks sagen, dass die von den konkreten XML-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was schließlich wie dargestellt werden soll. Das Was ist der Prozess des Überführens von XML in das Datenmodell des Frameworks und wird im Importer festgeschrieben. Das Wie ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im Mapper beantwortet.
 
-\subsection{Beschreibung der Komponenten}
+\subsection{Beschreibung der Komponenten des Backends}
+Das Backend besteht im Wesentlichen aus den zwei oben erwähnten Komponenten, Importer und Mapper. Im Folgenden sollen die Funktion der beiden erläutert und notwendige Schritte der Spezialisierung beschrieben werden.
+
+Die Spezialisierung bezieht sich auf das Implementieren abstrakter Methoden, die in den beiden als abstrakt gekennzeichneten Klassen die eigentliche Funktion enthalten sollen.
 \subsubsection{Importer}
 \paragraph{Anbindung an XML}
 \paragraph{Instanzieren des Datenmodells}
 \subsubsection{Mapper}
-\subsubsection{Viewer}
 
 
 \subsection{Zusammenspiel der Komponenten}
