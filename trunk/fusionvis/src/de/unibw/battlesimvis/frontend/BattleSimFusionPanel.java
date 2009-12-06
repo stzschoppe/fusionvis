@@ -11,8 +11,6 @@
 
 package de.unibw.battlesimvis.frontend;
 
-import java.awt.Dimension;
-import java.awt.event.ItemEvent;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;

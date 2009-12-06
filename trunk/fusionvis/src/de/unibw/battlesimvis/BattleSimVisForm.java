@@ -1,7 +1,6 @@
 package de.unibw.battlesimvis;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import de.unibw.battlesimvis.backend.BattleSimImporter;
 import de.unibw.fusionvis.FusionVisForm;
@@ -9,6 +8,11 @@ import de.unibw.fusionvis.backend.Importer;
 import de.unibw.fusionvis.frontend.ImporterPanel;
 import de.unibw.fusionvis.frontend.ViewerPanel;
 
+/**
+ * Form des BattleSimulation Visualisierung
+ * @author stzschoppe
+ *
+ */
 public class BattleSimVisForm extends FusionVisForm {
 
 	/**
@@ -16,12 +20,22 @@ public class BattleSimVisForm extends FusionVisForm {
 	 */
 	private static final long serialVersionUID = -8764514617523001648L;
 
+	/**
+	 * Konstruktor
+	 * @param importerPanel ImporterPanel
+	 * @param viewerPanel ImporterPanel
+	 */
 	public BattleSimVisForm(ImporterPanel importerPanel,
 			ViewerPanel viewerPanel) {
 		super(importerPanel, viewerPanel);
 		setTitle("BattleSimVis");
 	}
 
+	/**
+	 * Hauptprogramm
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		final Importer importer = new BattleSimImporter();
 		final ImporterPanel importerPanel = new ImporterPanel(importer);
