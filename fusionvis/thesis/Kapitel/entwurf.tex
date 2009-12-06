@@ -149,8 +149,36 @@ Das Backend besteht im Wesentlichen aus den zwei oben erwähnten Komponenten, Imp
 
 Die Spezialisierung bezieht sich auf das Implementieren abstrakter Methoden, die in den beiden als abstrakt gekennzeichneten Klassen die eigentliche Funktion enthalten sollen.
 \subsubsection{Importer}
-\paragraph{Anbindung an XML}
-\paragraph{Instanzieren des Datenmodells}
+Der Importer ist, wie bereits im letzten Abschnitt angemerkt, dafür verantwortlich, die Daten aus einer XML-Datei zu lesen. An die Struktur muss eine Voraussetzung gemacht werden, um den Import automatisiert durchführen zu können: Die Datensätze müssen als Elemente des Wurzelknotens in der XML-Dateien stehen. Ein Beispiel für eine XML-Datei, die diese Anforderung erfüllt ist in Listing \ref{code:xmlexample}.
+
+Ist die Voraussetzung erfüllt, liest der Importer die XML-Datei aus und extrahiert die DOM-Knoten der Datenelemente. Die Wahl des DOM-Parsers für diese Aufgabe wird noch in [REF] genauer erläutert. 
+
+\lstset{language=XML}
+\begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispiel für eine wohlgeformte XML-Datei},label=code:xmlexample]
+<Situation>
+  <Units>
+   <Unit>
+      <Name>FriendlyTank1</Name>
+      <Location>
+        <Lat>52.796629714678467</Lat>
+        <Lon>9.89990561649954</Lon>
+        <LastModified>2009-02-20T10:25:36+01:00</LastModified>
+      </Location>
+    </Unit>
+    <Unit>
+      <Name>FriendlyTank2</Name>
+      <Location>
+        <Lat>52.794038961891268</Lat>
+        <Lon>9.9011727699025922</Lon>
+        <LastModified>2009-02-20T10:25:36+01:00</LastModified>
+      </Location>
+    </Unit>
+  </Units>
+</Situation>
+\end{lstlisting}
+
+%\paragraph{Anbindung an XML}
+%\paragraph{Instanzieren des Datenmodells}
 \subsubsection{Mapper}
 
 
