@@ -78,7 +78,7 @@ public class ViewerPanel extends JPanel implements Observer{
     private ObservableSupport observableSupport;
     
     private int width = 640, height = 480;
-    private MyImplementor impl;
+    private Viewer impl;
     private Canvas glCanvas;
     
     private BattleSimFusionPanel fusionPanel; //XXX zu strikte Spezialisierung
@@ -138,7 +138,8 @@ public class ViewerPanel extends JPanel implements Observer{
                 {
                     setDaemon(true);
                 }
-                public void run()
+                @Override
+				public void run()
                 {
                     try
                     {
@@ -197,7 +198,8 @@ public class ViewerPanel extends JPanel implements Observer{
             // Update der Komponenten falls das Fenster vergroessert/verkleinert wird
             glCanvas.addComponentListener(new ComponentAdapter() 
             {
-                public void componentResized(ComponentEvent ce) 
+                @Override
+				public void componentResized(ComponentEvent ce) 
                 {
                     doResize();
                 }
@@ -220,7 +222,7 @@ public class ViewerPanel extends JPanel implements Observer{
             glCanvas.addMouseMotionListener((MouseMotionListener) MouseInput.get());    
             
             // Erstellen eines Implementors zur Behandlung der Update/Render Logik
-            impl = new MyImplementor(width, height);
+            impl = new Viewer(width, height);
             ((JMECanvas) glCanvas).setImplementor(impl);
 
             Callable<?> exe = new Callable()
@@ -262,16 +264,17 @@ public class ViewerPanel extends JPanel implements Observer{
     }
         
 	/**Klasse zum Implementieren der Szene */
-    class MyImplementor extends SimpleCanvasImpl
+    class Viewer extends SimpleCanvasImpl
     {
         private LightState lightState;
 
-		public MyImplementor(int iWidth, int iHeight)
+		public Viewer(int iWidth, int iHeight)
         {
             super(iWidth, iHeight);
         }
         
-        public void simpleSetup() 
+        @Override
+		public void simpleSetup() 
         {        	
         	// Setze die Hintergrundfarbe fuer das OpenGL Fenster
             renderer.setBackgroundColor(ColorRGBA.white);
@@ -412,7 +415,8 @@ public class ViewerPanel extends JPanel implements Observer{
             createInput();
         };
 
-        public void simpleUpdate() 
+        @Override
+		public void simpleUpdate() 
         {
         	rootNode.updateGeometricState(0,false);
         	rootNode.updateWorldBound();
@@ -638,7 +642,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	
 		// Gitternetz
 	    for (float x = step; x <= max; x=x+step) {
-	        Line l = new Line("xLine" + x, new Vector3f[]{new Vector3f((float) x, 0f, 0f), new Vector3f((float) x, 0f, max)}, null, null, null);
+	        Line l = new Line("xLine" + x, new Vector3f[]{new Vector3f(x, 0f, 0f), new Vector3f(x, 0f, max)}, null, null, null);
 	        l.setSolidColor(ColorRGBA.darkGray);
 	        l.setModelBound(new BoundingBox());
 	        l.updateModelBound();
@@ -647,7 +651,7 @@ public class ViewerPanel extends JPanel implements Observer{
 	    }
 	
 	    for (float z = step; z <= max; z=z+step) {
-	        Line l = new Line("zLine" + z, new Vector3f[]{new Vector3f(0f, 0f, (float) z), new Vector3f(max, 0f, (float) z)}, null, null, null);
+	        Line l = new Line("zLine" + z, new Vector3f[]{new Vector3f(0f, 0f, z), new Vector3f(max, 0f, z)}, null, null, null);
 	        l.setSolidColor(ColorRGBA.darkGray);
 	        l.setModelBound(new BoundingBox());
 	        l.updateModelBound();
