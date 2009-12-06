@@ -589,4 +589,11 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		}
 	}
 
+	/**
+	 * @return the importer
+	 */
+	public Importer getImporter() {
+		return importer;
+	}
+
 }

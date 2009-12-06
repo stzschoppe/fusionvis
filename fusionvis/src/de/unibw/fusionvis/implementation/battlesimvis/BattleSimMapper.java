@@ -100,8 +100,6 @@ public class BattleSimMapper extends Mapper {
 				timeMax = data.getPosition().getComponent("LastModified")
 						.getValueAsDate();
 			}
-			System.out.println(data.getId() + " " + data.getPosition().getComponent("LastModified")
-					.getValueAsDate().getTimeInMillis());
 		}
 
 		if (lonMax != lonMin) {

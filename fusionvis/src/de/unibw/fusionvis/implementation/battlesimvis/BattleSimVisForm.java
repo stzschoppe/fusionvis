@@ -15,9 +15,9 @@ public class BattleSimVisForm extends FusionVisForm {
 	 */
 	private static final long serialVersionUID = -8764514617523001648L;
 
-	public BattleSimVisForm(Importer importer, ImporterPanel importerPanel,
+	public BattleSimVisForm(ImporterPanel importerPanel,
 			ViewerPanel viewerPanel) {
-		super(importer, importerPanel, viewerPanel);
+		super(importerPanel, viewerPanel);
 		setTitle("BattleSimVis");
 	}
 
@@ -32,7 +32,7 @@ public class BattleSimVisForm extends FusionVisForm {
 					logger.setLevel(Level.ALL);
 					logger.log(Level.INFO, "starte BattleVis..\n");
 
-					new BattleSimVisForm(importer, importerPanel, new ViewerPanel(importerPanel, 2f))
+					new BattleSimVisForm(importerPanel, new ViewerPanel(importerPanel, 2f))
 							.setVisible(true);
 
 					// Beenden
