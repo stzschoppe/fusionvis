@@ -20,6 +20,7 @@ Unabhängig von der Art der Visualisierung ist es unabdingbar, dass jedes einzeln
 Probleme, die sich ergeben können, wenn diese Bedingung nicht beachtet wird, sind zum einen, dass keine aussagekräftigen Berechnungen auf den importierten Daten durchgeführt werden können. Auch ist eine Markierung eines gezielten  Datensatzes unmöglich.
 \paragraph{Lokalisierbarkeit}
 Aus dem Ziel, die Eingabedaten im dreidimensionalen, kartesischen Raum darzustellen ergibt sich eine ganz logische Voraussetzung: Es sollte mindestens für jede der drei Dimensionen eine Eigenschaft der Daten existieren, die eine Positionierbarkeit möglich macht. Zwar ist es genauso möglich, die Daten auf einer Linie anzuordnen und somit nur eine Positionierungseigenschaft vorauszusetzen oder sich analog auf den zweidimensionalen Raum zu beschränken. Der daraus resultierende Informationsverlust muss aber in Kauf genommen werden.
+
 Die Voraussetzungen an den Typ der für die Lokalisierung herangezogenen Eigenschaften sind nicht sehr streng. Zwar ist es zielführend, wenn es sich hier um kontinuierliche oder zumindest diskret ganzzahlige  Größen handelt. Ist dies nicht der Fall, so müssen diese lediglich zur Berechnung der Anzeigekoordinaten mit einer geeigneten Abbildungsvorschrift umgerechnet werden.
 \begin{table*}[ht!]
 	\centering
@@ -39,6 +40,7 @@ Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der
 
 Die Art der Daten die für solche zusätzliche Veranschaulichung verwendet kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich gerade zu anbieten, in Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
 \subsubsection{Datenmodell}
+\label{ch:Datenmodell}
 Das im Rahmen dieser Arbeit entwickelte Datenmodell setzte den Grundstock für das später entworfene Framework und hat zum Ziel, durch generische Gestaltung in der Lage zu sein, unterschiedlichste Quelldaten ohne Anpassung speichern zu können.
 
 Umgesetzt wurden diese Anforderungen durch die Trennung in eine Datensammlung und deren Daten auf der einen, und Eigenschaften auf der anderen Seite. 
@@ -71,6 +73,7 @@ Zusätzlich zu diesen beiden obligatorischen Angaben erfasst die Data-Klasse weit
 	\item Taxonomien
 \end{itemize}
 Die einfachen Eigenschaften sind in der Lage textuelle und Numerische Merkmale eines Datensatzes zu erfassen. Sie sind Grundlage die spätere Visualisierung. Die Zusammengesetzten Eigenschaften ermöglichen das Ablegen von vektoriellen Größen, wie zum Beispiel einer Blickrichtung, Geschwindigkeiten, oder Beschleunigungen usw. Auch ist es möglich mit ihrer Hilfe baumartig strukturierte Eigenschaften zu erfassen.
+
 Die Taxonomien umfassen eine Liste möglicher Klassifikationen, die einem Datensatz zu Eigen sein können. Auch ihre Angabe ist nicht zwingend erforderlich.
 
 Der Aufbau einer Data-Klasse kann in \ref{fig:dataModelData} nachvollzogen werden.
@@ -104,18 +107,39 @@ Der resultierende Entwurf ist in \ref{fig:dataModelProperties} dargestellt. Er b
 
 \begin{description}
 	\item[AbstractProperty] Die abstrakte Klasse dient als Muster für die konkreten Implementierungen. Sie wird über einen Bezeichner eindeutig identifiziert. Es bietet sich hier an, menschenlesbare Namen zu verwenden, die zugleich beschreibenden Charakter haben. Zusätzlich hat jede Eigenschaft einen Typ. Dieser ist bereits in der abstrakten Klasse implementiert, um zur Laufzeit ohne Kenntnis der genauen Implementierung den jeweiligen Typ der Eigenschaft abzufragen.
+	
 Der Satz an abstrakten Methoden bildet die notwendige Schnittstelle um den Wert einer Eigenschaft zu lesen und zu schreiben. Hier stellt sich die Frage, warum eine abstrakte Klasse und nicht etwa ein Interface gewählt wurde. Die Antwort ergibt sich aus der Möglichkeit die Typinformationen und den Bezeichner in der allgemeinen Eigenschaft vorhalten zu können. Das entlastet den Programmierer bei der Umsetzung der konkreten Implementierungen, da er sich darum nicht mehr kümmern muss.
+
 Aus Sicht des Composite-Patterns stellt AbstractProperty die Component-Klasse dar.
 \item[Typ-Property] Die Implementierungen der abstrakten Klasse tragen in der Umsetzung die Verantwortung, einen zum Typ passenden Wert zu speichern. Dieser wird in der Ausgestaltung der Manipulationsmethoden gesetzt und gelesen. Wo notwendig sind Typumwandlungen durchzuführen, bei unsinnigen Operationen (zum Beispiel das Umwandeln eines bool'schen  in ein Datum) sollten Exceptions geworfen werden.
+
 Eine Typ-Property ist die im Composite-Pattern als Leaf bezeichnete Klasse.
 \item[ContainerProperty] Die zusammengesetzte Eigenschaft verwaltet ihre zugehörigen Eigenschaften in einer Liste. Sie kann aus Typ-Property-Klassen bestehen, oder wiederum aus zusammengesetzten Eigenschaften. Aus diesem Grund enthält die Liste, die den Wert der ContainerProperty darstellt, nur AbstractProperty-Klassen. Darum stellt diese Klasse den Composite dar.
 \end{description}
 \paragraph{Erweiterbarkeit}
 Das Datenmodell ist an der Stelle der Eigenschaften erweiterbar. Um einen neuen Typ einzuführen müssen vier Schritte durchgeführt werden: 
+
 In der Enumeration der Typen ist der neue einzuführen. Weiterhin muss in der abstrakten Klasse die Zugriffs- und Manipulationsmethoden abstrakt definiert werden. Daraus folgt, dass bestehende Typen diese Methoden implementieren müssen. Macht eine Typumwandlung Sinn, dann kann diese umgesetzt werden. Meist können die Methoden jedoch auf das Werfen einer Exception reduziert werden.
+
 Abschließend muss nun eine neue Typ-Property Klasse erstellt und implementiert werden, die von ihrem abstrakten Vorbild erbt. 
 Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
-\subsection{Übersicht des Frameworks}
+\subsection{Übersicht über das Frontend des Frameworks}
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[width=0.75\textwidth]{Bilder/framework.png}
+	\caption{Übersicht des Frameworks (Frontend/Backend)}
+	\label{fig:framework}
+\end{figure}
+
+Das erstellte Framework besteht im Wesentlichen aus zwei Teilen. Auf der einen Seite stehen die für den Benutzer sichtbaren Klassen, an denen nicht notwendigerweise eine Anpassung vorgenommen werden muss, um ein lauffähiges Programm zu erstellen. Zu diesen Klassen gehört auf oberster Ebene die FusionVisForm. Diese ist die dem Benutzer angezeigte Programmoberfläche. Sie besteht aus einem Menü mit implementierter Funktion zum Auswählen von XML-Dateien und zum Schließen des Programms. 
+
+Die Form enthält weiterhin zwei Panels, die es dem Benutzer ermöglichen, eine textuelle und eine visuelle Darstellung der Daten zu sehen. Für die textuelle Sicht ist das ImporterPanel vorgesehen. Es bietet die Möglichkeit, die Daten zu nach bestimmten Eigenschaften zu filtern und die Daten mit ihren Eigenschaften in Textform anzuzeigen. Das Model, auf dem gearbeitet wird, ist das in \ref{ch:Datenmodell} beschriebene Datenmodell. Somit ist das ImporterPanel auch völlig unabhängig von dem genauen Inhalt der Daten, solange diese in das beschriebene Model überführt wurden. Dafür ist der Importer zuständig, der im nächsten Abschnitt beschrieben wird.
+
+Das zweite Panel ist das ViewerPanel. Es ist verantwortlich für die dreidimensionale Anzeige der Daten. Dazu ist es notwendig, das vorhandene Datenmodell in die Struktur eines Szenenbaums zu überführen. Der Szenenbaum wird in [REF Kapitel 4 jme] beschrieben. Dieser Schritt wird vom Mapper bewerkstelligt, der im nächsten Abschnitt erklärt wird.
+
+Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser beinhaltet eine OpenGL-Anzeigefläche, die die dreidimensionale Darstellung übernimmt und es dem Benutzer erlaubt, sich in den visualisierten Daten zu bewegen, Datensätze mittels Mousepickings (siehe \ref{ch:mousepicking}) auszuwählen und diese somit im ImporterPanel zu inspizieren. Auch der umgekehrte Weg ist möglich, also das Auswählen eines Datums in der textuellen Ansicht, was eine Hervorhebung seiner Visualisierung im ViewerPanel zur Folge hat.
+
+Zusammenfassen kann man zum Fronend des Frameworks sagen, dass die von den konkreten XML-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was schließlich wie dargestellt werden soll. Das Was ist der Prozess des Überführens von XML in das Datenmodell des Frameworks und wird im Importer festgeschrieben. Das Wie ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im Mapper beantwortet.
 
 \subsection{Beschreibung der Komponenten}
 \subsubsection{Importer}
@@ -143,6 +167,7 @@ Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
 \subsubsection{Informationsverlust durch Projektion eines Kugelabschnitts auf eine Ebene}
 \subsection{Viewer}
 \subsubsection{Mousepicking}
+\label{ch:mousepicking}
 \subsubsection{Bewegungskegel}
 
 
