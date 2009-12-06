@@ -3,13 +3,10 @@
  */
 package de.unibw.battlesimvis.backend;
 
-import java.util.logging.Logger;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.unibw.fusionvis.backend.Importer;
-import de.unibw.fusionvis.backend.Mapper;
 import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.Type;
 import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
@@ -29,7 +26,6 @@ public class BattleSimImporter extends Importer {
 	/**
 	 * Konstruktor eines Importers für Ausgaben eines Battle Simulators unter
 	 * Angabe der zu importierenden XML-Datei
-	 * @param mapper Mapper, der den 3d-Baum erzeugt
 	 */
 	public BattleSimImporter() {
 		this.panel = new ImporterPanel(this);
@@ -55,7 +51,7 @@ public class BattleSimImporter extends Importer {
 	}
 
 	@Override
-	protected Data extractUnit(Node unitNode) throws Exception {
+	protected Data extractDataFromNode(Node unitNode) throws Exception {
 		Data result = null;
 		NodeList list = unitNode.getChildNodes();
 

@@ -20,7 +20,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JSplitPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import de.unibw.fusionvis.backend.Importer;
 import de.unibw.fusionvis.frontend.ImporterPanel;
 import de.unibw.fusionvis.frontend.ViewerPanel;
 
@@ -45,7 +44,9 @@ public class FusionVisForm extends javax.swing.JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 5567019550663889694L;
-	/** Creates new form FusionVisForm */
+	/** Creates new form FusionVisForm 
+	 * @param importerPanel ImporterPanel
+	 * @param viewerPanel ImporterPanel */
     public FusionVisForm(ImporterPanel importerPanel, ViewerPanel viewerPanel) {
     	initComponents(importerPanel, viewerPanel);
     	fusionvisImporterPanel.getImporter().addObserver(importerPanel);
@@ -183,15 +184,45 @@ public class FusionVisForm extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    /**
+     * Menüeintrag zum Schließen des Programms
+     */
     protected javax.swing.JMenuItem fusionvisCloseMenuItem;
+    /**
+     * FileChooser zum Laden einer XML-Datei
+     */
     protected javax.swing.JFileChooser fusionvisFileChooser;
+    /**
+     * Dateimenü
+     */
     protected javax.swing.JMenu fusionvisFileMenu;
+    /**
+     * Hilfemenü
+     */
     protected javax.swing.JMenu fusionvisHelpMenu;
+    /**
+     * Menüeintrag zum Importieren von Daten
+     */
     protected javax.swing.JMenuItem fusionvisImportMenuItem;
+    /**
+     * Importer Panel
+     */
     protected ImporterPanel fusionvisImporterPanel;
+    /**
+     * ViewerPanel
+     */
     protected ViewerPanel fusionvisViewerPanel;
+    /**
+     * Menüeintrag zum Anzeigen einer Informatiom zur Version
+     */
     protected javax.swing.JMenuItem fusionvisInfoMenuItem;
+    /**
+     * Menüzeile
+     */
     protected javax.swing.JMenuBar fusionvisMenu;
+    /**
+     * Splitpane
+     */
     protected JSplitPane splitPane;
     // End of variables declaration//GEN-END:variables
 

@@ -28,6 +28,7 @@ import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
 
 /**
+ * Panel zur textuellen Anzeige des Datenmodells 
  * 
  * @author stzschoppe
  */
@@ -37,7 +38,9 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	 * 
 	 */
 	private static final long serialVersionUID = -5038004658178727397L;
-	/** Creates new form ImporterPanel */
+	/** Creates new form ImporterPanel 
+	 * @param importer Importer
+	 * */
 	public ImporterPanel(Importer importer) {
 		initComponents();
 		// importer.addObserver(this); //XXX Was habe ich mir dabei gedacht
@@ -100,6 +103,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		importerFilterButton.setText("Filter");
 		importerFilterButton
 				.addMouseListener(new java.awt.event.MouseAdapter() {
+					@Override
 					public void mouseClicked(java.awt.event.MouseEvent evt) {
 						importerFilterButtonMouseClicked(evt);
 					}
@@ -436,14 +440,38 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	private javax.swing.JPanel importerOverviewPanel;
 	// private javax.swing.JSplitPane importerSplitPane;
 	private javax.swing.JSeparator jSeparator1;
+	/**
+	 * gesamtes Datenmodell
+	 */
 	public DataSet modelAll;
+	/**
+	 * rote Sicht auf das Datenmodell
+	 */
 	protected DataSet modelRed;
+	/**
+	 * blaue Sicht auf das Datenmodell
+	 */
 	protected DataSet modelBlue;
+	/**
+	 * benutzerdefinierte (gefilterte) Sicht auf das Datenmodell
+	 */
 	protected DataSet modelUserDefined;
+	/**
+	 * Importer
+	 */
 	protected Importer importer;
+	/**
+	 * gegenwärtig ausgewähltes Objekt
+	 */
 	protected Object itemSelected;
+	/**
+	 * Klasse zur Umsetzung der Observer-Patterns für den Filter
+	 */
 	public ObservableSupport observableSupportForFilter;
 
+	/**
+	 * Klasse zur Umsetzung der Observer-Patterns für den Filter
+	 */
 	public ObservableSupport observableSupportForSelection;
 
 	// End of variables declaration//GEN-END:variables
@@ -581,9 +609,22 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 		return propertyId;
 	}
 	
+	/**
+	 * Klasse zur Umsetzung des Observer-Patterns
+	 * @author stzschoppe
+	 *
+	 */
 	public class ObservableSupport extends Observable {
+		/**
+		 * Konstruktor
+		 */
 		public ObservableSupport() {
 		}
+	
+		/**
+		 * Methode zum Anstoßen des Notify-Prozesses
+		 * @param o Object, das der notifyObserver-Methode übergeben werden soll
+		 */
 		public void markAndNotify(Object o){
 			setChanged();
 			notifyObservers(o);

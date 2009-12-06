@@ -69,6 +69,11 @@ import de.unibw.fusionvis.backend.Mapper;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.test.TestViewer;
 
+/**
+ * Viewer Panel zur visuellen Darstellung der Daten
+ * @author stzschoppe
+ *
+ */
 public class ViewerPanel extends JPanel implements Observer{
 
     final Logger logger; //= Logger.getLogger(ViewerPanel.class.getName());
@@ -83,12 +88,18 @@ public class ViewerPanel extends JPanel implements Observer{
     
     private BattleSimFusionPanel fusionPanel; //XXX zu strikte Spezialisierung
     
+    /**
+     * Korespondierendes ImporterPanel
+     */
     public ImporterPanel importerPanel;
     
     private Node root;
     private Node gridNode;
     private Node helperNode;
 	private Node selectionNode;
+	/**
+	 * Wurzelknoten der zu visualisierenden Daten
+	 */
 	public Node dataNode;
     
 	private InputHandler input;	
@@ -98,8 +109,17 @@ public class ViewerPanel extends JPanel implements Observer{
 	// private Camera cam;
 	private int camSpeed = 25;
 	
+	/**
+	 * Bezeichner des markierten Objekts
+	 */
 	public  String selectionId;
+	/**
+	 * Kamera des Viewers
+	 */
 	public Camera cam;
+	/**
+	 * Mapper
+	 */
 	public Mapper mapper;
 	private float unitSize;
 	/**
@@ -115,6 +135,7 @@ public class ViewerPanel extends JPanel implements Observer{
      * Konstruktor
      * @param importerPanel Das ImporterPanel, mit dem beim selektieren zusammengearbeitet
      * werden soll.
+     * @param unitSize Größe (Radius) der zu visualisierenden Objekte
      */
     public ViewerPanel(ImporterPanel importerPanel, float unitSize)
     {    
@@ -165,7 +186,8 @@ public class ViewerPanel extends JPanel implements Observer{
         }
     }
     
-    /**Funktion initialisiert das GUI und den glCanvas */
+    /**Funktion initialisiert das GUI und den glCanvas 
+     * @throws Exception */
     public void init() throws Exception 
     {
 
@@ -184,7 +206,8 @@ public class ViewerPanel extends JPanel implements Observer{
 
     }
     
-    /**Funktion erstellt einen glCanvas, der kompatibel zum Swing GUI ist */
+    /**Funktion erstellt einen glCanvas, der kompatibel zum Swing GUI ist 
+     * @return OpenGL Canvas*/
     public Canvas getGlCanvas()
     {
         if (glCanvas == null) 
@@ -225,7 +248,7 @@ public class ViewerPanel extends JPanel implements Observer{
             impl = new Viewer(width, height);
             ((JMECanvas) glCanvas).setImplementor(impl);
 
-            Callable<?> exe = new Callable()
+            Callable<?> exe = new Callable<Object>()
             {
                 public Object call()
                 {
@@ -238,13 +261,16 @@ public class ViewerPanel extends JPanel implements Observer{
         return glCanvas;
     }
     
+    /**
+     * doResize
+     */
     public void doResize() 
     {
         if (impl != null) 
         {
             impl.resizeCanvas(glCanvas.getWidth(), glCanvas.getHeight());
             if (impl.getCamera() != null) {
-                Callable<?> exe = new Callable()
+                Callable<?> exe = new Callable<Object>()
                 {
                     public Object call()
                     {
@@ -257,6 +283,9 @@ public class ViewerPanel extends JPanel implements Observer{
         }
     }
 
+    /**
+     * forceUpdateToSize
+     */
     public void forceUpdateToSize() 
     {
         glCanvas.setSize(glCanvas.getWidth(), glCanvas.getHeight() + 1);
@@ -481,6 +510,10 @@ public class ViewerPanel extends JPanel implements Observer{
 		
 		}
 
+	/**
+	 * Highlightet das Angegebene Objekt in der 3d-Darstellung
+	 * @param pickData
+	 */
 	public void select(Spatial pickData) {
 		if(!(pickData instanceof Sphere)) return;
 		Spatial selectionBox = selectionNode.getChild("selectionBox");
@@ -490,11 +523,17 @@ public class ViewerPanel extends JPanel implements Observer{
 		observableSupport.markAndNotify(pickData.getName());
 	}
 
+	/**
+	 * Hebt die Auswahl in der 3D-Darstellung auf
+	 */
 	public void deselect() {
 		root.detachChild(selectionNode);
 		selectionId = null;
 	}
 
+	/**
+	 * Erzeugt den Input
+	 */
 	public void createInput()
 	{
 		// hohle die gegebene Camera!
@@ -712,9 +751,22 @@ public class ViewerPanel extends JPanel implements Observer{
 		return maximalDimenVector3f;
 	}
 
+	/**
+	 * Klasse zur Umsetzung des Observer-Patterns
+	 * @author stzschoppe
+	 *
+	 */
 	public class ObservableSupport extends Observable {
+		/**
+		 * Konstruktor
+		 */
 		public ObservableSupport() {
 		}
+	
+		/**
+		 * Methode zum Anstoßen des Notify-Prozesses
+		 * @param o Object, das der notifyObserver-Methode übergeben werden soll
+		 */
 		public void markAndNotify(Object o){
 			setChanged();
 			notifyObservers(o);

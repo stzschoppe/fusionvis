@@ -6,7 +6,6 @@ import com.jme.app.SimpleGame;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingSphere;
 import com.jme.image.Texture;
-import com.jme.intersection.PickResults;
 import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
@@ -23,6 +22,12 @@ import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 
+/**
+ * Test
+ * 
+ * @author stzschoppe
+ *
+ */
 public  class TestViewer extends SimpleGame {
 	private static int numberOfPoints = 0;
 	private final boolean cones = false;
@@ -30,12 +35,15 @@ public  class TestViewer extends SimpleGame {
 	private Node helperNode;
 	private Node root;
 	private MaterialState materialState;
-	private PickResults pickResults; 
-    /**
+	/**
      * The amount of opacity (0 = fully transparent or invisible).
      */
     private float opacityAmount = 0.2f;
  
+    /**
+     * main
+     * @param args
+     */
     public static void main(String[] args) {
     	TestViewer main = new TestViewer();
 		main.setConfigShowMode(ConfigShowMode.NeverShow);
@@ -217,6 +225,9 @@ public  class TestViewer extends SimpleGame {
 
 	}
 	
+    /**
+     * Erzeugt grid
+     */
     public void createGrid() 
     {
     	gridNode = new Node("gridNode");

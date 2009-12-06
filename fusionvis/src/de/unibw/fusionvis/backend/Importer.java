@@ -46,8 +46,14 @@ import de.unibw.fusionvis.frontend.ImporterPanel;
 public abstract class Importer extends Observable {
 	private final String standardInputFile = "\\res\\input.xml";
 
+	/**
+	 * ImporterPanel
+	 */
 	protected ImporterPanel panel;
 
+	/**
+	 * Logger
+	 */
 	protected Logger logger;
 	
 	//private Mapper mapper;
@@ -61,28 +67,42 @@ public abstract class Importer extends Observable {
 	protected Document document;
 
 	/**
-	 * Liste einfacher Eigenschaften
+	 * Liste einfacher Eigenschaften, die aus der XML zu extrahieren ist.
 	 */
 	protected ArrayList<String> simplePropertyList = new ArrayList<String>();
 
 	/**
-	 * Liste vektorieller Eigenschaften
+	 * Liste zusammengestzter Eigenschaften, die aus der XML zu extrahieren ist.
 	 */
 	protected ArrayList<String> vectorPropertyList = new ArrayList<String>();
 
+	/**
+	 * Liste der Taxonomien, die aus der XML zu extrahieren ist.
+	 */
 	protected ArrayList<String> taxonomyList = new ArrayList<String>();
 
+	/**
+	 * Eigenschaft, die als Position aus der XML extrahiert werden soll.
+	 */
 	protected String position = "Location";
 
+	/**
+	 * Eigenschaft, die als Bezeichner aus der XML extrahiert werden soll.
+	 */
 	protected String id = "Name";
 
-	private com.jme.scene.Node dataNode;
-
+	/**
+	 * Konstruktor
+	 */
 	public Importer() {
 		this.logger = FusionVisForm.getLogger();
 		panel = new ImporterPanel(this);
 	}
 
+	/**
+	 * Ausführen des Imports der angegeben Datein in das Datenmodell.
+	 * @param file Datei im XML-Format
+	 */
 	public void runImport(File file) {
 		// Einlesen des Datensatzes
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -145,12 +165,12 @@ public abstract class Importer extends Observable {
 	/**
 	 * Hilfsfuktion zum Extrahieren der Units
 	 * 
-	 * @param unitNode
-	 *            DOM Node &lt;Unit>
+	 * @param node
+	 *            DOM Node
 	 * @return Data-Objekt
 	 * @throws Exception
 	 */
-	protected abstract Data extractUnit(Node item) throws Exception;
+	protected abstract Data extractDataFromNode(Node node) throws Exception;
 
 	/**
 	 * Extrahiert eine einfache Eigenschaft.
@@ -210,10 +230,17 @@ public abstract class Importer extends Observable {
 			if (units.item(i).getNodeType() != Node.ELEMENT_NODE) {
 				continue; // wenn kein Element, dann skip
 			}
-			dataSet.addData(extractUnit(units.item(i)));
+			dataSet.addData(extractDataFromNode(units.item(i)));
 		}
 	}
 
+	/**
+	 * Parst ein Date aus einem String.
+	 * Format ist ist yyyy-MM-dd'T'HH:mm:ss mit 0-7 Sekundennachkommastellen.
+	 * @param stringToParse String, aus dem ein Date ausgelesen werden soll
+	 * @return ausgelesenes Date
+	 * @throws ParseException
+	 */
 	protected Date parseDate(String stringToParse) throws ParseException {
 		// yyyy-MM-dd'T'HH:mm:ss.SSSSZ
 		Date date = null;
