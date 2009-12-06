@@ -50,7 +50,7 @@ public class BattleSimMapper extends Mapper {
 	}
 
 	@Override
-	protected Vector3f getCoefficient() {
+	protected Vector3f getDimensionFactors() {
 		// Koeffizienten der einzelnen Dimensionen
 		float x = 1, y = 1, z = 1;
 
@@ -129,41 +129,26 @@ public class BattleSimMapper extends Mapper {
 	}
 
 	@Override
-	public Node getDataRoot(DataSet dataSet) {
-		this.dataSet = dataSet;
-		dataNode = new Node("dataRoot");
-		// dataNode.setLightCombineMode(LightCombineMode.Off);// eliminiere
-		// jeglichen Lichteinfluss
-
-		Vector3f factor = getCoefficient();
-
-		for (Data data : dataSet.getData()) {
-			Sphere sphere = new Sphere(data.getId(), new Vector3f(0, 0, 0), 15,
-					15, unitSize);
-			sphere.setLocalTranslation(getPosition(data, factor));
-			sphere.updateGeometricState(0, false);
-			sphere.setModelBound(new BoundingSphere());
-			sphere.updateModelBound();
-			
-			Node sphereNode = new Node(data.getId());
-			Node orientationNode = initializeNode(new Node("orientationNode"));
-			Node velocityNode = initializeNode(new Node("velocityNode"));
-			Node futureConeNode = initializeNode(new Node("futureConeNode"));
-			Node pastConeNode = initializeNode(new Node("pastConeNode"));
-			
-			sphereNode.attachChild(sphere);
-			sphereNode.attachChild(orientationNode);
-			sphereNode.attachChild(velocityNode);
-			sphereNode.attachChild(futureConeNode);
-			sphereNode.attachChild(pastConeNode);
-
-			dataNode.attachChild(sphereNode);
-			dataNode.updateGeometricState(0, false);
-			dataNode.updateRenderState();
-		}
-
-		texture(dataNode);
-		return dataNode;
+	protected Node extractNodeFromData(Data data) {
+		Sphere sphere = new Sphere(data.getId(), new Vector3f(0, 0, 0), 15,
+				15, unitSize);
+		sphere.setLocalTranslation(getPosition(data, getDimensionFactors()));
+		sphere.updateGeometricState(0, false);
+		sphere.setModelBound(new BoundingSphere());
+		sphere.updateModelBound();
+		
+		Node sphereNode = new Node(data.getId());
+		Node orientationNode = initializeNode(new Node("orientationNode"));
+		Node velocityNode = initializeNode(new Node("velocityNode"));
+		Node futureConeNode = initializeNode(new Node("futureConeNode"));
+		Node pastConeNode = initializeNode(new Node("pastConeNode"));
+		
+		sphereNode.attachChild(sphere);
+		sphereNode.attachChild(orientationNode);
+		sphereNode.attachChild(velocityNode);
+		sphereNode.attachChild(futureConeNode);
+		sphereNode.attachChild(pastConeNode);
+		return sphereNode;
 	}
 
 	@Override
@@ -291,6 +276,7 @@ public class BattleSimMapper extends Mapper {
 	 * in km.
 	 * @return Vector vom Format (Länge|Breite)
 	 */
+	@Override
 	public Vector2f getSize(){
 		// Bestimmung der Oberen und unteren Grenzen der Dimensionen.
 		float latMin = 90f;
