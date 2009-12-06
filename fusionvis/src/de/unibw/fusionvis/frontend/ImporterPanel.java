@@ -358,7 +358,6 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 			
 			importerFilterViewComboBox.setSelectedIndex(3);
 			importerDetailTree.setModel(new DefaultTreeModel(root));
-			// XXX kann wohl weg importer.setDataSet(modelUserDefined);
 			observableSupportForFilter.markAndNotify(modelUserDefined);
 		}
 	}// GEN-LAST:event_importerFilterButtonMouseClicked
