@@ -28,6 +28,11 @@ import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.DataSet;
 import de.unibw.fusionvis.test.TestViewer;
 
+/**
+ * Implemetierung der Mapper-Klasse zur Darstellung von Daten eines Schlachfeldsimulators
+ * @author stzschoppe
+ *
+ */
 public class BattleSimMapper extends Mapper {
 	
 	private float latMin = 90f;
@@ -41,10 +46,21 @@ public class BattleSimMapper extends Mapper {
 	// im Jahre
 	// 0
 
+	/**
+	 * Konstruktor
+	 * @param maximalDimenVector3f
+	 * @param unitSize
+	 */
 	public BattleSimMapper(Vector3f maximalDimenVector3f, float unitSize) {
 		super(maximalDimenVector3f, unitSize);
 	}
 
+	/**
+	 * Konstruktor
+	 * @param dataSet
+	 * @param maximalDimenVector3f
+	 * @param unitSize
+	 */
 	public BattleSimMapper(DataSet dataSet, Vector3f maximalDimenVector3f, float unitSize) {
 		super(dataSet, maximalDimenVector3f, unitSize);
 	}
@@ -313,31 +329,11 @@ public class BattleSimMapper extends Mapper {
 		
 		return new Vector2f(distanceonEarth(pointUL, pointUR), distanceonEarth(pointOL, pointUL));
 	}
-
-	public float getLatMin() {
-		return latMin;
-	}
-
-	public float getLatMax() {
-		return latMax;
-	}
-
-	public float getLonMin() {
-		return lonMin;
-	}
-
-	public float getLonMax() {
-		return lonMax;
-	}
-
-	public GregorianCalendar getTimeMin() {
-		return timeMin;
-	}
-
-	public GregorianCalendar getTimeMax() {
-		return timeMax;
-	}
 	
+	/**
+	 * Differenz zwischen Start- und Endzeit der Daten
+	 * @return Zeitspanne in Sekunden
+	 */
 	public float getTimeSpan() {
 		return (float) ((timeMax.getTimeInMillis()-timeMin.getTimeInMillis()) * 0.001);
 	}
