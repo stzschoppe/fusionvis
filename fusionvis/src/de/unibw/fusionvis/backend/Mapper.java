@@ -78,19 +78,6 @@ public abstract class Mapper {
 	}
 
 	/**
-	 * Berechnet Faktoren um die Dimensionen zu skalieren. 
-	 * 
-	 * @return Faktoren, der einzelnen Dimensionen.
-	 */
-	protected abstract Vector3f getDimensionFactors(); 
-	
-	/**
-	 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene.
-	 * @return Vector vom Format (Länge|Breite)
-	 */
-	public abstract Vector2f getSize();
-
-	/**
 	 * Liefert den Wurzelknoten des Szenenbaums, der die darszustellenden Objekte
 	 * enthält.
 	 * @return Wurzelknoten der Szene.
@@ -106,6 +93,18 @@ public abstract class Mapper {
 		}
 	}
 
+	/**
+	 * Berechnet Faktoren um die Dimensionen zu skalieren. 
+	 * 
+	 * @return Faktoren, der einzelnen Dimensionen.
+	 */
+	protected abstract Vector3f getDimensionFactors(); 
+	
+	/**
+	 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene.
+	 * @return Vector vom Format (Länge|Breite)
+	 */
+	public abstract Vector2f getSize();
 
 	/**
 	 * Texturierung der Dateneinheiten des angegebenen DataNodes.
@@ -113,5 +112,10 @@ public abstract class Mapper {
 	 */
 	public abstract void texture(Node dataNode);
 	
+	/**
+	 * Erzeugt einen Szenenknoten aus dem Angegeben Data-Objekt
+	 * @param data Zu extrahierendes Objekt
+	 * @return Knoten, der eine Darstellung des Objekts enthält
+	 */
 	protected abstract Node extractNodeFromData(Data data);
 }
