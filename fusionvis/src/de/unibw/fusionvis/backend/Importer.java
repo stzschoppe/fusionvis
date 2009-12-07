@@ -33,7 +33,6 @@ import de.unibw.fusionvis.datamodel.properties.DateProperty;
 import de.unibw.fusionvis.datamodel.properties.FloatProperty;
 import de.unibw.fusionvis.datamodel.properties.IntProperty;
 import de.unibw.fusionvis.datamodel.properties.StringProperty;
-import de.unibw.fusionvis.frontend.ImporterPanel;
 
 /**
  * <p>
@@ -44,37 +43,32 @@ import de.unibw.fusionvis.frontend.ImporterPanel;
  * @author stzschoppe
  */
 public abstract class Importer extends Observable {
+	//private Mapper mapper;
+	
+	/** Datensatz */
+	private DataSet dataSet = null;
+
+	/**
+	 * DOM-Document der importierten XML Datei;
+	 */
+	private Document document;
+
 	private final String standardInputFile = "\\res\\input.xml";
 
 	/**
 	 * ImporterPanel
 	 */
-	protected ImporterPanel panel;
+	//protected ImporterPanel panel;
 
 	/**
 	 * Logger
 	 */
 	protected Logger logger;
 	
-	//private Mapper mapper;
-
-	/** Datensatz */
-	protected DataSet dataSet = null;
-
-	/**
-	 * DOM-Document der importierten XML Datei;
-	 */
-	protected Document document;
-
 	/**
 	 * Liste einfacher Eigenschaften, die aus der XML zu extrahieren ist.
 	 */
 	protected ArrayList<String> simplePropertyList = new ArrayList<String>();
-
-	/**
-	 * Liste zusammengestzter Eigenschaften, die aus der XML zu extrahieren ist.
-	 */
-	protected ArrayList<String> vectorPropertyList = new ArrayList<String>();
 
 	/**
 	 * Liste der Taxonomien, die aus der XML zu extrahieren ist.
@@ -82,9 +76,9 @@ public abstract class Importer extends Observable {
 	protected ArrayList<String> taxonomyList = new ArrayList<String>();
 
 	/**
-	 * Eigenschaft, die als Position aus der XML extrahiert werden soll.
+	 * Liste zusammengestzter Eigenschaften, die aus der XML zu extrahieren ist.
 	 */
-	protected String position = "Location";
+	protected ArrayList<String> vectorPropertyList = new ArrayList<String>();
 
 	/**
 	 * Eigenschaft, die als Bezeichner aus der XML extrahiert werden soll.
@@ -92,12 +86,26 @@ public abstract class Importer extends Observable {
 	protected String id = "Name";
 
 	/**
+	 * Eigenschaft, die als Position aus der XML extrahiert werden soll.
+	 */
+	protected String position = "Location";
+
+	/**
 	 * Konstruktor
 	 */
 	public Importer() {
 		this.logger = FusionVisForm.getLogger();
-		panel = new ImporterPanel(this);
 	}
+
+	/**
+	 * Hilfsfuktion zum Extrahieren der Units
+	 * 
+	 * @param node
+	 *            DOM Node
+	 * @return Data-Objekt
+	 * @throws Exception
+	 */
+	protected abstract Data extractDataFromNode(Node node) throws Exception;
 
 	/**
 	 * Ausführen des Imports der angegeben Datein in das Datenmodell.
@@ -163,16 +171,6 @@ public abstract class Importer extends Observable {
 	}
 
 	/**
-	 * Hilfsfuktion zum Extrahieren der Units
-	 * 
-	 * @param node
-	 *            DOM Node
-	 * @return Data-Objekt
-	 * @throws Exception
-	 */
-	protected abstract Data extractDataFromNode(Node node) throws Exception;
-
-	/**
 	 * Extrahiert eine einfache Eigenschaft.
 	 * 
 	 * @param node
@@ -207,30 +205,6 @@ public abstract class Importer extends Observable {
 			return new DateProperty(node.getNodeName(), date);
 		default:
 			return null;
-		}
-	}
-
-	/**
-	 * Erzeugt einen Satz von Daten
-	 * 
-	 * @throws Exception
-	 */
-	protected void buildDataSet() throws Exception {
-		Node root = document.getDocumentElement();
-		Node current = root;
-
-		// Bezeicher für dataSet auslesen
-		dataSet = new DataSet(root.getNodeName());
-
-		current = current.getFirstChild().getNextSibling(); // current -->
-															// <Units>
-		NodeList units = current.getChildNodes();
-
-		for (int i = 0; i < units.getLength(); i++) {
-			if (units.item(i).getNodeType() != Node.ELEMENT_NODE) {
-				continue; // wenn kein Element, dann skip
-			}
-			dataSet.addData(extractDataFromNode(units.item(i)));
 		}
 	}
 
@@ -284,6 +258,30 @@ public abstract class Importer extends Observable {
 		}
 		throw new ParseException("Kein Date\t" + formatString + "\t"
 				+ stringToParse, 0);
+	}
+
+	/**
+	 * Erzeugt einen Satz von Daten
+	 * 
+	 * @throws Exception
+	 */
+	private void buildDataSet() throws Exception {
+		Node root = document.getDocumentElement();
+		Node current = root;
+	
+		// Bezeicher für dataSet auslesen
+		dataSet = new DataSet(root.getNodeName());
+	
+		current = current.getFirstChild().getNextSibling(); // current -->
+															// <Units>
+		NodeList units = current.getChildNodes();
+	
+		for (int i = 0; i < units.getLength(); i++) {
+			if (units.item(i).getNodeType() != Node.ELEMENT_NODE) {
+				continue; // wenn kein Element, dann skip
+			}
+			dataSet.addData(extractDataFromNode(units.item(i)));
+		}
 	}	
 
 }

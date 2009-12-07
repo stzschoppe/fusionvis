@@ -11,7 +11,6 @@ import de.unibw.fusionvis.datamodel.Data;
 import de.unibw.fusionvis.datamodel.Type;
 import de.unibw.fusionvis.datamodel.properties.AbstractProperty;
 import de.unibw.fusionvis.datamodel.properties.ContainerProperty;
-import de.unibw.fusionvis.frontend.ImporterPanel;
 
 /**
  * <p>
@@ -28,7 +27,6 @@ public class BattleSimImporter extends Importer {
 	 * Angabe der zu importierenden XML-Datei
 	 */
 	public BattleSimImporter() {
-		this.panel = new ImporterPanel(this);
 		id = "Name";
 		position = "Location";
 
@@ -57,41 +55,37 @@ public class BattleSimImporter extends Importer {
 
 		// Erster Durchlauf zum Finden des Bezeichners
 		for (int i = 0; i < list.getLength(); i++) {
-			if (list.item(i).getNodeType() != Node.ELEMENT_NODE) {
+			if (list.item(i).getNodeType() != Node.ELEMENT_NODE)
 				continue; // wenn kein Element, dann skip
-			}
 			Node element = list.item(i);
-			if (element.getNodeName().equals(id)) {
+			if (element.getNodeName().equals(id))
 				result = new Data(element.getTextContent());
-			}
 		}
 
 		// Zweiter Durchlauf für das setzen der restlichen Eigenschaften
 		for (int i = 0; i < list.getLength(); i++) {
-			if (list.item(i).getNodeType() != Node.ELEMENT_NODE) {
+			if (list.item(i).getNodeType() != Node.ELEMENT_NODE)
 				continue; // wenn kein Element, dann skip
-			}
 			Node element = list.item(i);
 			// Position setzen
-			if (element.getNodeName().equals(position)) {
+			if (element.getNodeName().equals(position))
 				result
 						.setPosition(extractContainerProperty(element,
 								"Position"));
-			} else if (simplePropertyList.contains(element.getNodeName())) {
-				if (element.getNodeName().equals("IsPlatform")) {
+			else if (simplePropertyList.contains(element.getNodeName()))
+				if (element.getNodeName().equals("IsPlatform"))
 					result.addAbstractProperty(extractSimpleProperty(element,
 							Type.TBool));
-				} else
+				else
 					result.addAbstractProperty(extractSimpleProperty(element,
 							Type.TString));
-			} else if (vectorPropertyList.contains(element.getNodeName())) {
+			else if (vectorPropertyList.contains(element.getNodeName()))
 				result.addContainerProperty(extractContainerProperty(element,
 						element.getNodeName()));
-			} else if (taxonomyList.contains(element.getNodeName())) {
+			else if (taxonomyList.contains(element.getNodeName()))
 				result.addTaxonomie((extractSimpleProperty(element)));
-			} else {
-				// skip
-			}
+			else
+				; // skip
 		}
 		return result;
 	}

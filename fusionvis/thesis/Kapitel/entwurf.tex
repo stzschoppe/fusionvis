@@ -79,6 +79,7 @@ Die Taxonomien umfassen eine Liste möglicher Klassifikationen, die einem Datensa
 Der Aufbau einer Data-Klasse kann in \ref{fig:dataModelData} nachvollzogen werden.
 \end{description}
 \paragraph{Eigenschaften}
+\label{sec:Eigenschaften}
 Die Eigenschaften der Datensammlung, wie auch die der Daten an sich, sollten so generisch aufgebaut sein, dass sie für möglichst viele unterschiedliche Anwendungsgebiete ohne Änderung und Anpassung übernommen werden können. 
 
 Beim Entwurf fiel auf, dass die auftretenden Eigenschaften nach zwei Kriterien zerfallen. Auf der einen Seite kann nach Dimension der Eigenschaften unterschieden werden. So kann zum Beispiel gespeichert werden, ob die Einheit in einem Schlachtfeldsimulator feindlich, freundlich oder neutral ist. Weiterhin ist es wäre es möglich, eine Gewichtsangabe zu speichern. In beiden fällen handelt es sich um eine einfache, weil eindimensionale, Eigenschaft. 
@@ -153,7 +154,13 @@ Der Importer ist, wie bereits im letzten Abschnitt angemerkt, dafür verantwortli
 
 Ist die Voraussetzung erfüllt, liest der Importer die XML-Datei aus und extrahiert die DOM-Knoten der Datenelemente. Die Wahl des DOM-Parsers für diese Aufgabe wird noch in [REF] genauer erläutert. 
 
-\lstset{language=XML}
+\lstset{%
+language=XML,
+basicstyle=\footnotesize,
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=2
+}%
 \begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispiel für eine wohlgeformte XML-Datei},label=code:xmlexample]
 <Situation>
   <Units>
@@ -177,11 +184,77 @@ Ist die Voraussetzung erfüllt, liest der Importer die XML-Datei aus und extrahie
 </Situation>
 \end{lstlisting}
 
+Der Importer hält bereits notwendige Datenstrukturen vor. Zum einen sind dies zwei Membervariablen (\emph{id}, \emph{position}). Diese dienen dem Speichern der XML-Elementnamen, die den Wert für Position und Bezeichner eines Datums liefern. Ähnlich gibt es drei Listen, die die Elementnamen enthalten, die als einfache, zusammengesetzte Eigenschaften oder als Taxonomie extrahiert werden.
+
+\paragraph{Spezialisierung}
+\label{sec:Spezialisierung}
+Zur  Spezialisierung eines Importers für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden XML-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
+
+Als nächstes muss nun die Methode \emph{extractDataFormNode()} implementiert werden. Ihr wird ein Knoten des DOM-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun nach den Vorstellungen des Anwenders ein Data-Objekt zu erzeugen, das die Eigenschaften enthält, die in den vorher spezifizierten Listen stehen.
+
+\paragraph{Hilfsfunktionen}
+\label{sec:Hilfsfunktionen}
+In der Input-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
+
+Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem DOM-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:extractDataFromNode} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt und dem gewünschten Typen (hier: \emph{Type.TString}).
+
+
+\lstset{%
+language=Java,
+showstringspaces=false,
+keywordstyle=\color{red},
+breaklines=true,
+frame=single
+commentstyle=\color{blue},
+stringstyle=\color{green},
+backgroundcolor=\color{white},
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=2
+}%
+\begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispielhafte Implementierung der \emph{extractDataFromNode()}-Methode}, ,label=code:extractDataFromNode]
+  protected Data extractDataFromNode(Node unitNode) throws Exception {
+    Data result = null;
+    NodeList list = unitNode.getChildNodes();
+    // Erster Durchlauf zum Finden des Bezeichners
+    for (int i = 0; i < list.getLength(); i++) {
+      if (list.item(i).getNodeType() != Node.ELEMENT_NODE)
+        continue; // wenn kein Element, dann skip
+      Node element = list.item(i);
+      if (element.getNodeName().equals(id))
+        result = new Data(element.getTextContent());
+    }
+    // Zweiter Durchlauf für das setzen der restlichen Eigenschaften
+    for (int i = 0; i < list.getLength(); i++) {
+      if (list.item(i).getNodeType() != Node.ELEMENT_NODE)
+        continue; // wenn kein Element, dann skip
+      Node element = list.item(i);
+      // Position setzen
+      if (element.getNodeName().equals(position))
+        result
+            .setPosition(extractContainerProperty(element,
+                "Position"));
+      else if (simplePropertyList.contains(element.getNodeName()))
+        if (element.getNodeName().equals("IsPlatform"))
+          result.addAbstractProperty(extractSimpleProperty(element,
+              Type.TBool));
+        else
+          result.addAbstractProperty(extractSimpleProperty(element,
+              Type.TString));
+      else if (vectorPropertyList.contains(element.getNodeName()))
+        result.addContainerProperty(extractContainerProperty(element,
+            element.getNodeName()));
+      else if (taxonomyList.contains(element.getNodeName()))
+        result.addTaxonomie((extractSimpleProperty(element)));
+      else ; // skip
+    }
+    return result;
+  }
+ \end{lstlisting}
 %\paragraph{Anbindung an XML}
 %\paragraph{Instanzieren des Datenmodells}
 \subsubsection{Mapper}
-
-
 \subsection{Zusammenspiel der Komponenten}
 \subsubsection{Visualisierungsprozess}
 \subsubsection{Importer und Mapper}
