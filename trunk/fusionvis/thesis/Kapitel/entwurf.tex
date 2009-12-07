@@ -60,7 +60,7 @@ Die Typisierung der Eigenschaften wird weiter unten dargestellt.
   
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.75\textwidth]{Bilder/dataModelData.png}
+		\includegraphics[width=0.5\textwidth]{Bilder/dataModelData.png}
 	\caption{Aufbau der Klasse Data}
 	\label{fig:dataModelData}
 \end{figure}
@@ -156,10 +156,10 @@ Ist die Voraussetzung erfüllt, liest der Importer die XML-Datei aus und extrahie
 
 \lstset{%
 language=XML,
-basicstyle=\footnotesize,
+basicstyle={\ttfamily,\footnotesize},
 numbers=left,                   % where to put the line-numbers
 numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
-stepnumber=2
+stepnumber=2,
 }%
 \begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispiel für eine wohlgeformte XML-Datei},label=code:xmlexample]
 <Situation>
@@ -208,7 +208,7 @@ frame=single
 commentstyle=\color{blue},
 stringstyle=\color{green},
 backgroundcolor=\color{white},
-basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+basicstyle={\ttfamily,\footnotesize},       % the size of the fonts that are used for the code
 numbers=left,                   % where to put the line-numbers
 numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
 stepnumber=2
@@ -263,7 +263,7 @@ stepnumber=2
 
 \section{Vorstellung der prototypischen Implementierung (Visualisierung einer militärischen Lage)}
 \label{ch:Prototyp}
-\section{Erweiterbarkeit und Individualisierbarkeit}
+%\section{Erweiterbarkeit und Individualisierbarkeit}
 
 
 \section{Fallstricke und interessante Aspekte der Implementierung}
