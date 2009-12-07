@@ -1,8 +1,8 @@
 %----------------------------------------------------------------%
 % entwurf.tex						    			    										       %
 %----------------------------------------------------------------%
-\chapter{Design und Implementierung eines Visualisierungsprototypen}
-In diesem Kapitel werden der Entwurf und die Implementierung eines Visualisierungsframeworks beschrieben. Dazu werden die einzelnen Komponenten des Frameworks beschrieben und ihr Zusammenspiel erläutert. Basierend auf dem Wissen über die Bestandteile können die Möglichkeiten der Erweiterbarkeit und der Individualisierbarkeit skizziert werde. Die Grundlage hierfür stellt zum einen eine prototypische Implementierung einer Visualisierung einer militärischen Lage und des weiteren der Versuch, Daten des NDP [ABK] dreidimensional darzustellen.
+\chapter{Entwurf eines Visualisierungsframeworks}
+In diesem Kapitel werden der Entwurf eines Visualisierungsframeworks und eine prototypische Implementierung auf dessen Basis beschrieben. Dazu werden die einzelnen Komponenten des Frameworks erklärt und ihr Zusammenspiel erläutert. Basierend auf dem Wissen über die Bestandteile können die Möglichkeiten der Erweiterbarkeit und der Individualisierbarkeit skizziert werde. Die Grundlage hierfür stellt zum einen eine prototypische Implementierung einer Visualisierung einer militärischen Lage und des weiteren der Versuch, Daten des NDP [ABK] dreidimensional darzustellen.
 
 Abschließend werden interessante Aspekte der Implementierung aufgezeigt, die neben den umgesetzten Implementierungsentscheidungen auch andere Wege aufzeigen sollen.
 
@@ -85,7 +85,7 @@ Die Eigenschaften der Datensammlung, wie auch die der Daten an sich, sollten so 
 Beim Entwurf fiel auf, dass die auftretenden Eigenschaften nach zwei Kriterien zerfallen. Auf der einen Seite kann nach Dimension der Eigenschaften unterschieden werden. So kann zum Beispiel gespeichert werden, ob die Einheit in einem Schlachtfeldsimulator feindlich, freundlich oder neutral ist. Weiterhin ist es wäre es möglich, eine Gewichtsangabe zu speichern. In beiden fällen handelt es sich um eine einfache, weil eindimensionale, Eigenschaft. 
 
 Im Gegensatz gibt es zusammengesetzte Eigenschaften wie vektorielle Größen. In diesen Bereich fallen auch Gliederungsinformationen, oder Unterstellungsverhältnisse. Eine zusammengesetzte Eigenschaft besteht damit entweder aus einfachen, oder wiederum aus zusammengesetzten Eigenschaften.
-Diese Unterscheidung führte im Entwurf zur Auswahl des Composite-Patterns [Cite Gang of Four] für die Modellierung des Sachverhalts.
+Diese Unterscheidung führte im Entwurf zur Auswahl des Composite-Patterns (nach \cite{designpatterns}) für die Modellierung des Sachverhalts.
 
 Das zweite Kriterium, in das die Informationen der Daten zerfallen, ist der Typ dieser. Um einen Kompromiss zwischen einem kompakten Datenmodell und einem breiten Spektrum unterstützter Typen zu gewährleisten, fiel die Entscheidung auf folgende Datentypen:
 \begin{itemize}
@@ -145,7 +145,7 @@ Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser bein
 
 Zusammenfassen kann man zum Fronend des Frameworks sagen, dass die von den konkreten XML-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was schließlich wie dargestellt werden soll. Das Was ist der Prozess des Überführens von XML in das Datenmodell des Frameworks und wird im Importer festgeschrieben. Das Wie ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im Mapper beantwortet.
 
-\subsection{Beschreibung der Komponenten des Backends}
+\subsection{Übersicht über das Backend des Frameworks}
 Das Backend besteht im Wesentlichen aus den zwei oben erwähnten Komponenten, Importer und Mapper. Im Folgenden sollen die Funktion der beiden erläutert und notwendige Schritte der Spezialisierung beschrieben werden.
 
 Die Spezialisierung bezieht sich auf das Implementieren abstrakter Methoden, die in den beiden als abstrakt gekennzeichneten Klassen die eigentliche Funktion enthalten sollen.
@@ -187,13 +187,13 @@ stepnumber=2,
 Der Importer hält bereits notwendige Datenstrukturen vor. Zum einen sind dies zwei Membervariablen (\emph{id}, \emph{position}). Diese dienen dem Speichern der XML-Elementnamen, die den Wert für Position und Bezeichner eines Datums liefern. Ähnlich gibt es drei Listen, die die Elementnamen enthalten, die als einfache, zusammengesetzte Eigenschaften oder als Taxonomie extrahiert werden.
 
 \paragraph{Spezialisierung}
-\label{sec:Spezialisierung}
+\label{sec:ImporterSpezialisierung}
 Zur  Spezialisierung eines Importers für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden XML-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
 
 Als nächstes muss nun die Methode \emph{extractDataFormNode()} implementiert werden. Ihr wird ein Knoten des DOM-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun nach den Vorstellungen des Anwenders ein Data-Objekt zu erzeugen, das die Eigenschaften enthält, die in den vorher spezifizierten Listen stehen.
 
 \paragraph{Hilfsfunktionen}
-\label{sec:Hilfsfunktionen}
+\label{sec:ImporterHilfsfunktionen}
 In der Input-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
 
 Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem DOM-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:extractDataFromNode} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt und dem gewünschten Typen (hier: \emph{Type.TString}).
@@ -255,18 +255,28 @@ stepnumber=2
 %\paragraph{Anbindung an XML}
 %\paragraph{Instanzieren des Datenmodells}
 \subsubsection{Mapper}
+Bereits im vorletzten Abschnitt wurde angesprochen, dass der Mapper dafür Sorge trägt, dass das Datenmodell in eine dreidimensionale Darstellung überführt wird. Da nicht für jedes Problem auch dieselbe Visualisierung zielführend ist, besteht hier die Möglichkeit zur Individualisierung.
+
+Bei der individuellen Ausgestaltung sind zwei unterschiedliche Aspekte zu unterscheiden: Auf der einen Seite ist die Frage, wie die Daten an sich dargestellt werden, zum Beispiel in Bezug auf Form und Farbe, sowie das sonstige Erscheinungsbild. Auf der anderen Seite muss spezifiziert werden, in welcher Art und Weise die Dimensionen der Daten dargestellt werden.
+
+Resultat des Mappingvorgangs soll ein Szenenbaum sein. Er ist die für die Engine lesbare Form des Datenmodells. Dieser Szenenbaum muss bei jeder Veränderung des Datenmodells aktualisiert werden. Als solche zählt zum Beispiel das Filtern von Daten nach bestimmten Eigenschaften, oder das Erstellen einer Sicht auf das Datenmodell.
+\paragraph{Spezialisierung}
+\label{sec:MapperSpezialisierung}
+\paragraph{Hilfsfunktionen}
+\label{sec:MapperHilfsfunktionen}
+
 \subsection{Zusammenspiel der Komponenten}
 \subsubsection{Visualisierungsprozess}
 \subsubsection{Importer und Mapper}
 \subsubsection{Viewer und Importer}
 \subsubsection{Viewer und Mapper}
 
-\section{Vorstellung der prototypischen Implementierung (Visualisierung einer militärischen Lage)}
+\section{Visualisierung einer militärischen Lage}
 \label{ch:Prototyp}
 %\section{Erweiterbarkeit und Individualisierbarkeit}
 
 
-\section{Fallstricke und interessante Aspekte der Implementierung}
+\section{Kernaspekte der Implementierung}
 \subsection{Mapper}
 \subsubsection{Streckung der Eingabedaten auf den Projektionsbereich}
 \subsubsection{Entfernungsberechnung mithilfe der Haversine Formel}
