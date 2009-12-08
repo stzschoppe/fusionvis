@@ -101,6 +101,14 @@ public abstract class Mapper {
 	protected abstract Vector3f getDimensionFactors(); 
 	
 	/**
+	 * Berechnet Offset um die Daten beim Koordinatenursprung
+	 * beginnen zu lassen. 
+	 * 
+	 * @return Offset, der einzelnen Dimensionen.
+	 */
+	protected abstract Vector3f getDimensionOffset();
+	
+	/**
 	 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene.
 	 * @return Vector vom Format (Länge|Breite)
 	 */
