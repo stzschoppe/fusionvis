@@ -721,14 +721,7 @@ public class ViewerPanel extends JPanel implements Observer{
 			DataSet dataSet = (DataSet) arg;
 			root.detachChild(dataNode);
 			dataNode = mapper.getDataRoot(dataSet);
-			if (dataSet.getData().size() > 0) {
-				helperNode.detachChild(gridNode);
-				createGrid(new Vector2f(mapper.getSize().x
-						/ getMaximalDimenVector3f().x, mapper.getSize().y
-						/ getMaximalDimenVector3f().z), 10);
-				helperNode.attachChild(gridNode);
-			}
-			root.attachChild(dataNode);
+			showDataModel(dataSet);
 		} else if (arg instanceof String) { // Selection
 			deselect();
 			String id = (String) arg;
@@ -742,6 +735,17 @@ public class ViewerPanel extends JPanel implements Observer{
 			else
 				deselect();
 		}
+	}
+
+	private void showDataModel(DataSet dataSet) {
+		if (dataSet.getData().size() > 0) {
+			helperNode.detachChild(gridNode);
+			createGrid(new Vector2f(mapper.getSize().x
+					/ getMaximalDimenVector3f().x, mapper.getSize().y
+					/ getMaximalDimenVector3f().z), 10);
+			helperNode.attachChild(gridNode);
+		}
+		root.attachChild(dataNode);
 	}
 	
 	/**
