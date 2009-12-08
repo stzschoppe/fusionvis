@@ -16,6 +16,7 @@ Grundlage für die weitere Arbeit sollen Eingabedaten sein, die bestimmte Vorauss
 \label{ch:Eingabedaten}
 Um Daten dreidimensional visualisieren zu können, müssen diese bestimmte Voraussetzungen erfüllen. Diese sollen hier kurz aufgezeigt werden.
 \paragraph{Identifizierbarkeit}
+\label{sec:Identifizierbarkeit}
 Unabhängig von der Art der Visualisierung ist es unabdingbar, dass jedes einzelne Datum identifizierbar ist. Aus diesem Grund sollte in den Quelldaten bereits eine eindeutige Benennung vorliegen. Sollte das nicht der Fall sein, muss dieser Misstand beim Importieren der Daten spätestens behoben werden. 
 Probleme, die sich ergeben können, wenn diese Bedingung nicht beachtet wird, sind zum einen, dass keine aussagekräftigen Berechnungen auf den importierten Daten durchgeführt werden können. Auch ist eine Markierung eines gezielten  Datensatzes unmöglich.
 \paragraph{Lokalisierbarkeit}
@@ -264,7 +265,8 @@ Resultat des Mappingvorgangs soll ein Szenenbaum sein. Er ist die für die Grafik
 \label{sec:MapperSpezialisierung}
 Wie oben bereits beschrieben hat die Spezialisierung im Mapper zwei Aspekte. Auf der einen Seite kann die Gestalt eines einzelnen Datums spezifiziert werden und auf der anderen Seite die Position dieses Datums im dreidimensionalen Raum. Eine vollständige Trennung ist in der derzeitigen Version nicht gelungen. Inwiefern sich das auswirkt, wird im Folgenden beschrieben.
 
-Position und Projektion
+\subparagraph{Position und Projektion}
+\label{sec:PositionUndProjektion}
 Eine grundlegende Entscheidung bei der Visualisierung von Daten ist, wie aus den Rohdaten eines Datums die Koordinaten im dreidimensionalen Raum gewonnen werden. Bereits in Abschnitt \ref{ch:Eingabedaten} wurde beschrieben, dass solche Rohdaten existieren müssen. Ebenfalls ist darauf verwiesen worden, dass ungeeignete Rohdaten (weder in Gleitkomma-, noch in ganzzahliger Darstellung) an dieser Stelle durch einen geeigneten Homomorphismus umzuwandeln sind.
 
 Der erste Schritt zur Individualisierung des Mappers ist die Bestimmung der Ausmaße der Projektionsfläche. Dieser begriff meint die Ebene, die trivialisiert durch Länge und Breite aufgespannt wird. Ihre Festlegung erfolgt durch die Implementierung der \emph{getSize()}-Methode. Hier gibt es zwei Varianten der Umsetzung. Es kann eine feste, von den Daten unabhängige Projektionsfläche gewählt werden. Eine maßstabsgetreue Abbildung entfällt somit. Vorteil dieser Art ist, dass bereits zur Implementierungszeit abschätzbar ist, wie groß die maximalen Entfernungen ausfallen. Somit können Entscheidungen, wie die Positionierung der Kamera [REF] sinnvoll getroffen werden.\\
@@ -276,7 +278,8 @@ Mit der Implementierung der Methode \emph{getDimensionFactors()} kann diesem Ums
 
 Der letzte Schritt zur Positionierung ist die Festlegung eines Datums auf eine genaue Koordinate in der dreidimensionalen Darstellung. Implementiert werden muss dies gleichzeitig mit der Festlegung der Gestalt eines Datensatzes. Wie dies zu erfolgen hat, ist in der allgemeinen Beschreibung zur Positionierung in Abschnitt [REF jme, Positionierung] beschrieben. Der Ort dieser Implementierung ist die im Folgenden beschriebene Methode. 
 
-Gestalt
+\subparagraph{Gestalt}
+\label{sec:Gestalt}
 Die Gestalt eines Datums wird von der Methode \emph{extractNodeFromData()} bestimmt. Sie hat die Aufgabe einen Szenenknoten (siehe Abschnitt [REF]) für jeden Datensatz zu erstellen. Bestandteil muss auf jeden Fall ein Grafikobjekt, wie in Abschnitt [REF, Visualisierung eines Datums] beschrieben, sein.  Im letzen Abschnitt wurde bereits angesprochen, dass ebenfalls die Festlegung der Koordinate des Grafikobjekts an dieser Stelle zu erfolgen hat. \\
 In dieser Methode kann der Benutzer neben Form, Größe, Position und sonstigen Eigenschaften, wie zum Beispiel Renderingoptionen (siehe Abschnitt [REF jme, Alphablending]) auch die Texturierung von Objekten festlegen. Es ist jedoch nicht immer zweckmäßig, für jedes Objekt eine individuelle Textur zuzuweisen. Aus diesem Grund gibt es eine weitere Methode, die es gilt zu implementieren.
 
@@ -288,24 +291,78 @@ Andererseits kann auch ein Datenmodell, welches zum Beispiel durch Filtern entst
 
 
 \subsection{Zusammenspiel der Komponenten}
+Nachdem im letzten Abschnitt die notwendigen Möglichkeiten zur Individualisierung durch konkrete Implementierung erläutert wurden, soll im Folgenden das Zusammenspiel der Komponenten und damit die Funktionsweise des Frameworks anhand von ausgewählten Aspekten skizziert werden. 
 \subsubsection{Visualisierungsprozess}
-\subsubsection{Importer und Mapper}
-\subsubsection{Viewer und Importer}
-\subsubsection{Viewer und Mapper}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.90\textwidth]{Bilder/VisualisierungsProzess.png}
+	\caption{Ablauf des Visualisierungsprozesses}
+	\label{fig:VisualisierungsProzess}
+\end{figure}
 
+Ein wesentlicher Punkt in der Interaktion der Komponenten ist der Visualisierungsprozess, der alle Komponenten des Frontends und des Backends erfasst. Hier die dazugehörige chronologische Abfolge:
+
+\begin{enumerate}
+	\item Angestoßen durch die Auswahl einer XML-Datei ruft die Form als Benutzerschnittstelle von dem zu ihr gehörenden ImporterPanel den Importer ab.
+
+	\item Das ImporterPanel liefert den geforderten Importer.
+
+	\item Die Form stößt nun den eigentlichen Importvorgang im Importer an. Der Importer greift dabei auf die vom Benutzer implementierte  emph{extractDataFormNode()}-Methode zurück.
+
+	\item Nach dem Anstoßen hat die Form nichts mehr mit dem restlichen Vorgang zu tun.
+
+	\item Aufgrund der Veränderung des Datenmodells durch das Laden von Daten müssen die Sichten in den Panels aktualisiert werden. Auf der einen Seite aktualisiert das ImporterPanel die textuelle Darstellung der Daten. 
+
+	\item Auf der anderen Seite muss das ViewerPanel die grafische Datensicht aktualisieren.
+
+\begin{enumerate}
+	\item Dazu muss das Datenmodell in einen Szenenbaum umgewandelt werden. Diese Aufgabe delegiert das Panel an den Mapper. Dieser erstellt mithilfe der aus dem letzten Abschnitt bekannten Methode \emph{extractNodeFromData()} den Baum. Mit der Methode \emph{texture()} werden die Visualisierungen der Daten anschließend eingefärbt.
+
+	\item Den fertigen Szenenbaum gibt der Mapper an das ViewerPanel zurück.
+
+	\item Abschließend stellt das ViewerPanel die Daten grafisch dar.
+\end{enumerate}
+\end{enumerate}
+
+Der beschriebene Prozess kann in Abbildung \ref{fig:VisualisierungsProzess} nachvollzogen werden.
+
+Die angesprochene Aktualisierung der beiden unterschiedlichen Darstellungen erfolgt durch die Anwendung des Observer-Patterns (nach \cite{ designpatterns}). Dabei trägt die Form die Verantwortung, dass auch beide Panels beim Importer als Observer registriert werden. Diese Funktion ist aber bereits in der FusionVisForm implementiert, sodass der Benutzer von dieser Aufgabe unbehelligt bleibt.  
+\subsubsection{ImporterPanel und ViewerPanel}
+Bereits im letzten Abschnitt ist deutlich geworden, dass es bei Änderungen am Datenmodell zwangsläufig die Sichten aktualisiert werden müssen. Eine Situation, bei der diese Aktion notwendig ist, ist der Datenimport. Im Folgenden werde ich die beiden weiteren Aktivitäten beschreiben, bei denen sich die Panels abstimmen müssen.
+
+\paragraph{Filtern des Datenmodels}
+\label{sec:FilternDesDatenmodels}
+Über das ImporterPanel ist es möglich, die Sicht auf das Datenmodell zu beschränken, indem Datensätze anhand von nicht vorhandenen Eigenschaften ausgeblendet werden. Wie dies aussieht, ist in Abschnitt \ref{ch:Prototyp} beschrieben.
+
+Das Verändern des Datenmodells durch Ausgrenzen bestimmter Datensätze macht die Aktualisierung der Sicht im ViewerPanel notwendig. Dies geschieht auf die gleiche Art und Weise wie ein Neuimport von Daten, denn prinzipiell ist das Filtern von Daten nur die Gegenoperation zum Import und somit nur eine Veränderung am Datenmodell. Aus diesem Grund wird auch an dieser Stelle das Observerpattern genutzt. 
+
+Problematisch ist hierbei, dass die beiden Panels bereits eine Oberklasse haben und somit nicht von der in Java bereits zur Verfügung gestellten Observerklasse erben können. Ein Ausweg aus diesem Problem wird in Abschnitt \ref{sec:ObserverPatternBeiAbgeleitetenKlassen} dargestellt.
+
+\paragraph{Selektion von Datensätzen}
+\label{sec:SelektionVonDatensaetzen}
+Eine weitere Aktivität in der die beiden Panels kooperieren müssen ist die Selektion eines Datensatzes. Ein Datum kann entweder im ImporterPanel in der textuellen oder im ViewerPanel in der grafischen Darstellung ausgewählt werden.
+
+Ziel soll es sein, dass ein Datum, das in der einen Sicht ausgewählt wird, auch in der andern Sicht als selektiert erscheint. Die Auswahl an sich ist im ImporterPanel aufgrund der Bordmittel von Swing [REF Technologie, Java, SWING] trivial. Im ViewerPanel wird dies um einiges schwieriger, weil es sich dabei um einen sogenannten Mousepick handelt. Problematisch ist dabei, dass auf der zweidimensionalen Fläche des Bildschirms ein Objekt im dreidimensionalen Raum ausgewählt werden soll. Für die Lösung des Problems sei auf Abschnitt \ref{ch:mousepicking} verwiesen.
+
+Nachdem ein Datensatz ausgewählt wurde wir auch an dieser Stelle wieder mithilfe des Observer-Patterns das jeweils andere Panel über das Ereignis informiert, sucht den Datensatz und hebt ihn hervor.
+
+Die Kopplung der beiden Datenbestände erfolgt über den Bezeichner des Datums. Bereits in \ref{sec:Identifizierbarkeit} wurde gefordert, dass es sich hierbei um eine eindeutige Eigenschaft handeln muss. Wäre dies nicht der Fall, ist das geforderte Ziel der abgestimmten Auswahl schlicht nicht zu erreichen. 
+
+\subsubsection{ViewerPanel und Viewer}
 \section{Visualisierung einer militärischen Lage}
 \label{ch:Prototyp}
 %\section{Erweiterbarkeit und Individualisierbarkeit}
 
 
 \section{Kernaspekte der Implementierung}
-\subsection{Mapper}
-\subsubsection{Streckung der Eingabedaten auf den Projektionsbereich}
-\subsubsection{Entfernungsberechnung mithilfe der Haversine Formel}
-\subsubsection{Informationsverlust durch Projektion eines Kugelabschnitts auf eine Ebene}
-\subsection{Viewer}
-\subsubsection{Mousepicking}
+\subsection{Observer-Pattern bei abgeleiteten Klassen}
+\label{sec:ObserverPatternBeiAbgeleitetenKlassen}
+\subsection{Streckung der Eingabedaten auf den Projektionsbereich}
+\subsection{Entfernungsberechnung mithilfe der Haversine Formel}
+\subsection{Informationsverlust durch Projektion eines Kugelabschnitts auf eine Ebene}
+\subsection{Mousepicking}
 \label{ch:mousepicking}
-\subsubsection{Bewegungskegel}
+\subsection{Bewegungskegel}
+
 
 
