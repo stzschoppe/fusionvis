@@ -66,6 +66,29 @@ public class BattleSimMapper extends Mapper {
 	}
 
 	@Override
+	protected Node extractNodeFromData(Data data) {
+		Sphere sphere = new Sphere(data.getId(), new Vector3f(0, 0, 0), 15,
+				15, unitSize);
+		sphere.setLocalTranslation(getPosition(data, getDimensionFactors()));
+		sphere.updateGeometricState(0, false);
+		sphere.setModelBound(new BoundingSphere());
+		sphere.updateModelBound();
+		
+		Node sphereNode = new Node(data.getId());
+		Node orientationNode = initializeNode(new Node("orientationNode"));
+		Node velocityNode = initializeNode(new Node("velocityNode"));
+		Node futureConeNode = initializeNode(new Node("futureConeNode"));
+		Node pastConeNode = initializeNode(new Node("pastConeNode"));
+		
+		sphereNode.attachChild(sphere);
+		sphereNode.attachChild(orientationNode);
+		sphereNode.attachChild(velocityNode);
+		sphereNode.attachChild(futureConeNode);
+		sphereNode.attachChild(pastConeNode);
+		return sphereNode;
+	}
+
+	@Override
 	protected Vector3f getDimensionFactors() {
 		// Koeffizienten der einzelnen Dimensionen
 		float x = 1, y = 1, z = 1;
@@ -143,28 +166,53 @@ public class BattleSimMapper extends Mapper {
 //		 System.out.println(yWidth +" Offset " + y);
 		return factor;
 	}
-
+	
 	@Override
-	protected Node extractNodeFromData(Data data) {
-		Sphere sphere = new Sphere(data.getId(), new Vector3f(0, 0, 0), 15,
-				15, unitSize);
-		sphere.setLocalTranslation(getPosition(data, getDimensionFactors()));
-		sphere.updateGeometricState(0, false);
-		sphere.setModelBound(new BoundingSphere());
-		sphere.updateModelBound();
+	protected Vector3f getDimensionOffset() {
+		return new Vector3f(lonMin, latMin, timeMin.getTimeInMillis());
+	}
+
+	/**
+	 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene 
+	 * in km.
+	 * @return Vector vom Format (Länge|Breite)
+	 */
+	@Override
+	public Vector2f getSize(){
+		// Bestimmung der Oberen und unteren Grenzen der Dimensionen.
+		float latMin = 90f;
+		float latMax = -90f;
+	
+		float lonMin = 180f;
+		float lonMax = -180f;
+	
+		ArrayList<Data> dataList = dataSet.getData();
+	
+		for (Iterator<Data> iterator = dataList.iterator(); iterator.hasNext();) {
+			Data data = iterator.next();
+	
+			if (data.getPosition().getComponent("Lat").getValueAsFloat() < latMin) {
+				latMin = data.getPosition().getComponent("Lat")
+						.getValueAsFloat();
+			} else if (data.getPosition().getComponent("Lat").getValueAsFloat() > latMax) {
+				latMax = data.getPosition().getComponent("Lat")
+						.getValueAsFloat();
+			}
+			if (data.getPosition().getComponent("Lon").getValueAsFloat() < lonMin) {
+				lonMin = data.getPosition().getComponent("Lon")
+						.getValueAsFloat();
+			} else if (data.getPosition().getComponent("Lon").getValueAsFloat() > lonMax) {
+				lonMax = data.getPosition().getComponent("Lon")
+						.getValueAsFloat();
+			}
+		}
 		
-		Node sphereNode = new Node(data.getId());
-		Node orientationNode = initializeNode(new Node("orientationNode"));
-		Node velocityNode = initializeNode(new Node("velocityNode"));
-		Node futureConeNode = initializeNode(new Node("futureConeNode"));
-		Node pastConeNode = initializeNode(new Node("pastConeNode"));
 		
-		sphereNode.attachChild(sphere);
-		sphereNode.attachChild(orientationNode);
-		sphereNode.attachChild(velocityNode);
-		sphereNode.attachChild(futureConeNode);
-		sphereNode.attachChild(pastConeNode);
-		return sphereNode;
+		Vector2f pointUL = new Vector2f(lonMin,latMin); // unten links 
+		Vector2f pointOL = new Vector2f(lonMin,latMax); // oben links
+		Vector2f pointUR = new Vector2f(lonMax,latMin); // unten rechts
+		
+		return new Vector2f(distanceonEarth(pointUL, pointUR), distanceonEarth(pointOL, pointUL));
 	}
 
 	@Override
@@ -181,14 +229,14 @@ public class BattleSimMapper extends Mapper {
 				"de/unibw/fusionvis/img/frperceived.gif");
 		URL hoperceived = TestViewer.class.getClassLoader().getResource(
 				"de/unibw/fusionvis/img/hoperceived.gif");
-
+	
 		Texture texture1 = TextureManager.loadTexture(fr,
 				Texture.MinificationFilter.Trilinear,
 				Texture.MagnificationFilter.Bilinear);
 		TextureState friendly = display.getRenderer().createTextureState();
 		friendly.setEnabled(true);
 		friendly.setTexture(texture1);
-
+	
 		Texture texture2 = TextureManager.loadTexture(frperceived,
 				Texture.MinificationFilter.Trilinear,
 				Texture.MagnificationFilter.Bilinear);
@@ -196,7 +244,7 @@ public class BattleSimMapper extends Mapper {
 				.createTextureState();
 		friendlyPerceived.setEnabled(true);
 		friendlyPerceived.setTexture(texture2);
-
+	
 		Texture texture3 = TextureManager.loadTexture(hoperceived,
 				Texture.MinificationFilter.Trilinear,
 				Texture.MagnificationFilter.Bilinear);
@@ -204,7 +252,7 @@ public class BattleSimMapper extends Mapper {
 				.createTextureState();
 		hostilePerceived.setEnabled(true);
 		hostilePerceived.setTexture(texture3);
-
+	
 		Texture texture4 = TextureManager.loadTexture(ho,
 				Texture.MinificationFilter.Trilinear,
 				Texture.MagnificationFilter.Bilinear);
@@ -212,7 +260,7 @@ public class BattleSimMapper extends Mapper {
 		hostile.setEnabled(true);
 		hostile.setTexture(texture4);
 		Collection<Spatial> spartials = dataNode.getChildren();
-
+	
 		for (Spatial spatial : spartials) {
 			String certainty = dataSet.getDataById(spatial.getName())
 					.getAbstractProperty("Certainty").getValueAsString();
@@ -237,19 +285,6 @@ public class BattleSimMapper extends Mapper {
 		}
 	}
 
-	private Vector3f getPosition(Data data, Vector3f transform) {
-		float x = (data.getPosition().getComponent("Lon").getValueAsFloat() -lonMin)
-				* transform.x;
-		float z = (data.getPosition().getComponent("Lat").getValueAsFloat() - latMin)
-				* transform.z;
-		float y = (data.getPosition().getComponent("LastModified")
-				.getValueAsDate().getTimeInMillis() - timeMin.getTimeInMillis())
-				* transform.y;
-		// System.out.println(new Vector3f(x, y, z));
-		return new Vector3f(x, y, z);
-
-	}
-	
 	/**
 	 * Berechnet den Abstand zweier Punkte auf der Erde unter der
 	 * Annahme, die Erde sei eine Kugel. Die Koordinaten sind in der 
@@ -276,6 +311,14 @@ public class BattleSimMapper extends Mapper {
 	}
 	
 	/**
+	 * Differenz zwischen Start- und Endzeit der Daten
+	 * @return Zeitspanne in Sekunden
+	 */
+	public float getTimeSpan() {
+		return (float) ((timeMax.getTimeInMillis()-timeMin.getTimeInMillis()) * 0.001);
+	}
+
+	/**
 	 * Sorgt dafür, dass die Liste von Kindern nach dem initialisieren des
 	 * Knotens nicht null, sondern eine leere Liste ist.
 	 * @param node Zu initialisierender Knoten.
@@ -287,55 +330,17 @@ public class BattleSimMapper extends Mapper {
 		return node;
 	}
 	
-	/**
-	 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene 
-	 * in km.
-	 * @return Vector vom Format (Länge|Breite)
-	 */
-	@Override
-	public Vector2f getSize(){
-		// Bestimmung der Oberen und unteren Grenzen der Dimensionen.
-		float latMin = 90f;
-		float latMax = -90f;
-
-		float lonMin = 180f;
-		float lonMax = -180f;
-
-		ArrayList<Data> dataList = dataSet.getData();
-
-		for (Iterator<Data> iterator = dataList.iterator(); iterator.hasNext();) {
-			Data data = iterator.next();
-
-			if (data.getPosition().getComponent("Lat").getValueAsFloat() < latMin) {
-				latMin = data.getPosition().getComponent("Lat")
-						.getValueAsFloat();
-			} else if (data.getPosition().getComponent("Lat").getValueAsFloat() > latMax) {
-				latMax = data.getPosition().getComponent("Lat")
-						.getValueAsFloat();
-			}
-			if (data.getPosition().getComponent("Lon").getValueAsFloat() < lonMin) {
-				lonMin = data.getPosition().getComponent("Lon")
-						.getValueAsFloat();
-			} else if (data.getPosition().getComponent("Lon").getValueAsFloat() > lonMax) {
-				lonMax = data.getPosition().getComponent("Lon")
-						.getValueAsFloat();
-			}
-		}
-		
-		
-		Vector2f pointUL = new Vector2f(lonMin,latMin); // unten links 
-		Vector2f pointOL = new Vector2f(lonMin,latMax); // oben links
-		Vector2f pointUR = new Vector2f(lonMax,latMin); // unten rechts
-		
-		return new Vector2f(distanceonEarth(pointUL, pointUR), distanceonEarth(pointOL, pointUL));
-	}
+	private Vector3f getPosition(Data data, Vector3f transform) {
+		float x = (data.getPosition().getComponent("Lon").getValueAsFloat() -lonMin)
+				* transform.x;
+		float z = (data.getPosition().getComponent("Lat").getValueAsFloat() - latMin)
+				* transform.z;
+		float y = (data.getPosition().getComponent("LastModified")
+				.getValueAsDate().getTimeInMillis() - timeMin.getTimeInMillis())
+				* transform.y;
+		// System.out.println(new Vector3f(x, y, z));
+		return new Vector3f(x, y, z);
 	
-	/**
-	 * Differenz zwischen Start- und Endzeit der Daten
-	 * @return Zeitspanne in Sekunden
-	 */
-	public float getTimeSpan() {
-		return (float) ((timeMax.getTimeInMillis()-timeMin.getTimeInMillis()) * 0.001);
 	}
 
 }
