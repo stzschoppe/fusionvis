@@ -478,29 +478,7 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		if (arg1 instanceof DataSet) {
 			DataSet dataSet = (DataSet) arg1;
-			modelAll = dataSet;
-			// Alle echten Blauen und die gesichteten Roten
-			modelBlue = modelAll.filterBy("HostilityCode", "FR").filterBy(
-					"Certainty", "Real");
-			modelBlue.addDataSet(modelAll.filterBy("HostilityCode", "HO")
-					.filterBy("Certainty", "Perceived"));
-			// Alle echten Roten und die gesichteten Roten
-			modelRed = modelAll.filterBy("HostilityCode", "HO").filterBy(
-					"Certainty", "Real");
-			modelRed.addDataSet(modelAll.filterBy("HostilityCode", "FR")
-					.filterBy("Certainty", "Perceived"));
-			// Benutzerdefinierte sicht, die mit den Textfeldern gefiltert werden
-			// kann
-			modelUserDefined = dataSet;
-			importerDataSetIdLabel.setText(dataSet.getId());
-			DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataSet
-					.getId());
-			for (Data data : dataSet.getData()) {
-				root.add(createJListNode(data));
-			}
-			importerDetailTree.setModel(new DefaultTreeModel(root));
-			// Viewer informieren
-			observableSupportForFilter.markAndNotify(modelAll);
+			showDataModel(dataSet);
 		} else if (arg1 instanceof String) {
 			String id = (String)arg1;
 			
@@ -522,6 +500,32 @@ public class ImporterPanel extends javax.swing.JPanel implements Observer {
 				}
 			}
 		}
+	}
+
+	private void showDataModel(DataSet dataSet) {
+		modelAll = dataSet;
+		// Alle echten Blauen und die gesichteten Roten
+		modelBlue = modelAll.filterBy("HostilityCode", "FR").filterBy(
+				"Certainty", "Real");
+		modelBlue.addDataSet(modelAll.filterBy("HostilityCode", "HO")
+				.filterBy("Certainty", "Perceived"));
+		// Alle echten Roten und die gesichteten Roten
+		modelRed = modelAll.filterBy("HostilityCode", "HO").filterBy(
+				"Certainty", "Real");
+		modelRed.addDataSet(modelAll.filterBy("HostilityCode", "FR")
+				.filterBy("Certainty", "Perceived"));
+		// Benutzerdefinierte sicht, die mit den Textfeldern gefiltert werden
+		// kann
+		modelUserDefined = dataSet;
+		importerDataSetIdLabel.setText(dataSet.getId());
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(dataSet
+				.getId());
+		for (Data data : dataSet.getData()) {
+			root.add(createJListNode(data));
+		}
+		importerDetailTree.setModel(new DefaultTreeModel(root));
+		// Viewer informieren
+		observableSupportForFilter.markAndNotify(modelAll);
 	}
 
 	private DefaultMutableTreeNode createJListNode(Data data) {
