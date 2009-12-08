@@ -261,6 +261,24 @@ Bei der individuellen Ausgestaltung sind zwei unterschiedliche Aspekte zu unters
 
 Resultat des Mappingvorgangs soll ein Szenenbaum sein. Er ist die für die Grafikengine lesbare Form des Datenmodells. Dieser Szenenbaum muss bei jeder Veränderung des Datenmodells aktualisiert werden. Als solche zählt zum Beispiel das Filtern von Daten nach bestimmten Eigenschaften, oder das Erstellen einer Sicht auf das Datenmodell.
 \paragraph{Spezialisierung}
+Wie oben bereits beschrieben hat die Spezialisierung im Mapper zwei Aspekte. Auf der einen Seite kann die Gestalt eines einzelnen Datums spezifiziert werden und auf der anderen Seite die Position dieses Datums im dreidimensionalen Raum. Eine vollständige Trennung ist in der derzeitigen Version nicht gelungen. Inwiefern sich das auswirkt, wird im Folgenden beschrieben.
+
+Position und Projektion
+Eine grundlegende Entscheidung bei der Visualisierung von Daten ist, wie aus den Rohdaten eines Datums die Koordinaten im dreidimensionalen Raum gewonnen werden. Bereits in Abschnitt [REF] wurde beschrieben, dass solche Rohdaten existieren müssen. Ebenfalls ist darauf verwiesen worden, dass ungeeignete Rohdaten (weder in Gleitkomma-, noch in ganzzahliger Darstellung) an dieser Stelle durch einen geeigneten Homomorphismus umzuwandeln sind.
+
+Der erste Schritt zur Individualisierung des Mappers ist die Bestimmung der Ausmaße der Projektionsfläche. Dieser begriff meint die Ebene, die trivialisiert durch Länge und Breite aufgespannt wird. Ihre Festlegung erfolgt durch die Implementierung der [EMPH]getSize()-Methode. Hier gibt es zwei Varianten der Umsetzung. Es kann eine feste, von den Daten unabhängige Projektionsfläche gewählt werden. Eine maßstabsgetreue Abbildung entfällt somit. Vorteil dieser Art ist, dass bereits zur Implementierungszeit abschätzbar ist, wie groß die maximalen Entfernungen ausfallen. Somit können Entscheidungen, wie die Positionierung der Kamera [REF] sinnvoll getroffen werden.\\
+Eine andere Möglichkeit ist eine von den Eingabedaten abhängige Projektionsfläche. Hier entfällt das abschätzbare Ausmaß der Darstellung zum Wohle der maßstabsgetreuen Abbildung.
+
+Der zweite Schritt zur Individualisierung ist die Festlegung der Skalierung der Position auf den einzelnen Dimensionen. Die Notwendigkeit hierfür kann sich aus ungünstig gestalteten Rohdaten ergeben. Um zum Beispiel Zeiten in Ortsangaben umzuwandeln, kann man auf die interne Darstellung eines Zeitpunktes in die Zahl der Millisekunden seit dem 01.01.1970 zurückgreifen. Hieraus ergeben sich jedoch schon für kurze Zeitspannen riesige Zahlenwerte, die zu ebensogroßen Ausmaßen der Darstellung führen würden.\\
+Mit der Implementierung der Methode [EMPH]getDimensionFactors() kann diesem Umstand Rechnung getragen werden. Ist eine Skalierung nicht notwendig, so kann die triviale Skalierung mit dem Faktor 1 erfolgen.
+
+Der letzte Schritt zur Positionierung ist die Festlegung eines Datums auf eine genaue Koordinate in der dreidimensionalen Darstellung. Implementiert werden muss dies gleichzeitig mit der Festlegung der Gestalt eines Datensatzes. Wie dies zu erfolgen hat, ist in der allgemeinen Beschreibung zur Positionierung in Abschnitt [REF jme, Positionierung] beschrieben. Der Ort dieser Implementierung ist die im Folgenden beschriebene Methode. 
+
+Gestalt
+Die Gestalt eines Datums wird von der Methode [EMPH] extractNodeFromData() bestimmt. Sie hat die Aufgabe einen Szenenknoten (siehe Abschnitt [REF]) für jeden Datensatz zu erstellen. Bestandteil muss auf jeden Fall ein Grafikobjekt, wie in Abschnitt [REF, Visualisierung eines Datums] beschrieben, sein.  Im letzen Abschnitt wurde bereits angesprochen, dass ebenfalls die Festlegung der Koordinate des Grafikobjekts an dieser Stelle zu erfolgen hat. \\
+In dieser Methode kann der Benutzer neben Form, Größe, Position und sonstigen Eigenschaften, wie zum Beispiel Renderingoptionen (siehe Abschnitt [REF jme, Alphablending]) auch die Texturierung von Objekten festlegen. Es ist jedoch nicht immer zweckmäßig, für jedes Objekt eine individuelle Textur zuzuweisen. Aus diesem Grund gibt es eine weitere Methode, die es gilt zu implementieren.
+
+Die Methode [EMPH]texture() hat zur Aufgabe die Grafikobjekte eines übergebenen Szeneknotens zu texturieren. Dies kann anhand von bestimmten Eigenschaften geschehen.
 
 \label{sec:MapperSpezialisierung}
 \paragraph{Hilfsfunktionen}

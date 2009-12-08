@@ -167,7 +167,50 @@ public class BattleSimMapper extends Mapper {
                 return sphereNode;
         }
 
-        @Override
+        /**
+		 * Berechnet einen Vector mit Länge und Breite der benutzen Ebene
+		 * in km.
+		 * @return Vector vom Format (Länge|Breite)
+		 */
+		@Override
+		public Vector2f getSize(){
+		        // Bestimmung der Oberen und unteren Grenzen der Dimensionen.
+		        float latMin = 90f;
+		        float latMax = -90f;
+		
+		        float lonMin = 180f;
+		        float lonMax = -180f;
+		
+		        ArrayList<Data> dataList = dataSet.getData();
+		
+		        for (Iterator<Data> iterator = dataList.iterator(); iterator.hasNext();) {
+		                Data data = iterator.next();
+		
+		                if (data.getPosition().getComponent("Lat").getValueAsFloat() < latMin) {
+		                        latMin = data.getPosition().getComponent("Lat")
+		                                        .getValueAsFloat();
+		                } else if (data.getPosition().getComponent("Lat").getValueAsFloat() > latMax) {
+		                        latMax = data.getPosition().getComponent("Lat")
+		                                        .getValueAsFloat();
+		                }
+		                if (data.getPosition().getComponent("Lon").getValueAsFloat() < lonMin) {
+		                        lonMin = data.getPosition().getComponent("Lon")
+		                                        .getValueAsFloat();
+		                } else if (data.getPosition().getComponent("Lon").getValueAsFloat() > lonMax) {
+		                        lonMax = data.getPosition().getComponent("Lon")
+		                                        .getValueAsFloat();
+		                }
+		        }
+		       
+		       
+		        Vector2f pointUL = new Vector2f(lonMin,latMin); // unten links
+		        Vector2f pointOL = new Vector2f(lonMin,latMax); // oben links
+		        Vector2f pointUR = new Vector2f(lonMax,latMin); // unten rechts
+		       
+		        return new Vector2f(distanceonEarth(pointUL, pointUR), distanceonEarth(pointOL, pointUL));
+		}
+
+		@Override
         public void texture(Node dataNode) {
                 if (dataNode.getChildren() == null) {
                         return;
@@ -286,49 +329,6 @@ public class BattleSimMapper extends Mapper {
                 node.attachChild(new Node("Dummy"));
                 node.detachAllChildren();
                 return node;
-        }
-       
-        /**
-         * Berechnet einen Vector mit Länge und Breite der benutzen Ebene
-         * in km.
-         * @return Vector vom Format (Länge|Breite)
-         */
-        @Override
-        public Vector2f getSize(){
-                // Bestimmung der Oberen und unteren Grenzen der Dimensionen.
-                float latMin = 90f;
-                float latMax = -90f;
-
-                float lonMin = 180f;
-                float lonMax = -180f;
-
-                ArrayList<Data> dataList = dataSet.getData();
-
-                for (Iterator<Data> iterator = dataList.iterator(); iterator.hasNext();) {
-                        Data data = iterator.next();
-
-                        if (data.getPosition().getComponent("Lat").getValueAsFloat() < latMin) {
-                                latMin = data.getPosition().getComponent("Lat")
-                                                .getValueAsFloat();
-                        } else if (data.getPosition().getComponent("Lat").getValueAsFloat() > latMax) {
-                                latMax = data.getPosition().getComponent("Lat")
-                                                .getValueAsFloat();
-                        }
-                        if (data.getPosition().getComponent("Lon").getValueAsFloat() < lonMin) {
-                                lonMin = data.getPosition().getComponent("Lon")
-                                                .getValueAsFloat();
-                        } else if (data.getPosition().getComponent("Lon").getValueAsFloat() > lonMax) {
-                                lonMax = data.getPosition().getComponent("Lon")
-                                                .getValueAsFloat();
-                        }
-                }
-               
-               
-                Vector2f pointUL = new Vector2f(lonMin,latMin); // unten links
-                Vector2f pointOL = new Vector2f(lonMin,latMax); // oben links
-                Vector2f pointUR = new Vector2f(lonMax,latMin); // unten rechts
-               
-                return new Vector2f(distanceonEarth(pointUL, pointUR), distanceonEarth(pointOL, pointUL));
         }
        
         /**
