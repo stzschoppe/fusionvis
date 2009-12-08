@@ -195,7 +195,7 @@ Als nächstes muss nun die Methode \emph{extractDataFormNode()} implementiert wer
 
 \paragraph{Hilfsfunktionen}
 \label{sec:ImporterHilfsfunktionen}
-In der Input-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
+In der Importer-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
 
 Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem DOM-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:extractDataFromNode} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt und dem gewünschten Typen (hier: \emph{Type.TString}).
 
@@ -349,6 +349,17 @@ Nachdem ein Datensatz ausgewählt wurde wir auch an dieser Stelle wieder mithilfe
 Die Kopplung der beiden Datenbestände erfolgt über den Bezeichner des Datums. Bereits in \ref{sec:Identifizierbarkeit} wurde gefordert, dass es sich hierbei um eine eindeutige Eigenschaft handeln muss. Wäre dies nicht der Fall, ist das geforderte Ziel der abgestimmten Auswahl schlicht nicht zu erreichen. 
 
 \subsubsection{ViewerPanel und Viewer}
+Aus der Abbildung \ref{fig:framework} wird deutlich, kann man erkennen, dass der Viewer aus dem allgemeinen Rahmen der Struktur heraus fällt, da er als innere Klasse des ViewerPanels umgesetzt ist. Dies ist ein aus entwurfsästhetischen Gesichtspunkten unschöner Sachverhalt. \\
+Betrachtet man jedoch die enge Zusammenarbeit zwischen dem Panel und dem Viewer wird klar, warum die pragmatische zugunsten der ästhetischen Lösung gewählt wurde. 
+
+Zum einen sollte das Panel vor allem in Hinblick auf Erweiterbarkeit, wie zum Beispiel einstellbare Kameraperspektiven, eine Schnittstelle zum Viewer bieten. Wäre dieser als separate Klasse umgesetzt,  hätten viele Methoden und Instanzvariablen publik gemacht werden müssen. Eine geeignete Kapselung wird so unmöglich. Aus diesem Grund bietet es sich an, den Viewer zwecks der Abschirmung in  das Panel einzubinden.
+
+Ein anderer Aspekt, bei dem genau derselbe Zwiespalt auftritt ist das Auswählen von Daten im ViewerPanel. Da der Aufbau von Komponenten in Swing hierarchisch organisiert ist, klickt der Benutzer beim Selektieren eines Objekts in der dreidimensionalen Darstellung nicht auf die vom Viewer bereitgestellte Zeichenfläche, sondern in die Form, die wiederum nativ das Ereignis an das zuständige Panel weitergibt.
+
+An dieser stelle bricht jedoch die Kette, denn der Viewer ist nicht in die Swing- Klassenstruktur eingebettet. Aus diesem Grunde kümmert sich das ViewerPanel um die für das Auswählen notwendigen Schritte. Zu diesem Zweck benötigt es ähnlich wie oben angesprochen einen weitreichenden Zugriff auf den Viewer. Ohne ihn komplett öffentlich zu gestalten führt auch hier der Weg an einer inneren Klasse nicht vorbei.
+
+Aus Sicht der Unterscheidung der Komponenten des Frameworks in Frontend und Backend ist die Zuordnung des Viewers in das Panel vertretbar, denn er ist mit seiner Zeichenfläche im Gegensatz zum Importer eine sichtbare Komponente.
+
 \section{Visualisierung einer militärischen Lage}
 \label{ch:Prototyp}
 %\section{Erweiterbarkeit und Individualisierbarkeit}
