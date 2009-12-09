@@ -126,6 +126,7 @@ In der Enumeration der Typen ist der neue einzuführen. Weiterhin muss in der abs
 Abschließend muss nun eine neue Typ-Property Klasse erstellt und implementiert werden, die von ihrem abstrakten Vorbild erbt. 
 Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
 \subsection{Übersicht über das Frontend des Frameworks}
+\label{ch:Framework}
 \begin{figure}[ht!]
 	\centering
 		\includegraphics[width=0.75\textwidth]{Bilder/framework.png}
@@ -359,10 +360,14 @@ Ein anderer Aspekt, bei dem genau derselbe Zwiespalt auftritt ist das Auswählen 
 An dieser stelle bricht jedoch die Kette, denn der Viewer ist nicht in die Swing- Klassenstruktur eingebettet. Aus diesem Grunde kümmert sich das ViewerPanel um die für das Auswählen notwendigen Schritte. Zu diesem Zweck benötigt es ähnlich wie oben angesprochen einen weitreichenden Zugriff auf den Viewer. Ohne ihn komplett öffentlich zu gestalten führt auch hier der Weg an einer inneren Klasse nicht vorbei.
 
 Aus Sicht der Unterscheidung der Komponenten des Frameworks in Frontend und Backend ist die Zuordnung des Viewers in das Panel vertretbar, denn er ist mit seiner Zeichenfläche im Gegensatz zum Importer eine sichtbare Komponente.
-
 \section{Visualisierung einer militärischen Lage}
 \label{ch:Prototyp}
-
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.90\textwidth]{Bilder/gesamtesFenster.png}
+	\caption{BattleSimVis als prototypische Implementierung einer militärischen Lagedarstellung}
+	\label{fig:gesamtesFenster}
+\end{figure}
 Bereits in Abschnitt \ref{motivation}  wurde die Lage des S2-Offiziers angesprochen, der von den Panzern seines Bataillons Positions- und Feindmeldungen bekommt. Dies geschieht aus gründen der Datenübertragung in textueller, beschränkt menschenlesbarer Form.
 
 \subsection{Problemdarstellung}
@@ -381,14 +386,14 @@ Für den Offizier, der nun die Daten erhält, stellen sich potentiell zwölf Feinde
 
 Die zahlenmäßige Explosion der potentiellen Feindmeldungen kann durch zwei Ansätze reduziert werden: 
 
-\paragraph{Ortsgleichheit}
+\subsubsection{Ortsgleichheit}
 \label{sec:Ortsgleichheit}
 
 Als erstes gilt es, dass alle Meldungen, die zur selben Zeit gemacht wurden, auf die Lage des gemeldeten Objekts überprüft werden. Wurde an einem Ort (mit einer gewissen Toleranz)  gleichzeitig mehrere Einheiten gemeldet, so kann das daher kommen, dass sie von mehreren eigenen Panzern gleichzeitig gesehen wurden.
 
 Mit diesem Ansatz können die zwölf Meldungen auf nur noch vermeintlich sechs Feindeinheiten reduziert werden.
 
-\paragraph{Reichweitenberechnung}
+\subsubsection{Reichweitenberechnung}
 \label{sec:Reichweitenberechnung}
 
 Der nächste Schritt ist die Analyse der Meldungen, die zu unterschiedlichen Zeiten abgegeben wurden. Unter Annahme der maximalen Geschwindigkeit kann man nämlich feststellen, ob zwei Meldungen definitiv von unterschiedlichen Feindeinheiten ausgelöst wurden, oder ob die Möglichkeit besteht, dass es sich um ein und dasselbe Objekt handelt.
@@ -402,9 +407,116 @@ Auf diese Art und Weise kann die Zahl der potentiellen Einheiten weiter der Zahl
 
 Dass die oben dargestellten Lösungsansätze mithilfe von Berechnungen umgesetzt werden können steht außer Frage. Mit dem im Folgenden vorgestellten Prototypen soll aber ein anderer Ansatz verfolgt werden: Der S2-Offizier soll mithilfe des umgesetzten Programms allein durch die Betrachtung der visualisierten Darstellung aus den redundanten Daten ein der Realität nahe kommendes Lagebild erstellen können.
 
+\subsubsection{Aufbau der Benutzerschnittstelle}
+\label{sec:AufbauDerBenutzerschnittstelle}
+
+Die Benutzeroberfläche ist in zwei Teile gegliedert. Auf der einen Seite gibt es die textuelle Sicht auf die Lage und alle Möglichkeiten, diese zu manipulieren. Auf der anderen Seite sind die grafische Lagendarstellung in dreidimensionaler Form und die Mittel, diese zu beeinflussen. Welche das im Detail sind, wird im Folgenden beschrieben. Grundlage dieser Aufteilung ist die Struktur, die durch das Visualisierungsframework vorgegeben wird (siehe Abschnitt \ref{ch:Framework})
+
+\subsubsection{Auswahl der Dimensionen}
+\label{sec:AuswahlDerDimensionen}
+
+Um die folgenden Überlegungen und die Grundidee hinter der Visualisierung der Lage im Prototypen zu verstehen, ist es notwendig zu erklären, welche Dimension im dreidimensionalen Raum mit welcher Größe der Daten übereinstimmt.
+
+Die Ebene, aufgespannt durch Länge und Breite, spiegelt die Position eines Objekts im Raum wieder. Dabei ist die Höhe vernachlässigt worden. Da die Eingabedaten in geographischer Länge und Breite angegeben sind, kommt es hier zu einem, durch die Projektion einer Kugelkappe in die Ebene entstandenen, Fehler bezüglich der maßstabsgetreuen Darstellung von Entfernungen. Wie stark sich dieser auswirkt wird in Abschnitt \ref{ch:kugelkappe} erläutert.
+
+Die dritte Dimension, die man so durch die Vernachlässigung der Höhe gewinnt, kann durch die Zeit eingenommen werden. Meldungen, die am ältesten sind, werden direkt auf der durch Gitternetzlinien angezeigten Grundebene dargestellt. Die anzeige jüngerer Meldungen erfolgt kontinuierlich in die Höhe.
+
+Der Grund für diese Auswahl ist die später beschriebene Möglichkeit, die Reichweite einer Einheit in Abhängigkeit von ihrer Höchstgeschwindigkeit darzustellen.
+
+\subsubsection{Umgesetzte Fähigkeiten}
+\label{sec:UmgesetzteFaehigkeiten}
+
+\paragraph{Import der Daten:}
+\label{sec:ImportDerDaten}
+ \emph{BattleSimVis} ist durch das verwendete Visualisierungsframework in der Lage, Daten im XML-Format zu lesen. Für den Testgebrauch wurde eine XML-Datenstruktur verwendet, die aus einem Simulationsproxy [BELEG] stammt. Die importierten Daten werden in eine textuelle und eine grafische Ansicht umgewandelt.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.20\textwidth]{Bilder/Eigenschaftsansicht.png}
+	\caption{Baumstruktur der textuellen Darstellung}
+	\label{fig:Eigenschaftsansicht}
+\end{figure}
 
 
+\paragraph{Baumartige Datenanzeige:}
+\label{sec:BaumartigeDatenanzeige}
+ Die textuelle Anzeige der Daten erfolgt in einer Baumstruktur. Auf erster Ebene befinden sich die Datensätze, dargestellt durch ihren Bezeichner. Darunter sind für jeden Datensatz die eingelesenen Eigenschaften dargestellt.
 
+\paragraph{Dreidimensionale Datenanzeige:}
+\label{sec:DreidimensionaleDatenanzeige}
+ Im dafür vorgesehenen Bereich des Prototypen werden sie gelesenen Datensätze im dreidimensionalen Raum dargestellt.
+
+\paragraph{Freie Navigierbarkeit:}
+\label{sec:FreieNavigierbarkeit}
+ Durch einen Klick in die grafische Visualisierung ist es dem Benutzer möglich, frei durch den dreidimensionalen Raum zu navigieren. Durch Druck der mittleren Maustaste und Bewegung der Maus kann die Ansicht frei gedreht werden. Die Position des Betrachters wird, ähnlich zu der Steuerung von Computerspielen aus der Ego-Perspektive, mit den Tasten [W], [A], [S] und [D] gesteuert.
+
+\paragraph{Maßstabsgetreue Abbildung:}
+\label{sec:MassstabsgetreueAbbildung}
+ Bis auf die oben gemachte Einschränkung bezüglich des Fehler der Projektion einer Kugelkappe in die Ebene, werden die Daten maßstabsgetreu dargestellt. Die Berechnung der Entfernung erfolgt, aufgrund der Tatsache, dass eigentlichen Koordinaten die Position der Einheit auf einer Kugel beschreiben, durch die in Abschnitt \ref{ch:haversine} dargestellte Haversine-Formel. \\
+Die Gitternetzlinien sind auf die importierten Daten angepasst und werden nur in einem notwendigen Bereich auch angezeigt.
+
+\paragraph{Farbige Darstellung der Eigenschaften:}
+\label{sec:FarbigeDarstellungDerEigenschaften}
+ Um eine militärische Lage zu überblicken ist die Kenntnis über die Zuordnung der Einheiten zu Freund und Feind unabdingbar. Aus diesem Grund stellt \emph{BattleSimVis} feindliche Einheiten in rot und freundliche in blau dar. Weiterhin wird über die Helligkeit der Farbe unterschieden, ob es sich um eine echte Einheit (ein meldender eigener Panzer) oder um eine Meldung (einen feindlichen Panzer) handelt.
+
+\paragraph{Voreingestellte Kameraperspektiven:}
+\label{sec:VoreingestellteKameraperspektiven}
+ Zusätzlich zu der freien Navigierbarkeit in der dreidimensionalen Darstellung gibt es die Möglichkeit, zwischen drei vordefinierten Perspektiven auszuwählen. Zwei zeigen gegenüberliegende isometrische Ansichten, die dritte stellt die Lage aus einer Draufsicht dar.
+
+\paragraph{Datenfilter:}
+\label{sec:Datenfilter}
+ Um die Meldungen auf ein gewünschtes Maß zu reduzieren, gibt es die Möglichkeit, die importierten Daten nach bestimmten Eigenschaften auszuwählen. Dafür verfügt \emph{BattleSimVis}  über einen Filter, der anhand von Schlüssel-Wert-Paaren Datensätze auswählt. Die Schlüssel stehen für bestimmte Eigenschaften der Meldungen (Freund-Feind-Kennung, Verlässlichkeit etc.)
+ 
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.30\textwidth]{Bilder/SichtenFilter.png}
+	\caption{Filter mit voreingestellten Sichten auf die Lage}
+	\label{fig:SichtenFilter}
+\end{figure}
+
+\paragraph{Vordefinierte Sichten auf die Lage:}
+\label{sec:VordefinierteSichtenAufDieLage}
+ Um eine Lage (unabhängig von der oben geschilderten Situation des S2-Offiziers) aus der Sicht der roten Einheiten, der blauen Einheiten oder omniscient anzusehen, gibt es vordefinierte Filter. Sie zeigen bei der Wahl der blauen Sicht zum Beispiel alle echten blauen Einheiten, aber nur alle gemeldeten roten dar. Im Fall der Feindsicht ist dies genau andersherum. Die omnisciente Sicht zeigt alle Datensätze.
+
+\paragraph{Selektion in der grafischen Darstellung:}
+\label{sec:SelektionInDerGrafischenDarstellung}
+ Um die textuelle und die dreidimensionale Sicht optimal miteinander verbinden zu können, ist es erforderlich, dass eine Auswahl einer Einheit (zum Beispiel zum Inspizieren ihrer Eigenschaften) in beiden Darstellungen vornehmen kann. In der Baumstruktur ist dies trivial durch einen Klick auf den Bezeichner und das damit verbundene Aufklappen des Baums möglich. \\
+Um auch in der grafischen Ansicht die Eigenschaften zu einer Einheit zu erfahren, Klickt man sie dort einfach an. Durch einen Durchscheinenden grünen Kasten wird sie hervorgehoben und in der Baumstruktur wird der dazugehörige Pfad expandiert und ausgewählt. \\
+Dieses Fähigkeit wird als Mousepicking bezeichnet und wird in Abschnitt \ref{ch:mousepicking} näher erläutert.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.20\textwidth]{Bilder/auswahl.png}
+	\caption{Hervorhebung in der grafischen Ansicht}
+	\label{fig:auswahl}
+\end{figure}
+
+
+\paragraph{Bewegungskegel:}
+\label{sec:Bewegungskegel}
+ Eine Kernfähigkeit von \emph{BattleSimVis} ist das Einblenden von Bewegungskegeln. Die oben beschriebene Auswahl der Abbildung der Eigenschaften einer Meldung auf die drei Dimensionen, vor allem die Wahl, die Zeit in die Höhe zu zeichnen, ermöglicht die Visualisierung der Reichweite einer Einheit. \\
+Wird eine Meldung in der grafischen Darstellung ausgewählt, kann ein Kegel ein- und ausgeblendet werden, der anzeigt, wo sich eine Einheit in der Zukunft aufhalten kann (nach oben geöffneter Kegel) oder in der Vergangenheit aufgehalten haben könnte. Alles was innerhalb dieses Kegels liegt, ist in Reichweite der Einheit unter Berücksichtigung ihrer Maximalgeschwindigkeit. Alles was außerhalb ist, kann nicht in der jeweiligen Zeit erreicht worden sein.
+
+\paragraph{Inhalt von Bewegungskegeln:}
+\label{sec:InhaltVonBewegungskegeln}
+Auch wenn oben beschrieben wurde, dass der S2--Offizier mithilfe von \emph{BattleSimVis} allein durch das Ansehen einer Lage Redundanzen ausschalten kann, unterstützt das Tool den Anwender bei der Auswertung von Bewegungskegeln, indem es eine Liste aller Einheiten anzeigt, die sich darin befinden.
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.50\textwidth]{Bilder/Bewegungkegelverg.png}
+	\caption{Bewegungskegel in die Vergangenheit}
+	\label{fig:Bewegungkegelverg}
+\end{figure}
+
+\subsubsection{Nutzung des Tools zur Lösung des gestellten Problems}
+\label{sec:NutzungDesToolsZurLoesungDesGestelltenProblems}
+Mit den oben dargestellten Fähigkeiten von \emph{BattleSimVis} ist es dem S2-Offizier nun möglich, die beiden diesem Abschnitt aufgezeigten Lösungsansätze zu nutzen, um ein geeignetes Bild von der Lage zu bekommen.
+
+Das Problem der mehrfachen Meldung von Feindeinheiten durch eigene Kräfte, die gleichzeitig zum Beispiel einen roten Panzer entdecken, wird vom Programm dadurch behoben, dass die Einheiten auch am selben Ort dargestellt werden. Idealerweise sieht der S2-Offizier somit nur einen Panzer, wo auch nur ein Panzer in der Realität steht. \\
+Weichen die Daten geringfügig ab, fällt dies bei Berechnungen auf, jedoch beim Ansehen erkennt man Unterschiede in der Position erst bei so signifikanten Entfernungen, dass es sich um unterschiedliche Einheiten handeln muss.
+
+Um eine Reichweitenanalyse durchzuführen, also um zwei zu unterschiedlichen Zeitpunkten gemeldete Objekte eindeutig als auch in der Realität nicht identisch zu identifizieren, wird dem S2-Offizier die Möglichkeit an die Hand gegeben, zu jeder Einheit einen in die Zukunft oder einen in die Vergangenheit ragenden Trichter anzeigen zu können. Damit lässt sich die theoretische Reichweite eines Objekts anhand der Maximalgeschwindigkeit visualisieren. Alles was nicht in diesem Trichter ist, muss auch eine andere Einheit sein.
+
+Somit ist gezeigt, dass die prototypische Implementierung durch die gewählte Visualisierung die Reduktion redundanter Daten ermöglicht und den S2-Offizier bei der Fusion multisensorischer Daten adäquat unterstützt.
 
 %\section{Erweiterbarkeit und Individualisierbarkeit}
 
@@ -412,11 +524,36 @@ Dass die oben dargestellten Lösungsansätze mithilfe von Berechnungen umgesetzt w
 \section{Kernaspekte der Implementierung}
 \subsection{Observer-Pattern bei abgeleiteten Klassen}
 \label{sec:ObserverPatternBeiAbgeleitetenKlassen}
+Bei der Auswahl eines Datums in der textuellen Ansicht soll die resultierende Hervorhebung auch in der grafischen Darstellung erfolgen und umgekehrt. Zur Umsetzung dieser Aufgabe empfiehlt sich das Observer-Pattern. 
+
+Dabei gibt es auf der einen Seite eine observierbare Klasse. Dies ist der Ausgangspunkt, an dem die Veränderung eines Zustands auftritt. Sie verwaltet eine Liste von Klasseninstanzen, die an dieser Veränderung interessiert sind. Geschieht ein Zustandsübergang, werden diese von der observierten Klasse benachrichtigt und können angemessen reagieren.
+
+Dieses Entwurfsmuster (nach \cite{designpatterns}) ist in Java bereits in die mitgelieferte Klassenbibliothek integriert. Dabei ist der observierte Anteil als Klasse \emph{Observable} fertig umgesetzt. Ein Datenmodell zum Beispiel, das beobachtet werden und in unterschiedlichen Ansichten dargestellt werden soll, wird von der \emph{Observable}-Klasse abgeleitet. Alle notwendigen Methoden werden somit zur Verfügung gestellt.
+
+Der beobachtende Anteil ist in Java als Interface umgesetzt. Es existiert somit nur ein Gerüst von Methoden. In diesem Fall ist es nur eine einzige, die \emph{update()}-Methode. In ihr muss das Verhalten implementiert werden, das ausgelöst wird, wenn sich an der beobachteten Instanz etwas ändert.
+
+Dieser von Java bereitgestellte Ansatz kommt an seine Grenzen, wenn die beobachtete Klasse bereits von einer anderen erbt. Denn dann kann sie nicht auch noch von der \emph{Observable} abgeleitet werden. Java verbietet schließlich die Mehrfachvererbung von Klassen.
+
+Genau dieses Problem tritt auch bei den beiden Panels ein, die bei der Auswahl von Datensätzen wechselseitig sowohl Beobachter, als auch Beobachteter sind. Sie sind beide von der Swing-Klasse \emph{JPanel} abgeleitet und dürfen nicht von \emph{Observable} erben.
+
+Zu diesem Problem gibt es zwei unterschiedliche  Lösungsansätze. Auf der einen Seite kann man ein \emph{Observable}-Interface erstellen, muss dann aber die Liste der Beobachter und die Methoden zum benachrichtigen selbst implementieren. Dies ist ein nicht unerheblicher Aufwand und zu dem unter Umständen fehlerträchtiger Aufwand.
+
+Der andere Ansatz ist eine innere Klasse in den zu Beobachtenden Klassen zu erstellen, die dadurch von \emph{Observable} erben kann und als innere Klasse den vollen Zugriff auf die Instanzvariablen ihrer Umgebung hat. Auf der anderen Seite kann die äußere Klasse die Methode zum benachrichtigen der Beobachter  zum geeigneten Zeitpunkt aufrufen.
+
+So kann mit nur geringen Anpassungen die vorimplementierte Lösung übernommen und das Problem gelöst werden.
+
+
 \subsection{Streckung der Eingabedaten auf den Projektionsbereich}
+
 \subsection{Entfernungsberechnung mithilfe der Haversine Formel}
-\subsection{Informationsverlust durch Projektion eines Kugelabschnitts auf eine Ebene}
+\label{ch:haversine}
+
+\subsection{Informationsverlust durch Projektion einer Kugelkappe auf eine Ebene}
+\label{ch:kugelkappe}
+
 \subsection{Mousepicking}
 \label{ch:mousepicking}
+
 \subsection{Bewegungskegel}
 
 
