@@ -362,6 +362,50 @@ Aus Sicht der Unterscheidung der Komponenten des Frameworks in Frontend und Back
 
 \section{Visualisierung einer militärischen Lage}
 \label{ch:Prototyp}
+
+Bereits in Abschnitt \ref{motivation}  wurde die Lage des S2-Offiziers angesprochen, der von den Panzern seines Bataillons Positions- und Feindmeldungen bekommt. Dies geschieht aus gründen der Datenübertragung in textueller, beschränkt menschenlesbarer Form.
+
+\subsection{Problemdarstellung}
+\label{sec:Problemdarstellung}
+
+Die Aufgabe des S2-Offiziers ist es, aus diesen Daten ein Lagebild zu erstellen, also die Daten zu Visualisieren. Problematisch sind hierbei vor allem die Feindmeldungen. Folgende Lage veranschaulicht das Problem:
+
+In der Norddeutschen Tiefebene treffen zwei eigene Panzer auf zwei gegnerische. Die eigenen Einheiten bewegen sich nicht, sie stehen in teilgedeckter Stellung. Die Feindlichen Einheiten bewegen sich mit hoher Geschwindigkeit. Eine mit Richtung auf die beiden blauen\footnote{Im Kontext von militärischen lagen spricht man von blauen und roten Einheiten. Rot steht hierbei für feindliche, blau für eigene oder verbündete Einheiten.} Panzer. Die andere in Querfahrt von Rechts nach Links aus sicht der beobachtenden Einheiten.
+
+Im Abstand von 60 Sekunden geben die beiden eigenen Panzer drei Mal nacheinander Meldungen über die gesichteten Feinde ab.  Daraus resultieren zwölf Feindmeldungen.
+
+Für den Offizier, der nun die Daten erhält, stellen sich potentiell zwölf Feindeinheiten dar. Von der Anzahl ergäbe das die Stärke einer Kompanie. Dies entspricht nicht der Wirklichkeit. Das Problem, das es nun zu lösen gilt, ist durch geeignete Visualisierung aus der vermeintlichen Kompanie wieder die zwei eigentlichen Feindpanzer erkennen zu können.
+
+\subsection{Lösungsansatz}
+\label{sec:Loesungsansatz}
+
+Die zahlenmäßige Explosion der potentiellen Feindmeldungen kann durch zwei Ansätze reduziert werden: 
+
+\paragraph{Ortsgleichheit}
+\label{sec:Ortsgleichheit}
+
+Als erstes gilt es, dass alle Meldungen, die zur selben Zeit gemacht wurden, auf die Lage des gemeldeten Objekts überprüft werden. Wurde an einem Ort (mit einer gewissen Toleranz)  gleichzeitig mehrere Einheiten gemeldet, so kann das daher kommen, dass sie von mehreren eigenen Panzern gleichzeitig gesehen wurden.
+
+Mit diesem Ansatz können die zwölf Meldungen auf nur noch vermeintlich sechs Feindeinheiten reduziert werden.
+
+\paragraph{Reichweitenberechnung}
+\label{sec:Reichweitenberechnung}
+
+Der nächste Schritt ist die Analyse der Meldungen, die zu unterschiedlichen Zeiten abgegeben wurden. Unter Annahme der maximalen Geschwindigkeit kann man nämlich feststellen, ob zwei Meldungen definitiv von unterschiedlichen Feindeinheiten ausgelöst wurden, oder ob die Möglichkeit besteht, dass es sich um ein und dasselbe Objekt handelt.
+
+Gegeben seien dafür zwei Meldungen. Aus ihnen lassen sich die Zeitdifferenz und die Entfernung der beiden voneinander bestimmen. Ist ihre Entfernung größer, als die Distanz, die in der errechneten Zeit unter Annahme der Höchstgeschwindigkeit hätte zurückgelegt werden können, so handelt es sich um definitiv unterschiedliche Einheiten.
+
+Auf diese Art und Weise kann die Zahl der potentiellen Einheiten weiter der Zahl der echten Einheiten angenähert werden und ein aussagekräftigeres Lagebild entsteht.
+
+\subsection{Umsetzung mithilfe des Visualisierungsframeworks}
+\label{sec:UmsetzungMithilfeDesVisualisierungsframeworks}
+
+Dass die oben dargestellten Lösungsansätze mithilfe von Berechnungen umgesetzt werden können steht außer Frage. Mit dem im Folgenden vorgestellten Prototypen soll aber ein anderer Ansatz verfolgt werden: Der S2-Offizier soll mithilfe des umgesetzten Programms allein durch die Betrachtung der visualisierten Darstellung aus den redundanten Daten ein der Realität nahe kommendes Lagebild erstellen können.
+
+
+
+
+
 %\section{Erweiterbarkeit und Individualisierbarkeit}
 
 
