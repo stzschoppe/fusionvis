@@ -553,6 +553,23 @@ So kann mit nur geringen Anpassungen die vorimplementierte Lösung übernommen und
 
 \subsection{Mousepicking}
 \label{ch:mousepicking}
+Unter dem Wort Mousepicking wird nach \cite{guide} die Auswahl von Objekten in einer dreidimensionalen Darstellung verstanden. Dies ist in der Umsetzung des Visualisierungsframeworks notwendig, wenn ein Datum in der grafischen Ansicht selektiert werden soll, um zum Beispiel seine Eigenschaften in der textuellen Ansicht zu inspizieren.
+
+Bei dieser auf den ersten Blick sicher trivial erscheinenden Tätigkeit gibt es ein Problem, dass der Leser vielleicht aus der Bäckerei kennt. Zeigt man, vor der Theke stehend, auf ein Gebäckstück hinter der Glasscheibe, die die Backwaren vor den Kunden schützt, so ist es für den/die Verkäufer/in nicht einfach zu erkennen, auf was gezeigt wird.
+
+Ein ähnlicher Sachverhalt ergibt sich durch das Zeigen mit der Maus auf ein Objekt im dreidimensionalen Raum, denn der Mauszeiger bewegt sich nur auf einer Ebene, einer Art Fenster zum Raum der Darstellung. Um zu berechnen auf was gezeigt wird, braucht es einen Strahl ausgehend von der Spitze des Mauszeigers. Dasjenige Objekt, das in der kürzesten Entfernung vom Zeiger getroffen wird, soll ausgewählt werden.
+
+Aus der analytischen Geometrie ist aber bekannt [CITE], dass eine Gerade, spezieller aber auch ein Strahl, durch mindestens zwei Punkte zu spezifizieren ist. An dieser Stelle hilft die gewählte Grafikengine, indem sie ihrem Benutzer zu einer gewählten Bildschirmkoordinate den Startpunkt des Strahls, der von ihr ausgeht, im dreidimensionalen Raum liefert. Zusätzlich ist sie in der Lage senkrecht zur Bildschirmebene einen Zielpunkt am Ende des sichtbaren Bereichs zu liefern. Aus diesen beiden Punkten kann nun der für das Mousepicking benötigte Strahl berechnet werden.
+
+Bei der Übergabe der Bildschirmkoordinaten ist jedoch zu beachten, dass das von Swing verwendete Koordinatensystem in der \emph{oberen} linken Ecke den Ursprung besitzt. Im Vergleich zu OpenGL, das den Ursprung mathematisch eingängig in der unteren linken Ecke platziert. Die y-Koordinate ist also vor der Berechnung von der Höhe des Bildschirms abzuziehen. 
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.30\textwidth]{Bilder/mousepickingscreen.png}
+	\caption{Darstellung der von der Maus ausgehenden Strahlen aus \cite{guide}}
+	\label{fig:mousepickingscreen}
+\end{figure}
+
+In Abbildung \ref{fig:mousepickingscreen} ist eine Visualisierung der Strahlen nachzuvollziehen.
 
 \subsection{Bewegungskegel}
 
