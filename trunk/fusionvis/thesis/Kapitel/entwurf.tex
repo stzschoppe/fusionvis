@@ -676,6 +676,12 @@ Die Länge der Strecke ist somit etwa  29,999972km. Der absolute Fehler beträgt 2
 
 \subsection{Mousepicking}
 \label{ch:mousepicking}
+\begin{figure}[hbt!]
+	\centering
+		\includegraphics[width=0.30\textwidth]{Bilder/mousepickingscreen.png}
+	\caption{Darstellung der von der Maus ausgehenden Strahlen aus \cite{guide}}
+	\label{fig:mousepickingscreen}
+\end{figure}
 Unter dem Wort Mousepicking wird nach \cite{guide} die Auswahl von Objekten in einer dreidimensionalen Darstellung verstanden. Dies ist in der Umsetzung des Visualisierungsframeworks notwendig, wenn ein Datum in der grafischen Ansicht selektiert werden soll, um zum Beispiel seine Eigenschaften in der textuellen Ansicht zu inspizieren.
 
 Bei dieser auf den ersten Blick sicher trivial erscheinenden Tätigkeit gibt es ein Problem, dass der Leser vielleicht aus der Bäckerei kennt. Zeigt man, vor der Theke stehend, auf ein Gebäckstück hinter der Glasscheibe, die die Backwaren vor den Kunden schützt, so ist es für den/die Verkäufer/in nicht einfach zu erkennen, auf was gezeigt wird.
@@ -685,16 +691,76 @@ Ein ähnlicher Sachverhalt ergibt sich durch das Zeigen mit der Maus auf ein Obje
 Aus der analytischen Geometrie ist aber bekannt [CITE], dass eine Gerade, spezieller aber auch ein Strahl, durch mindestens zwei Punkte zu spezifizieren ist. An dieser Stelle hilft die gewählte Grafikengine, indem sie ihrem Benutzer zu einer gewählten Bildschirmkoordinate den Startpunkt des Strahls, der von ihr ausgeht, im dreidimensionalen Raum liefert. Zusätzlich ist sie in der Lage senkrecht zur Bildschirmebene einen Zielpunkt am Ende des sichtbaren Bereichs zu liefern. Aus diesen beiden Punkten kann nun der für das Mousepicking benötigte Strahl berechnet werden.
 
 Bei der Übergabe der Bildschirmkoordinaten ist jedoch zu beachten, dass das von Swing verwendete Koordinatensystem in der \emph{oberen} linken Ecke den Ursprung besitzt. Im Vergleich zu OpenGL, das den Ursprung mathematisch eingängig in der unteren linken Ecke platziert. Die y-Koordinate ist also vor der Berechnung von der Höhe des Bildschirms abzuziehen. 
-\begin{figure}[hbt!]
-	\centering
-		\includegraphics[width=0.30\textwidth]{Bilder/mousepickingscreen.png}
-	\caption{Darstellung der von der Maus ausgehenden Strahlen aus \cite{guide}}
-	\label{fig:mousepickingscreen}
-\end{figure}
 
 In Abbildung \ref{fig:mousepickingscreen} ist eine Visualisierung der Strahlen nachzuvollziehen.
 
 \subsection{Bewegungskegel}
+Im der prototypischen Implementierung ist es möglich, eine Reichweitenanalyse zu einer Einheit durchzuführen. Das heißt, wie weit sie sich unter Annahme einer bestimmten Maximalgeschwindigkeit bewegen kann. Dargestellt wird diese Reichweite durch einen Kegel, der seine Spitze im Ausgangsort der Einheit hat.
 
+Interessant ist es, festzustellen, welche anderen Einheiten sich in dem Kegel befinden. Visuell ist dies meist möglich, das heißt eine Berechnung ist nicht immer notwendig. Aber es gibt Grenzfälle, in welchen eine genaue Aussage nur mathematisch getroffen werden kann. Wie diese Berechnung aussehen kann, soll im Folgenden dargelegt werden. 
+
+Engine-Mittel
+Unter Berücksichtigung der Tatsache, dass eine Engine für die dreidimensionale Darstellung verwendet wurde, kann man davon ausgehen, dass diese Mittel zur Verfügung stellt, um das Problem zu lösen. 
+
+Eine mögliche Umsetzung basiert auf der Technik, die auch für die Mousepicks (siehe Abschnitt \ref{ch:mousepicking}) verwendet wurde: Gegeben seien die dreidimensionalen Objekte der Einheiten und der Kegel, in dem sie potentiell liegen könnten. Von jeder Einheit wird jetzt ein Strahl ausgesendet. Richtung ist grundsätzlich die negative y-Richtung. Naiv gesprochen: \emph{nach unten}. 
+
+Genau wie beim Mousepicking wird jetzt geprüft, ob der Kegel getroffen wurde. War dies der Fall, befindet sich die Einheit darin. 
+
+In der prototypischen Implementierung wurde diese Variante nicht umgesetzt. Grund dafür ist sind Probleme mit dem Algorithmus, den die Engine für die Kollisionsberechnung nutzt. Er ist auf Geschwindigkeit, nicht jedoch auf Genauigkeit ausgelegt. Ziel der Berechnung sollte aber ein sehr genaues Ergebnis sein. Deswegen entfällt diese Variante.
+
+Winkelvergleich
+Ein Ansatz das Problem mit Analytischer Geometrie anzugehen, ist der Vergleich von Winkeln zwischen Vektoren. Für diese Variante kann o. B. d. A. der Kegel als (gleichschenkliges) Dreieck angenommen werden. Auf der Basis wird nun das Lot gefällt. Bei diesem handelt es sich um die Höhe des Dreiecks. 
+
+Als Erstes wird der Winkel zwischen den Schenkeln des Dreiecks und dem Lot berechnet. Da der Radius des Kegels mit der Höhe des Dreiecks (und ebenfalls der Höhe des Kegels) ein rechtwinkliges Dreieck aufspannt, gilt:
+\begin{subequations}\label{eq:tan}
+\begin{align}
+\tan{\alpha} &= \frac{r}{h} \\
+\alpha &= \arctan{\frac{r}{h}}
+\end{align}
+\end{subequations}
+
+Als Zweites wird der Winkel berechnet, der sich für jede zu prüfende Einheit zwischen der Strecke von der Spitze des Kegels zur Einheit und dem Lot befindet. Er berechnet sich nach:
+\begin{equation}\label{eq:winkel}
+\cos{\beta} = \frac{\vec{a}\bullet\vec{b}}{\left|\vec{a}\right| \cdot \left|\vec{b}\right|} \\
+\end{equation}
+
+Ist dieser Winkel größer, liegt die Einheit außerhalb des Kegels. Ist er anderenfalls kleiner, befindet sich die geprüfte Einheit im Kegel. 
+
+Insgesamt handelt es sich hierbei um ein recht rechenaufwendiges Verfahren, da es für jede Einheit durchgeführt werden muss. Aus diesem Grund stellt sich die Frage, ob das es Möglichkeiten zur Vereinfachung gibt.
+
+Vergleich der y-Komponenten
+Berechnet man den Winkel $\alpha$ nicht mit der Gleichung \ref{eq:tan}, sondern mit Gleichung \ref{eq:winkel}, ergibt sich eine Vereinfachung: Da der Richtungsvektor nur in der y-Komponente von null verschieden ist, geht auch nur die y-Komponente des Schenkelvektors ein. Damit degeneriert das Skalarprodukt zu einer einzigen Multiplikation. 
+
+Für die Winkelbrechnung sind die Längen der Vektoren, die für die Berechnung herangezogen werden, unerheblich. Darum muss für das Lot nicht mit dem Vektor (0, h, 0) gerechnet werden. Es genügt (0, 1, 0). Das Skalarprodukt muss nun schlicht nicht mehr ausgerechnet werden.
+
+Ebenso können der Schenkelvektor und der Vektor von der zu prüfenden Einheit Richtung Kegelspitze normalisiert werden. Resultat ist, dass der Nenner der Formel zur Winkelberechnung gleich eins ist. Die Berechnung des Arkuskosinus ist zum Vergleich der beiden Winkel hinfällig. Schließlich müsste er nur von den y-Komponenten berechnet werden. Diese können aber auch gleich verglichen werden: Ist die des normalisierten Vektors der zu prüfenden Einheit kleiner, liegt sie außerhalb. Ist die des normalisierten Schenkelvektors kleiner, liegt sie im Kegel.
+
+Zusammenfassen müssen zur Berechnung nur noch folgende Schritte durchlaufen werden: 
+\begin{enumerate}
+	\item Einmalige Berechnung des Schenkelvektors
+	\item Normalisierung des Schenkelvektors
+	\item Für jede zu prüfende Einheit:
+\begin{enumerate}
+	\item Berechnung des Vektors von ihr zur Kegelspitze
+	\item Normalisierung dieses Vektors
+	\item Vergleich der y-Komponenten der beiden Vektoren.
+\end{enumerate}
+\end{enumerate}
+
+Durch diese Optimierung werden pro zu prüfender Einheit folgende absoluten und relativen Einsparungen gemacht:
+\begin{table*}[ht!]
+	\centering
+		\begin{tabular}{ | l | l |}
+		\hline
+			\emph{absolute Verbesserung}      & \emph{relative Verbesserung} 	      \\ \hline
+		  -4 Additionen       							& -44\%        												\\ \hline
+      -6 Multiplikationen    						& -66\% 															\\ \hline
+      -3 Divisionen											& -50\% 															\\ \hline
+      -1 Wurzel    											& -50\% 															\\ \hline
+      -1 trigonometrische Funktion    	& -100\% 															\\ \hline
+		\end{tabular}
+	\caption{Erreichte Verbesserungen durch Vereinfachung der Berechnung}
+	\label{tab:verbesserungen}
+\end{table*}
 
 
