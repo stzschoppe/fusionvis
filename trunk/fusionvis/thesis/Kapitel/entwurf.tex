@@ -542,9 +542,6 @@ Der andere Ansatz ist eine innere Klasse in den zu Beobachtenden Klassen zu erst
 
 So kann mit nur geringen Anpassungen die vorimplementierte Lösung übernommen und das Problem gelöst werden.
 
-
-\subsection{Streckung der Eingabedaten auf den Projektionsbereich}
-
 \subsection{Entfernungsberechnung auf der Erde}
 \label{ch:haversine}
 
@@ -643,12 +640,39 @@ Die gleiche Berechnung wie oben kann durch geeignetes Umstellen der Gleichung au
 	d = 2 R \arcsin{\sqrt{\sin^2{\frac{lat_{2}-lat_{1}}{2}} + \cos{lat_{1}} \cos{lat_{2}} \sin^2{\frac{\Delta lon}{2}}}}
 \end{equation}
 
-Auch diese Formel ist für ein spezielles Problem schlecht konditioniert. Problematisch sind Entfernungen zwischen antipodalen Punkten, also Orten, die sich auf dem Erdball gegenüberliegen. Da dieser Fall in Kontext des erstellten Prototyps keine Rolle spielt, ist dieser Fall auch zu vernachlässigen. 
-
-
+Auch diese Formel ist für ein spezielles Problem schlecht konditioniert. Problematisch sind Entfernungen zwischen antipodalen Punkten, also Orten, die sich auf dem Erdball gegenüberliegen. Da dieser Fall in Kontext des erstellten Prototyps keine Rolle spielt, ist dieser Fall auch zu vernachlässigen. \\
+Aus diesem Grund wurde diese Formel zur Entfernungsberechnung verwendet.
 
 \subsection{Informationsverlust durch Projektion einer Kugelkappe auf eine Ebene}
 \label{ch:kugelkappe}
+
+Um im vorgestellten Prototyp eine Dimension für die Zeit verwenden zu können, war es notwendig die Höhe einer Einheit außer Acht zu lassen. Dadurch ergibt sich eine Ungenauigkeit, denn die Eingabedaten befinden sich eigentlich auf einer sogenannten Kugelkappe. So bezeichnet man einen Ausschnitt einer Kugeloberfläche. Durch das Fortlassen der Zeit wird dieser in die Ebene projiziert. 
+
+Um diesen Sachverhalt einfacher durchdenken zu können, soll er in den zweidimensionalen Raum übertragen werden. Folglich geht es dann nicht mehr um eine Kugelkappe, die in eine Ebene abgebildet wird, sondern um einen Kreisbogen, der auf eine Gerade projiziert wird.
+
+Durchdenkt man sich diesen Vorgang, ist es klar, dass die resultierende Gerade kürzer sein muss, als der Kreisbogen. Um diesen Fehler zu veranschaulichen  soll noch einmal die Größenordnung des Truppenübungsplatzes Bergen herangezogen werden. Mit Ausmaßen von 25km x 18km ist die theoretisch längste Strecke die Diagonale des aufgespannten Rechtecks. Diese ist nach Pythagoras ca. 30km lang.
+
+Diese 30km als Länge eines Kreisbogens auf einem Kreis mit einem Radius von 6371km sind der Anhalt für die folgende Rechnung. Verbindet man Anfang und Ende des Kreisbogens mit einer Gerade, so ist diese Strecke die gesuchte Projektion.
+
+Zwischen dem Mittelpunkt des Kreises und den Endpunkten des Kreisbogens wird ein gleichschenkliges Dreieck aufgespannt. Das Lot auf der Strecke, dessen Länge gesucht ist, Teilt das Dreieck in zwei gleichgroße rechtwinklige Teildreiecke. Grund hierfür ist, dass das Lot auf der Grundseite eines gleichschenkligen Dreiecks zugleich auch Winkelhalbierende ist. 
+
+Folglich ist der Winkel $\alpha$, der vom Lot und dem Radius, der Mittelpunkt und einen Endpunkt des Kreisbogens verbindet wie folgt zu berechnen:
+\begin{subequations}
+\begin{align}
+\frac{2 \pi \cdot 6371km}{2 \pi} &= \frac{30km}{2 \alpha} \\
+\alpha &= \frac{15}{6371}
+\end{align}
+\end{subequations}
+Mit dem berechneten Winkel lässt sich auf die Länge der gesuchten Strecke schließen. Sie ist das Doppelte der Gegenkathete zum Winkel $\alpha$.
+\begin{subequations}
+\begin{align}
+\sin{\alpha} &= \frac{a}{6371km} \\
+l &= 2 \sin{\alpha} \cdot 6371km
+\end{align}
+\end{subequations}
+
+Die Länge der Strecke ist somit etwa  29,999972km. Der absolute Fehler beträgt 2,72cm. Relativ sind das 0,001\,\textperthousand. Das Vernachlässigen der Höhe fällt also viel schwerer ins Gewicht, als die beschriebene Vereinfachung.
+
 
 \subsection{Mousepicking}
 \label{ch:mousepicking}
@@ -661,7 +685,7 @@ Ein ähnlicher Sachverhalt ergibt sich durch das Zeigen mit der Maus auf ein Obje
 Aus der analytischen Geometrie ist aber bekannt [CITE], dass eine Gerade, spezieller aber auch ein Strahl, durch mindestens zwei Punkte zu spezifizieren ist. An dieser Stelle hilft die gewählte Grafikengine, indem sie ihrem Benutzer zu einer gewählten Bildschirmkoordinate den Startpunkt des Strahls, der von ihr ausgeht, im dreidimensionalen Raum liefert. Zusätzlich ist sie in der Lage senkrecht zur Bildschirmebene einen Zielpunkt am Ende des sichtbaren Bereichs zu liefern. Aus diesen beiden Punkten kann nun der für das Mousepicking benötigte Strahl berechnet werden.
 
 Bei der Übergabe der Bildschirmkoordinaten ist jedoch zu beachten, dass das von Swing verwendete Koordinatensystem in der \emph{oberen} linken Ecke den Ursprung besitzt. Im Vergleich zu OpenGL, das den Ursprung mathematisch eingängig in der unteren linken Ecke platziert. Die y-Koordinate ist also vor der Berechnung von der Höhe des Bildschirms abzuziehen. 
-\begin{figure}[H]
+\begin{figure}[hbt!]
 	\centering
 		\includegraphics[width=0.30\textwidth]{Bilder/mousepickingscreen.png}
 	\caption{Darstellung der von der Maus ausgehenden Strahlen aus \cite{guide}}
