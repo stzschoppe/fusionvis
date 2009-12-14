@@ -2,13 +2,13 @@
 % entwurf.tex						    			    										       %
 %----------------------------------------------------------------%
 \chapter{Entwurf und Umsetzung einer Visualisierungsumgebung}
-In diesem Kapitel werden der Entwurf eines Visualisierungsframeworks und eine prototypische Implementierung auf dessen Basis beschrieben. Dazu werden die einzelnen Komponenten des Frameworks erklärt und ihr Zusammenspiel erläutert. Basierend auf dem Wissen über die Bestandteile können die Möglichkeiten der Erweiterbarkeit und der Individualisierbarkeit skizziert werde. Die Grundlage hierfür stellt zum einen eine prototypische Implementierung einer Visualisierung einer militärischen Lage und des weiteren der Versuch, Daten des NDP [ABK] dreidimensional darzustellen.
+In diesem Kapitel werden der Entwurf eines Visualisierungsframeworks und eine prototypische Implementierung auf dessen Basis beschrieben. Dazu werden die einzelnen Komponenten des Frameworks erklärt und ihr Zusammenspiel erläutert. Basierend auf dem Wissen über die Bestandteile können die Möglichkeiten der Erweiterbarkeit und der Individualisierbarkeit skizziert werde. Die Grundlage hierfür stellt zum einen eine prototypische Implementierung einer Visualisierung einer militärischen Lage und des Weiteren der Versuch, Daten des NDP [ABK] dreidimensional darzustellen.
 
 Abschließend werden interessante Aspekte der Implementierung aufgezeigt, die neben den umgesetzten Implementierungsentscheidungen auch andere Wege aufzeigen sollen.
 
 Dem Leser, der sich vorrangig für den entstandenen Prototyp interessiert, dem sei der Abschnitt \ref{ch:Prototyp} empfohlen. Die Details des Frameworks sollten für das Verständnis des Funktionsumfangs und die Bedienung keine Rolle spielen, können aber bei Bedarf nachgeschlagen werden.
 \section{Entwurf eines Visualisierungsframeworks}
-Das Ergebnis dieser Arbeit soll nicht nur eine potentielle Visualisierungs-Umgebung sein, sonder ein Framework, das zum einen die Möglichkeit bietet, mit geringem Aufwand Daten anzeigen zu können und auf der anderen Seite aber umfangreiche Erweiterungsmöglichkeiten zulässt.
+Das Ergebnis dieser Arbeit soll nicht nur eine potentielle Visualisierungs-Umgebung sein, sonder ein Framework. Es soll zum einen die Möglichkeit bietet, mit geringem Aufwand Daten anzeigen zu können, auf der anderen Seite aber umfangreiche Erweiterungsmöglichkeiten zulassen.
 Wie das Framework konkret entworfen und umgesetzt wurde, soll im Folgenden dargestellt werden.
 \subsection{Eingabedaten und Datenmodell}
 Grundlage für die weitere Arbeit sollen Eingabedaten sein, die bestimmte Voraussetzungen erfüllen. Diese gestellten Bedingungen werden im Folgenden kurz beschrieben. Darauf basierend wird das Datenmodell erläutert, in das die Quelldaten überführt werden sollen.
@@ -17,7 +17,8 @@ Grundlage für die weitere Arbeit sollen Eingabedaten sein, die bestimmte Vorauss
 Um Daten dreidimensional visualisieren zu können, müssen diese bestimmte Voraussetzungen erfüllen. Diese sollen hier kurz aufgezeigt werden.
 \paragraph{Identifizierbarkeit}
 \label{sec:Identifizierbarkeit}
-Unabhängig von der Art der Visualisierung ist es unabdingbar, dass jedes einzelne Datum identifizierbar ist. Aus diesem Grund sollte in den Quelldaten bereits eine eindeutige Benennung vorliegen. Sollte das nicht der Fall sein, muss dieser Misstand beim Importieren der Daten spätestens behoben werden. 
+Unabhängig von der Art der Visualisierung ist es unabdingbar, dass jedes einzelne Datum identifizierbar ist. Aus diesem Grund sollte in den Quelldaten bereits eine eindeutige Benennung vorliegen. Sollte das nicht der Fall sein, muss dieser Misstand spätestens beim Importieren der Daten behoben werden. 
+
 Probleme, die sich ergeben können, wenn diese Bedingung nicht beachtet wird, sind zum einen, dass keine aussagekräftigen Berechnungen auf den importierten Daten durchgeführt werden können. Auch ist eine Markierung eines gezielten  Datensatzes unmöglich.
 \paragraph{Lokalisierbarkeit}
 Aus dem Ziel, die Eingabedaten im dreidimensionalen, kartesischen Raum darzustellen ergibt sich eine ganz logische Voraussetzung: Es sollte mindestens für jede der drei Dimensionen eine Eigenschaft der Daten existieren, die eine Positionierbarkeit möglich macht. Zwar ist es genauso möglich, die Daten auf einer Linie anzuordnen und somit nur eine Positionierungseigenschaft vorauszusetzen oder sich analog auf den zweidimensionalen Raum zu beschränken. Der daraus resultierende Informationsverlust muss aber in Kauf genommen werden.
@@ -39,14 +40,14 @@ Die Voraussetzungen an den Typ der für die Lokalisierung herangezogenen Eigensch
 \paragraph{Weitere Eigenschaften}
 Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der Position und dem Namen, bietet noch keine hohe Anschaulichkeit. Um die in [Verweis, Visualisierungsmöglichkeiten] dargestellten Visualisierungen auch verwenden zu können, braucht es weitere Eigenschaften, die in optische Information umgewandelt werden kann.
 
-Die Art der Daten die für solche zusätzliche Veranschaulichung verwendet kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich gerade zu anbieten, in Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
+Die Art der Daten die für solche zusätzliche Veranschaulichung verwendet kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich gerade zu anbieten, die Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
 \subsubsection{Datenmodell}
 \label{ch:Datenmodell}
-Das im Rahmen dieser Arbeit entwickelte Datenmodell setzte den Grundstock für das später entworfene Framework und hat zum Ziel, durch generische Gestaltung in der Lage zu sein, unterschiedlichste Quelldaten ohne Anpassung speichern zu können.
+Das im Rahmen dieser Arbeit entwickelte Datenmodell setzte den Grundstock für das später entworfene Framework. Es hat zum Ziel, durch generische Gestaltung in der Lage zu sein, unterschiedlichste Quelldaten ohne Anpassung speichern zu können.
 
 Umgesetzt wurden diese Anforderungen durch die Trennung in eine Datensammlung und deren Daten auf der einen, und Eigenschaften auf der anderen Seite. 
 \paragraph{Datensammlung mit Daten}
-Wie in \ref{fig:DataModelOverview} dargestellt, besteht das wesentliche Datenmodell aus zwei Klassen.
+Wie in Abbildung \ref{fig:DataModelOverview} dargestellt, besteht das wesentliche Datenmodell aus zwei Klassen.
 \begin{description}
 \begin{figure}[H]
 	\centering
@@ -54,10 +55,10 @@ Wie in \ref{fig:DataModelOverview} dargestellt, besteht das wesentliche Datenmod
 	\caption{Übersicht des Datenmodells}
 	\label{fig:DataModelOverview}
 \end{figure}
-	\item[DataSet] Die Klasse DataSet kapselt die einzelnen Datensätze in Form einer Liste. Diese Klasse ist die zentrale Datenstruktur, die für alle weiteren Prozesse die notwendigen Informationen bereithält. Sie besteht im Wesentlichen aus zwei Bestandteilen. Das erste ist die angesprochene Liste der gespeicherten Daten. Weiterhin kann sie Eigenschaften erfassen, die nicht einem bestimmten Datum zu Eigen sind, sondern global für die gesamte Datensammlung gelten. Das benutzen dieser Eigenschaften ist aber fakultativ um eine hohe Flexibilität zu gewährleisten.
+	\item[DataSet] Die Klasse \emph{DataSet} kapselt die einzelnen Datensätze in Form einer Liste. Diese Klasse ist die zentrale Datenstruktur, die für alle weiteren Prozesse die notwendigen Informationen bereithält. Sie besteht im Wesentlichen aus zwei Bestandteilen. Das erste ist die angesprochene Liste der gespeicherten Daten. Weiterhin kann sie Eigenschaften erfassen, die nicht einem bestimmten Datum zu eigen sind, sondern global für die gesamte Datensammlung gelten. Das Benutzen dieser Eigenschaften ist aber fakultativ um eine hohe Flexibilität zu gewährleisten.
 Die Typisierung der Eigenschaften wird weiter unten dargestellt.
 
-  \item[Data] Die Klasse Data Kapselt ein einzelnes Datum. Wie bereits in \ref{ch:Eingabedaten} dargelegt, sind die notwendigen Bestandteile eines Datensatzes ein Bezeichner, der innerhalb einer Datensammlung eindeutig sein muss, sowie eine Positionsangabe. Diese ist mithilfe einer zusammengesetzten Eigenschaft festgehalten. Das Eigenschaftssystem wird weiter unten noch detailliert beschrieben.
+  \item[Data] Die Klasse \emph{Data} Kapselt ein einzelnes Datum. Wie bereits in Abschnitt \ref{ch:Eingabedaten} dargelegt, sind die notwendigen Bestandteile eines Datensatzes ein Bezeichner, der innerhalb einer Datensammlung eindeutig sein muss, sowie eine Positionsangabe. Diese ist mithilfe einer zusammengesetzten Eigenschaft festgehalten. Das Eigenschaftssystem wird weiter unten noch detailliert beschrieben.
   
 \begin{figure}[hb!]
 	\centering
@@ -69,15 +70,15 @@ Die Typisierung der Eigenschaften wird weiter unten dargestellt.
 
 Zusätzlich zu diesen beiden obligatorischen Angaben erfasst die Data-Klasse weiterhin drei Listen von Eigenschaften.
 \begin{itemize}
-	\item Einfache Eigenschaften
-	\item Zusammengesetzte Eigenschaften
+	\item einfache Eigenschaften
+	\item zusammengesetzte Eigenschaften
 	\item Taxonomien
 \end{itemize}
-Die einfachen Eigenschaften sind in der Lage textuelle und Numerische Merkmale eines Datensatzes zu erfassen. Sie sind Grundlage die spätere Visualisierung. Die Zusammengesetzten Eigenschaften ermöglichen das Ablegen von vektoriellen Größen, wie zum Beispiel einer Blickrichtung, Geschwindigkeiten, oder Beschleunigungen usw. Auch ist es möglich mit ihrer Hilfe baumartig strukturierte Eigenschaften zu erfassen.
+Die einfachen Eigenschaften sind in der Lage textuelle und numerische Merkmale eines Datensatzes zu erfassen. Sie sind Grundlage die spätere Visualisierung. Die zusammengesetzten Eigenschaften ermöglichen das Ablegen von vektoriellen Größen, wie zum Beispiel einer Blickrichtung, Geschwindigkeiten oder Beschleunigungen usw. Auch ist es möglich mit ihrer Hilfe baumartig strukturierte Eigenschaften zu erfassen.
 
-Die Taxonomien umfassen eine Liste möglicher Klassifikationen, die einem Datensatz zu Eigen sein können. Auch ihre Angabe ist nicht zwingend erforderlich.
+Die Taxonomien umfassen eine Liste möglicher Klassifikationen, die einem Datensatz zu eigen sein können. Auch ihre Angabe ist nicht zwingend erforderlich.
 
-Der Aufbau einer Data-Klasse kann in \ref{fig:dataModelData} nachvollzogen werden.
+Der Aufbau einer \emph{Data}-Klasse kann in Abbildung \ref{fig:dataModelData} nachvollzogen werden.
 \end{description}
 \paragraph{Eigenschaften}
 \label{sec:Eigenschaften}
@@ -85,7 +86,7 @@ Die Eigenschaften der Datensammlung, wie auch die der Daten an sich, sollten so 
 
 Beim Entwurf fiel auf, dass die auftretenden Eigenschaften nach zwei Kriterien zerfallen. Auf der einen Seite kann nach Dimension der Eigenschaften unterschieden werden. So kann zum Beispiel gespeichert werden, ob die Einheit in einem Schlachtfeldsimulator feindlich, freundlich oder neutral ist. Weiterhin ist es wäre es möglich, eine Gewichtsangabe zu speichern. In beiden fällen handelt es sich um eine einfache, weil eindimensionale, Eigenschaft. 
 
-Im Gegensatz gibt es zusammengesetzte Eigenschaften wie vektorielle Größen. In diesen Bereich fallen auch Gliederungsinformationen, oder Unterstellungsverhältnisse. Eine zusammengesetzte Eigenschaft besteht damit entweder aus einfachen, oder wiederum aus zusammengesetzten Eigenschaften.
+Im Gegensatz gibt es zusammengesetzte Eigenschaften wie vektorielle Größen (Ausrichtung, Beschleunigung). In diesen Bereich fallen auch Gliederungsinformationen, oder Unterstellungsverhältnisse. Eine zusammengesetzte Eigenschaft besteht damit entweder aus einfachen, oder wiederum aus zusammengesetzten Eigenschaften.
 Diese Unterscheidung führte im Entwurf zur Auswahl des Composite-Patterns (nach \cite{designpatterns}) für die Modellierung des Sachverhalts.
 
 Das zweite Kriterium, in das die Informationen der Daten zerfallen, ist der Typ dieser. Um einen Kompromiss zwischen einem kompakten Datenmodell und einem breiten Spektrum unterstützter Typen zu gewährleisten, fiel die Entscheidung auf folgende Datentypen:
@@ -105,23 +106,23 @@ Um die grundlegenden Bedürfnisse zu stillen, hätte auch eine Auswahl eines Fließ
 	\label{fig:dataModelProperties}
 \end{figure}
 
-Der resultierende Entwurf ist in \ref{fig:dataModelProperties} dargestellt. Er besteht aus der abstrakten Eigenschaft, den konkreten Implementierungen nach Datentypen und der Zusammengesetzten Eigenschaft.
+Der resultierende Entwurf ist in Abbildung \ref{fig:dataModelProperties} dargestellt. Er besteht aus der abstrakten Eigenschaft, den konkreten Implementierungen nach Datentypen und der Zusammengesetzten Eigenschaft.
 
 \begin{description}
-	\item[AbstractProperty] Die abstrakte Klasse dient als Muster für die konkreten Implementierungen. Sie wird über einen Bezeichner eindeutig identifiziert. Es bietet sich hier an, menschenlesbare Namen zu verwenden, die zugleich beschreibenden Charakter haben. Zusätzlich hat jede Eigenschaft einen Typ. Dieser ist bereits in der abstrakten Klasse implementiert, um zur Laufzeit ohne Kenntnis der genauen Implementierung den jeweiligen Typ der Eigenschaft abzufragen.
+	\item[AbstractProperty] Die abstrakte Klasse dient als Muster für die konkreten Implementierungen. Sie wird über einen Bezeichner eindeutig identifiziert. Es bietet sich hier an, menschenlesbare Namen zu verwenden, die zugleich beschreibenden Charakter haben. Zusätzlich hat jede Eigenschaft einen Typ. Dieser ist bereits in der abstrakten Klasse implementiert, um zur Laufzeit ohne Kenntnis der genauen Implementierung den jeweiligen Typ der Eigenschaft abfragen zu können.
 	
 Der Satz an abstrakten Methoden bildet die notwendige Schnittstelle um den Wert einer Eigenschaft zu lesen und zu schreiben. Hier stellt sich die Frage, warum eine abstrakte Klasse und nicht etwa ein Interface gewählt wurde. Die Antwort ergibt sich aus der Möglichkeit die Typinformationen und den Bezeichner in der allgemeinen Eigenschaft vorhalten zu können. Das entlastet den Programmierer bei der Umsetzung der konkreten Implementierungen, da er sich darum nicht mehr kümmern muss.
 
-Aus Sicht des Composite-Patterns stellt AbstractProperty die Component-Klasse dar.
+Aus Sicht des Composite-Patterns stellt \emph{AbstractProperty} die Component-Klasse dar.
 \item[Typ-Property] Die Implementierungen der abstrakten Klasse tragen in der Umsetzung die Verantwortung, einen zum Typ passenden Wert zu speichern. Dieser wird in der Ausgestaltung der Manipulationsmethoden gesetzt und gelesen. Wo notwendig sind Typumwandlungen durchzuführen, bei unsinnigen Operationen (zum Beispiel das Umwandeln eines bool'schen  in ein Datum) sollten Exceptions geworfen werden.
 
 Eine Typ-Property ist die im Composite-Pattern als Leaf bezeichnete Klasse.
-\item[ContainerProperty] Die zusammengesetzte Eigenschaft verwaltet ihre zugehörigen Eigenschaften in einer Liste. Sie kann aus Typ-Property-Klassen bestehen, oder wiederum aus zusammengesetzten Eigenschaften. Aus diesem Grund enthält die Liste, die den Wert der ContainerProperty darstellt, nur AbstractProperty-Klassen. Darum stellt diese Klasse den Composite dar.
+\item[ContainerProperty] Die zusammengesetzte Eigenschaft verwaltet ihre zugehörigen Eigenschaften in einer Liste. Sie kann aus Typ-Property-Klassen bestehen, oder wiederum aus zusammengesetzten Eigenschaften. Aus diesem Grund enthält die Liste, die den Wert der \emph{ContainerProperty} darstellt, nur \emph{AbstractProperty}-Klassen. Darum stellt diese Klasse den Composite dar.
 \end{description}
 \paragraph{Erweiterbarkeit}
 Das Datenmodell ist an der Stelle der Eigenschaften erweiterbar. Um einen neuen Typ einzuführen müssen vier Schritte durchgeführt werden: 
 
-In der Enumeration der Typen ist der neue einzuführen. Weiterhin muss in der abstrakten Klasse die Zugriffs- und Manipulationsmethoden abstrakt definiert werden. Daraus folgt, dass bestehende Typen diese Methoden implementieren müssen. Macht eine Typumwandlung Sinn, dann kann diese umgesetzt werden. Meist können die Methoden jedoch auf das Werfen einer Exception reduziert werden.
+In der Enumeration der Typen ist der neue einzuführen. Weiterhin müssen in der abstrakten Klasse die Zugriffs- und Manipulationsmethoden abstrakt definiert werden. Daraus folgt, dass bestehende Typen diese Methoden implementieren müssen. Macht eine Typumwandlung Sinn, dann kann diese umgesetzt werden. Meist können die Methoden jedoch auf das Werfen einer Exception reduziert werden.
 
 Abschließend muss nun eine neue Typ-Property Klasse erstellt und implementiert werden, die von ihrem abstrakten Vorbild erbt. 
 Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
@@ -134,27 +135,27 @@ Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
 	\label{fig:framework}
 \end{figure}
 
-Das erstellte Framework besteht im Wesentlichen aus zwei Teilen. Auf der einen Seite stehen die für den Benutzer sichtbaren Klassen, an denen nicht notwendigerweise eine Anpassung vorgenommen werden muss, um ein lauffähiges Programm zu erstellen. Zu diesen Klassen gehört auf oberster Ebene die FusionVisForm. Diese ist die dem Benutzer angezeigte Programmoberfläche. Sie besteht aus einem Menü mit implementierter Funktion zum Auswählen von XML-Dateien und zum Schließen des Programms. 
+Das erstellte Framework besteht im Wesentlichen aus zwei Teilen. Auf der einen Seite stehen die für den Benutzer sichtbaren Klassen, an denen nicht notwendigerweise eine Anpassung vorgenommen werden muss, um ein lauffähiges Programm zu erstellen. Zu diesen Klassen gehört auf oberster Ebene die \emph{FusionVisForm}. Diese ist die dem Benutzer angezeigte Programmoberfläche. Sie besteht aus einem Menü mit implementierter Funktion zum Auswählen von XML-Dateien und zum Schließen des Programms. 
 
 Die Form enthält weiterhin zwei Panels, die es dem Benutzer ermöglichen, eine textuelle und eine visuelle Darstellung der Daten zu sehen. 
 \begin{description}
-	\item[ImporterPanel] Für die textuelle Sicht ist das ImporterPanel vorgesehen. Es bietet die Möglichkeit, die Daten zu nach bestimmten Eigenschaften zu filtern und die Daten mit ihren Eigenschaften in Textform anzuzeigen. Das Model, auf dem gearbeitet wird, ist das in \ref{ch:Datenmodell} beschriebene Datenmodell. Somit ist das ImporterPanel auch völlig unabhängig von dem genauen Inhalt der Daten, solange diese in das beschriebene Model überführt wurden. Dafür ist der Importer zuständig, der im nächsten Abschnitt beschrieben wird.
+	\item[ImporterPanel] Für die textuelle Sicht ist das ImporterPanel vorgesehen. Es bietet die Möglichkeit, die Daten zu nach bestimmten Eigenschaften zu filtern und die Daten mit ihren Eigenschaften in Textform anzuzeigen. Das Model, auf dem gearbeitet wird, ist das in Abschnitt \ref{ch:Datenmodell} beschriebene Datenmodell. Somit ist das ImporterPanel auch völlig unabhängig von dem genauen Inhalt der Daten, solange diese in das beschriebene Model überführt wurden. Dafür ist der Importer zuständig, der im nächsten Abschnitt beschrieben wird.
 
-	\item[ViewerPanel]Das zweite Panel ist das ViewerPanel. Es ist verantwortlich für die dreidimensionale Anzeige der Daten. Dazu ist es notwendig, das vorhandene Datenmodell in die Struktur eines Szenenbaums zu überführen. Der Szenenbaum wird in [REF Kapitel 4 jme] beschrieben. Dieser Schritt wird vom Mapper bewerkstelligt, der im nächsten Abschnitt erklärt wird.
+	\item[ViewerPanel]Das zweite Panel ist das ViewerPanel. Es ist verantwortlich für die dreidimensionale Anzeige der Daten. Dazu ist es notwendig, das vorhandene Datenmodell in die Struktur eines Szenenbaums zu überführen. Der Szenenbaum wird in [REF Kapitel 4 jme] beschrieben. Dieser Schritt wird vom \emph{Mapper} bewerkstelligt, der im nächsten Abschnitt erklärt wird.
 
-Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser beinhaltet eine OpenGL-Anzeigefläche, die die dreidimensionale Darstellung übernimmt und es dem Benutzer erlaubt, sich in den visualisierten Daten zu bewegen, Datensätze mittels Mousepickings (siehe \ref{ch:mousepicking}) auszuwählen und diese somit im ImporterPanel zu inspizieren. Auch der umgekehrte Weg ist möglich, also das Auswählen eines Datums in der textuellen Ansicht, was eine Hervorhebung seiner Visualisierung im ViewerPanel zur Folge hat.
+Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser beinhaltet eine OpenGL-Anzeigefläche, die die dreidimensionale Darstellung übernimmt und es dem Benutzer erlaubt, sich in den visualisierten Daten zu bewegen, Datensätze mittels Mousepickings (siehe Abschnitt \ref{ch:mousepicking}) auszuwählen und diese somit im \emph{ImporterPanel} zu inspizieren. Auch der umgekehrte Weg ist möglich, also das Auswählen eines Datums in der textuellen Ansicht, was eine Hervorhebung seiner Visualisierung im ViewerPanel zur Folge hat.
 \end{description}
 
-Zusammenfassen kann man zum Fronend des Frameworks sagen, dass die von den konkreten XML-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was schließlich wie dargestellt werden soll. Das Was ist der Prozess des Überführens von XML in das Datenmodell des Frameworks und wird im Importer festgeschrieben. Das Wie ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im Mapper beantwortet.
+Zusammenfassen kann man zum Fronend des Frameworks sagen, dass die von den konkreten XML-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was schließlich wie dargestellt werden soll. Das Was ist der Prozess des Überführens von XML in das Datenmodell des Frameworks und wird im \emph{Importer} festgeschrieben. Das Wie ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im \emph{Mapper} beantwortet.
 
 \subsection{Übersicht über das Backend des Frameworks}
-Das Backend besteht im Wesentlichen aus den zwei oben erwähnten Komponenten, Importer und Mapper. Im Folgenden sollen die Funktion der beiden erläutert und notwendige Schritte der Spezialisierung beschrieben werden.
+Das Backend besteht im Wesentlichen aus den zwei oben erwähnten Komponenten, \emph{Importer} und \emph{Mapper}. Im Folgenden sollen die Funktion der beiden erläutert und notwendige Schritte der Spezialisierung beschrieben werden.
 
 Die Spezialisierung bezieht sich auf das Implementieren abstrakter Methoden, die in den beiden als abstrakt gekennzeichneten Klassen die eigentliche Funktion enthalten sollen.
 \subsubsection{Importer}
-Der Importer ist, wie bereits im letzten Abschnitt angemerkt, dafür verantwortlich, die Daten aus einer XML-Datei zu lesen. An die Struktur muss eine Voraussetzung gemacht werden, um den Import automatisiert durchführen zu können: Die Datensätze müssen als Elemente des Wurzelknotens in der XML-Dateien stehen. Ein Beispiel für eine XML-Datei, die diese Anforderung erfüllt ist in Listing \ref{code:xmlexample}.
+Der \emph{Importer} ist, wie bereits im letzten Abschnitt angemerkt, dafür verantwortlich, die Daten aus einer XML-Datei zu lesen. An die Struktur muss eine Voraussetzung gemacht werden, um den Import automatisiert durchführen zu können: Die Datensätze müssen als Elemente des ersten Elements unter dem Wurzelknoten in der XML-Dateien stehen. Ein Beispiel für eine XML-Datei, die diese Anforderung erfüllt ist in Listing \ref{code:xmlexample}.
 
-Ist die Voraussetzung erfüllt, liest der Importer die XML-Datei aus und extrahiert die DOM-Knoten der Datenelemente. Die Wahl des DOM-Parsers für diese Aufgabe wird noch in [REF] genauer erläutert. 
+Ist die Voraussetzung erfüllt, liest der \emph{Importer} die XML-Datei aus und extrahiert die DOM-Knoten der Datenelemente. Die Wahl des DOM-Parsers für diese Aufgabe wird noch in [REF] genauer erläutert. 
 
 \lstset{%
 language=XML,
@@ -186,19 +187,19 @@ stepnumber=2,
 </Situation>
 \end{lstlisting}
 
-Der Importer hält bereits notwendige Datenstrukturen vor. Zum einen sind dies zwei Membervariablen (\emph{id}, \emph{position}). Diese dienen dem Speichern der XML-Elementnamen, die den Wert für Position und Bezeichner eines Datums liefern. Ähnlich gibt es drei Listen, die die Elementnamen enthalten, die als einfache, zusammengesetzte Eigenschaften oder als Taxonomie extrahiert werden.
+Der \emph{Importer} hält bereits notwendige Datenstrukturen vor. Zum einen sind dies zwei Membervariablen (\emph{id}, \emph{position}). Diese dienen dem Speichern der XML-Elementnamen, die den Wert für Position und Bezeichner eines Datums liefern. Ähnlich gibt es drei Listen, die die Elementnamen enthalten, die als einfache, zusammengesetzte Eigenschaften oder als Taxonomie extrahiert werden.
 
 \paragraph{Spezialisierung}
 \label{sec:ImporterSpezialisierung}
-Zur  Spezialisierung eines Importers für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden XML-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
+Zur  Spezialisierung eines \emph{Importers} für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden XML-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
 
-Als nächstes muss nun die Methode \emph{extractDataFormNode()} implementiert werden. Ihr wird ein Knoten des DOM-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun nach den Vorstellungen des Anwenders ein Data-Objekt zu erzeugen, das die Eigenschaften enthält, die in den vorher spezifizierten Listen stehen.
+Als nächstes muss nun die Methode \emph{extractDataFromNode()} implementiert werden. Ihr wird ein Knoten des DOM-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun nach den Vorstellungen des Anwenders ein Data-Objekt zu instanzieren, das die Eigenschaften enthält, die in den vorher spezifizierten Listen stehen.
 
 \paragraph{Hilfsfunktionen}
 \label{sec:ImporterHilfsfunktionen}
-In der Importer-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
+In der \emph{Importer}-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
 
-Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem DOM-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:extractDataFromNode} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt und dem gewünschten Typen (hier: \emph{Type.TString}).
+Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem DOM-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:xmlexample} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt und dem gewünschten Typen (hier: \emph{Type.TString}).
 
 
 \lstset{%
@@ -257,20 +258,20 @@ stepnumber=2
 %\paragraph{Anbindung an XML}
 %\paragraph{Instanzieren des Datenmodells}
 \subsubsection{Mapper}
-Bereits im vorletzten Abschnitt wurde angesprochen, dass der Mapper dafür Sorge trägt, dass das Datenmodell in eine dreidimensionale Darstellung überführt wird. Da nicht für jedes Problem auch dieselbe Visualisierung zielführend ist, besteht hier die Möglichkeit zur Individualisierung.
+Bereits im vorletzten Abschnitt wurde angesprochen, dass der \emph{Mapper} dafür Sorge trägt, dass das Datenmodell in eine dreidimensionale Darstellung überführt wird. Da nicht für jedes Problem auch dieselbe Visualisierung zielführend ist, besteht hier die Möglichkeit zur Individualisierung.
 
 Bei der individuellen Ausgestaltung sind zwei unterschiedliche Aspekte zu unterscheiden: Auf der einen Seite ist die Frage, wie die Daten an sich dargestellt werden, zum Beispiel in Bezug auf Form und Farbe und das sonstige Erscheinungsbild. Auf der anderen Seite muss spezifiziert werden, in welcher Art und Weise die Dimensionen der Daten dargestellt werden.
 
 Resultat des Mappingvorgangs soll ein Szenenbaum sein. Er ist die für die Grafikengine lesbare Form des Datenmodells. Dieser Szenenbaum muss bei jeder Veränderung des Datenmodells aktualisiert werden. Als solche zählt zum Beispiel das Filtern von Daten nach bestimmten Eigenschaften, oder das Erstellen einer Sicht auf das Datenmodell.
 \paragraph{Spezialisierung}
 \label{sec:MapperSpezialisierung}
-Wie oben bereits beschrieben hat die Spezialisierung im Mapper zwei Aspekte. Auf der einen Seite kann die Gestalt eines einzelnen Datums spezifiziert werden und auf der anderen Seite die Position dieses Datums im dreidimensionalen Raum. Eine vollständige Trennung ist in der derzeitigen Version nicht gelungen. Inwiefern sich das auswirkt, wird im Folgenden beschrieben.
+Wie oben bereits beschrieben hat die Spezialisierung im \emph{Mapper} zwei Aspekte. Auf der einen Seite kann die Gestalt eines einzelnen Datums spezifiziert werden und auf der anderen Seite die Position dieses Datums im dreidimensionalen Raum. Eine vollständige Trennung ist in der derzeitigen Version nicht gelungen. Inwiefern sich das auswirkt, wird im Folgenden beschrieben.
 
 \subparagraph{Position und Projektion}
 \label{sec:PositionUndProjektion}
 Eine grundlegende Entscheidung bei der Visualisierung von Daten ist, wie aus den Rohdaten eines Datums die Koordinaten im dreidimensionalen Raum gewonnen werden. Bereits in Abschnitt \ref{ch:Eingabedaten} wurde beschrieben, dass solche Rohdaten existieren müssen. Ebenfalls ist darauf verwiesen worden, dass ungeeignete Rohdaten (weder in Gleitkomma-, noch in ganzzahliger Darstellung) an dieser Stelle durch einen geeigneten Homomorphismus umzuwandeln sind.
 
-Der erste Schritt zur Individualisierung des Mappers ist die Bestimmung der Ausmaße der Projektionsfläche. Dieser begriff meint die Ebene, die trivialisiert durch Länge und Breite aufgespannt wird. Ihre Festlegung erfolgt durch die Implementierung der \emph{getSize()}-Methode. Hier gibt es zwei Varianten der Umsetzung. Es kann eine feste, von den Daten unabhängige Projektionsfläche gewählt werden. Eine maßstabsgetreue Abbildung entfällt somit. Vorteil dieser Art ist, dass bereits zur Implementierungszeit abschätzbar ist, wie groß die maximalen Entfernungen ausfallen. Somit können Entscheidungen, wie die Positionierung der Kamera [REF] sinnvoll getroffen werden.\\
+Der erste Schritt zur Individualisierung des \emph{Mappers} ist die Bestimmung der Ausmaße der Projektionsfläche. Dieser Begriff meint die Ebene, die trivialisiert durch Länge und Breite aufgespannt wird. Ihre Festlegung erfolgt durch die Implementierung der \emph{getSize()}-Methode. Hier gibt es zwei Varianten der Umsetzung. Es kann eine feste, von den Daten unabhängige Projektionsfläche gewählt werden. Eine maßstabsgetreue Abbildung entfällt somit. Vorteil dieser Art ist, dass bereits zur Implementierungszeit abschätzbar ist, wie groß die maximalen Entfernungen ausfallen. Somit können Entscheidungen, wie die Positionierung der Kamera [REF] sinnvoll getroffen werden.\\
 Eine andere Möglichkeit ist eine von den Eingabedaten abhängige Projektionsfläche. Hier entfällt das abschätzbare Ausmaß der Darstellung zum Wohle der maßstabsgetreuen Abbildung.\\
 Eine der wichtigsten Verwendungen dieser Methode liegt im späteren Erzeugen des Gittermusters, welches eine bessere Einschätzung der Dimensionen ermöglicht.
 
@@ -287,8 +288,8 @@ In dieser Methode kann der Benutzer neben Form, Größe, Position und sonstigen Ei
 Die Methode \emph{texture()} hat zur Aufgabe die Grafikobjekte eines übergebenen Szeneknotens zu texturieren. Dies kann anhand von bestimmten Eigenschaften geschehen. Enumerationen eignen sich hierbei sehr gut. Wie in Abschnitt [REF Visualisierung eine Datums] beschrieben, sollte man sich an dieser Stelle auf eine noch vom Kurzzeitgedächtnis erfassbare Menge an Farben beschränken. Ist es jedoch nicht notwendig, so kann die Implementierung dieser Methode leer verbleiben.
 \paragraph{Hilfsfunktionen}
 \label{sec:MapperHilfsfunktionen}
-Hilfsfunktionen der Art, wie sie aus dem Importer bekannt sind, gibt es im Mapper nicht. An dieser Stelle soll jedoch die Methode \emph{getDataRoot()} erwähnt werden, die den Zugriff auf den vom Mapper erstellten Szenegraphen ermöglicht. Sie ist in zwei Ausprägungen vorhanden: Einerseits ohne Angabe von Argumenten um an die Visualisierung des Datenmodells zu gelangen, das bei der Erstellung des Mappers übergeben wurde.\\
-Andererseits kann auch ein Datenmodell, welches zum Beispiel durch Filtern entstanden ist, übergeben werden. Es wird automatisch zum neuen Modell des Mappers und daraus wird der neue Szenengraph erzeugt.
+Hilfsfunktionen der Art, wie sie aus dem \emph{Importer} bekannt sind, gibt es im \emph{Mapper} nicht. An dieser Stelle soll jedoch die Methode \emph{getDataRoot()} erwähnt werden, die den Zugriff auf den vom \emph{Mapper} erstellten Szenegraphen ermöglicht. Sie ist in zwei Ausprägungen vorhanden: Einerseits ohne Angabe von Argumenten um an die Visualisierung des Datenmodells zu gelangen, das bei der Erstellung des \emph{Mappers} übergeben wurde.\\
+Andererseits kann auch ein Datenmodell, welches zum Beispiel durch Filtern entstanden ist, übergeben werden. Es wird automatisch zum neuen Modell des \emph{Mappers} und daraus wird der neue Szenengraph erzeugt.
 
 
 \subsection{Zusammenspiel der Komponenten}
@@ -304,11 +305,11 @@ Nachdem im letzten Abschnitt die notwendigen Möglichkeiten zur Individualisierun
 Ein wesentlicher Punkt in der Interaktion der Komponenten ist der Visualisierungsprozess, der alle Komponenten des Frontends und des Backends erfasst. Hier die dazugehörige chronologische Abfolge:
 
 \begin{enumerate}
-	\item Angestoßen durch die Auswahl einer XML-Datei ruft die Form als Benutzerschnittstelle von dem zu ihr gehörenden ImporterPanel den Importer ab.
+	\item Angestoßen durch die Auswahl einer XML-Datei ruft die Form als Benutzerschnittstelle von dem zu ihr gehörenden \emph{ImporterPanel} den \emph{Importer} ab.
 
 	\item Das ImporterPanel liefert den geforderten Importer.
 
-	\item Die Form stößt nun den eigentlichen Importvorgang im Importer an. Der Importer greift dabei auf die vom Benutzer implementierte  emph{extractDataFormNode()}-Methode zurück.
+	\item Die Form stößt nun den eigentlichen Importvorgang im Importer an. Der Importer greift dabei auf die vom Benutzer implementierte  \emph{extractDataFormNode()}-Methode zurück.
 
 	\item Nach dem Anstoßen hat die Form nichts mehr mit dem restlichen Vorgang zu tun.
 
@@ -317,9 +318,9 @@ Ein wesentlicher Punkt in der Interaktion der Komponenten ist der Visualisierung
 	\item Auf der anderen Seite muss das ViewerPanel die grafische Datensicht aktualisieren.
 
 \begin{enumerate}
-	\item Dazu muss das Datenmodell in einen Szenenbaum umgewandelt werden. Diese Aufgabe delegiert das Panel an den Mapper. Dieser erstellt mithilfe der aus dem letzten Abschnitt bekannten Methode \emph{extractNodeFromData()} den Baum. Mit der Methode \emph{texture()} werden die Visualisierungen der Daten anschließend eingefärbt.
+	\item Dazu muss das Datenmodell in einen Szenenbaum umgewandelt werden. Diese Aufgabe delegiert das Panel an den \emph{Mapper}. Dieser erstellt mithilfe der aus dem letzten Abschnitt bekannten Methode \emph{extractNodeFromData()} den Baum. Mit der Methode \emph{texture()} werden die Visualisierungen der Daten anschließend eingefärbt.
 
-	\item Den fertigen Szenenbaum gibt der Mapper an das ViewerPanel zurück.
+	\item Den fertigen Szenenbaum gibt der \emph{Mapper} an das \emph{ViewerPanel} zurück.
 
 	\item Abschließend stellt das ViewerPanel die Daten grafisch dar.
 \end{enumerate}
@@ -362,12 +363,6 @@ An dieser stelle bricht jedoch die Kette, denn der Viewer ist nicht in die Swing
 Aus Sicht der Unterscheidung der Komponenten des Frameworks in Frontend und Backend ist die Zuordnung des Viewers in das Panel vertretbar, denn er ist mit seiner Zeichenfläche im Gegensatz zum Importer eine sichtbare Komponente.
 \section{Visualisierung einer militärischen Lage}
 \label{ch:Prototyp}
-\begin{figure}[htb]
-	\centering
-		\includegraphics[width=0.90\textwidth]{Bilder/gesamtesFenster.png}
-	\caption{BattleSimVis als prototypische Implementierung einer militärischen Lagedarstellung}
-	\label{fig:gesamtesFenster}
-\end{figure}
 Bereits in Abschnitt \ref{motivation}  wurde die Lage des S2-Offiziers angesprochen, der von den Panzern seines Bataillons Positions- und Feindmeldungen bekommt. Dies geschieht aus gründen der Datenübertragung in textueller, beschränkt menschenlesbarer Form.
 
 \subsection{Problemdarstellung}
@@ -404,7 +399,12 @@ Auf diese Art und Weise kann die Zahl der potentiellen Einheiten weiter der Zahl
 
 \subsection{Umsetzung mithilfe des Visualisierungsframeworks}
 \label{sec:UmsetzungMithilfeDesVisualisierungsframeworks}
-
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.90\textwidth]{Bilder/gesamtesFenster.png}
+	\caption{BattleSimVis als prototypische Implementierung einer militärischen Lagedarstellung}
+	\label{fig:gesamtesFenster}
+\end{figure}
 Dass die oben dargestellten Lösungsansätze mithilfe von Berechnungen umgesetzt werden können steht außer Frage. Mit dem im Folgenden vorgestellten Prototypen soll aber ein anderer Ansatz verfolgt werden: Der S2-Offizier soll mithilfe des umgesetzten Programms allein durch die Betrachtung der visualisierten Darstellung aus den redundanten Daten ein der Realität nahe kommendes Lagebild erstellen können.
 
 \subsubsection{Aufbau der Benutzerschnittstelle}
