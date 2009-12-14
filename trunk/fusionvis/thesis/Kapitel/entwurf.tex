@@ -522,6 +522,7 @@ Somit ist gezeigt, dass die prototypische Implementierung durch die gewählte Vis
 
 
 \section{Kernaspekte der Implementierung}
+Bei der Umsetzung von Framework und einer prototypischen Implementierung fanden sich einige Implantierungsdetails, die es wert sind, auf sie genauer einzugehen. Dies kann drei Gründe haben: Entweder sie sind für das Verständnis der Umsetzung relevant (zum Beispiel Abschnitt \ref{ch:mousepicking}), sie beinhalten elegante mathematische Ansätze (siehe Abschnitt \ref{ch:bewegungskegel}) oder erläutern andere mögliche Ansätze, die aus genannten Gründen nicht verfolgt wurden.
 \subsection{Observer-Pattern bei abgeleiteten Klassen}
 \label{sec:ObserverPatternBeiAbgeleitetenKlassen}
 Bei der Auswahl eines Datums in der textuellen Ansicht soll die resultierende Hervorhebung auch in der grafischen Darstellung erfolgen und umgekehrt. Zur Umsetzung dieser Aufgabe empfiehlt sich das Observer-Pattern. 
@@ -695,6 +696,7 @@ Bei der Übergabe der Bildschirmkoordinaten ist jedoch zu beachten, dass das von 
 In Abbildung \ref{fig:mousepickingscreen} ist eine Visualisierung der Strahlen nachzuvollziehen.
 
 \subsection{Bewegungskegel}
+\label{ch:bewegungskegel}
 Im der prototypischen Implementierung ist es möglich, eine Reichweitenanalyse zu einer Einheit durchzuführen. Das heißt, wie weit sie sich unter Annahme einer bestimmten Maximalgeschwindigkeit bewegen kann. Dargestellt wird diese Reichweite durch einen Kegel, der seine Spitze im Ausgangsort der Einheit hat.
 
 Interessant ist es, festzustellen, welche anderen Einheiten sich in dem Kegel befinden. Visuell ist dies meist möglich, das heißt eine Berechnung ist nicht immer notwendig. Aber es gibt Grenzfälle, in welchen eine genaue Aussage nur mathematisch getroffen werden kann. Wie diese Berechnung aussehen kann, soll im Folgenden dargelegt werden. 
