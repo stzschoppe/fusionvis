@@ -545,8 +545,107 @@ So kann mit nur geringen Anpassungen die vorimplementierte Lösung übernommen und
 
 \subsection{Streckung der Eingabedaten auf den Projektionsbereich}
 
-\subsection{Entfernungsberechnung mithilfe der Haversine Formel}
+\subsection{Entfernungsberechnung auf der Erde}
 \label{ch:haversine}
+
+Der in Abschnitt \ref{ch:Prototyp} vorgestellte Prototyp zur Visualisierung eines Schlachtfeldes berechnet den Projektionsbereich, indem die minimale und maximale geografische Länge und Breite der Eingabedaten bestimmt wird. Diese vier Daten beschreiben ein Rechteck, dessen Kantenlängen berechnet und in die dreidimensionale Darstellung übertragen werden.
+
+An dieser Stelle ergibt sich ein Problem aus der Gestalt der Erde in Verbindung mit der Art der Positionsdaten. Weil die Lage der Objekte in Longitude (geografische Länge) und Latitude (geografische Breite) beschrieben wird, handelt es sich um Koordinaten auf einer Kugel. Daraus ergeben sich Besonderheiten für die Längenberechnung. 
+
+Weiterhin ist die Erde in Wirklichkeit aber keine Kugel, sondern ein Rotationsellipsoid, der an den Polen einen geringeren Radius hat, als am Äquator. Diese Tatsache sei aber für die folgenden Betrachtungen zu vernachlässigen. Grund dafür ist die bereits bei der Visualisierung gemachte Vereinfachung, die Höhe der Eingabedaten (siehe Abschnitt \ref{ch:kugelkappe}) zu vernachlässigen.
+
+Zur Entfernungsberechnung sollen drei Ansätze aufgezeigt und auf ihre Tauglichkeit untersucht werden. Grundlage hierfür ist eine Frage aus der U. S. Census Bureau Geographic Information Systems FAQ (\cite{url:USACensus}). Im Hinterkopf sollten dabei folgende Ausmaße bleiben, die vermitteln, in welchen Größenordnungen man sich bewegt. Der größte Truppenübungsplatz Europas in Bergen (\cite{wiki:bergen}) hat eine Ausdehnung von 25km x 18km. Er liegt etwa auf 52° nördlicher Breite. Ein Kampfpanzer vom Typ Leopard 2A5 hat eine Länge von 7,72m (\cite{wiki:leopard}).
+
+\subsubsection{Pythagoras}
+\label{sec:Pythagoras}
+Der erste Ansatz ist die naive Anwendung des Satzes von Pythagoras. Ausgangspunkt  dafür ist die Annahme, sich nicht auf der Oberfläche einer Kugel zu bewegen, sondern auf einer Ebene. Dies hat Ungenauigkeiten zur Folge, die in \ref{ch:kugelkappe} beschrieben sind. Der Abstand \emph{d} zweier Punkte berechnet sich somit wie flogt:
+\begin{equation}\label{eq:eins}
+	d=\sqrt{(x_{2} -x_{1})^2 + (y_{2} -y_{1})^2}
+\end{equation}
+
+Der Abstand hat dieselbe Einheit, wie die in kartesischen Koordinaten angegebenen Punkte \emph{P1(x1, y1)} und  \emph{P2(x2, y2)}.
+
+Abhängig von der geografischen Breite, an der die Berechnung durchgeführt wird, resultieren die in Tabelle \ref{tab:PythagorasFehler} dargelegten Fehler bei einer tatsächlichen Länge von 20km.
+
+\begin{table*}[ht!]
+	\centering
+		\begin{tabular}{ | l | l |}
+		\hline
+			\emph{absoluter Fehler}      & \emph{geografische Breite}       \\ \hline
+		  \verb|<| 30m       & \verb|<| 70°        \\ \hline
+      \verb|<| 20m      	& \verb|<| 50° \\ \hline
+      \verb|<| 9m 				& \verb|<| 30° \\
+      \hline
+		\end{tabular}
+	\caption{Absolute Fehler bei der Entfernungsberechnung nach Pythagoras, Abstand der Punkte ist 20km}
+	\label{tab:PythagorasFehler}
+\end{table*}
+
+Da die für die Veranschaulichung gewählte Länge durchaus in der Realität, zum Beispiel auf einem Truppenübungsplatz auftreten kann, sind die entstehenden Fehler nicht hinnehmbar.
+
+\subsubsection{Seitenkosinussatz}
+\label{sec:Seitenkosinussatz}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.30\textwidth]{Bilder/Law-of-haversines.png}
+	\caption{Kugeldreieck mit Beschriftung}
+	\label{fig:Law-of-haversines}
+\end{figure}
+
+Um die Entfernung zweier Punkte auf einer Kugel mathematisch korrekt zu berechnen, behilft man sich der sphärischen Geometrie. Für das in Abbildung \ref{fig:Law-of-haversines} dargestellte Kugeldreieck gilt der Seitenkosinussatz:
+
+\begin{equation}\label{eq:zwei}
+	\cos{c} = \cos{a} \cos{b} + \sin{a} \sin{b} \cos{C} 
+\end{equation}
+
+Dabei soll die Entfernung \emph{c} von Punkt \emph{v} nach Punkt \emph{w} berechnet werden.\\
+Nimmt man für den Punkt \emph{u} den Nordpol an, und arbeitet auf einer Einheitskugel, dann folgt:
+
+\begin{subequations}\label{grp}
+\begin{align}
+a&=90^\circ-lat_{1}\label{eq:drei}\\
+b&=90^\circ-lat_{2}\label{eq:vier}
+\end{align}
+\end{subequations}
+
+Bekannt ist folgender Zusammenhang:
+\begin{subequations}\label{grp2}
+\begin{align}
+\sin{90^\circ - x} = \cos{x}\\
+\cos{90^\circ - x} = \sin{x}
+\end{align}
+\end{subequations}
+
+Daraus ergibt sich nach Umformung eine Formel zur Berechnung der Länge. Das Ergebnis hängt von den Einheiten der Eingabedaten ab. Werden die Koordinaten im Gradmaß angegeben, so ist zusätzlich zum Erdradius mit dem Faktor $\frac{\pi}{180^\circ}$ zu multiplizieren. Werden die Daten im Bogenmaß eingegeben, entfällt der letzte Faktor.
+
+Der so berechnete Abstand ist unter Berücksichtigung der gemachten Vereinfachung, auf einer Kugel zu rechnen, mathematisch korrekt. Ideal ist diese Lösung jedoch nicht, da die Formel für sehr kleine Entfernungen schlecht konditioniert ist. Kritisch ist hier vor allem der Kosinus der Längengraddifferenz. Abhängig von der Gleitkommapräzision (weniger als sieben signifikante Stellen) können bereits Längen kleiner einer Bogenminute nicht mehr unterschieden werden. Der Grund hierfür ist in Tabelle \ref{tab:Kosinus} illustriert.
+
+\begin{table*}[ht!]
+	\centering
+		\begin{tabular}{ | l | l |}
+		\hline
+			$x$      & $\cos{x}$       \\ \hline
+		  1 Bogenminute       & 0,99999995769202532795126248717334        \\ \hline
+      30 Bogensekunden    & 0,99999998942300627605141750356948 \\ \hline
+      1 Bogensekunde			& 0,99999999998824778473047407621793 \\
+      \hline
+		\end{tabular}
+	\caption{Schlechte Konditionierung des Kosinus}
+	\label{tab:Kosinus}
+\end{table*}
+
+\subsubsection{Haversine Formel}
+\label{sec:HaversineFormel}
+
+Die gleiche Berechnung wie oben kann durch geeignetes Umstellen der Gleichung auch ohne das geschilderte Problem durchgeführt werden. Grundlage bilden die Additionstheoreme und die heute weniger gebräuchliche trigonometrische Funktion des Semiversus (im englischen Haversine, daher der Name der Formel). 
+
+\begin{equation}
+	d = 2 R \arcsin{\sqrt{\sin^2{\frac{lat_{2}-lat_{1}}{2}} + \cos{lat_{1}} \cos{lat_{2}} \sin^2{\frac{\Delta lon}{2}}}}
+\end{equation}
+
+Auch diese Formel ist für ein spezielles Problem schlecht konditioniert. Problematisch sind Entfernungen zwischen antipodalen Punkten, also Orten, die sich auf dem Erdball gegenüberliegen. Da dieser Fall in Kontext des erstellten Prototyps keine Rolle spielt, ist dieser Fall auch zu vernachlässigen. 
+
+
 
 \subsection{Informationsverlust durch Projektion einer Kugelkappe auf eine Ebene}
 \label{ch:kugelkappe}
