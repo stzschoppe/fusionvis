@@ -712,7 +712,9 @@ Im der prototypischen Implementierung ist es möglich, eine Reichweitenanalyse zu
 
 Interessant ist es, festzustellen, welche anderen Einheiten sich in dem Kegel befinden. Visuell ist dies meist möglich, das heißt eine Berechnung ist nicht immer notwendig. Aber es gibt Grenzfälle, in welchen eine genaue Aussage nur mathematisch getroffen werden kann. Wie diese Berechnung aussehen kann, soll im Folgenden dargelegt werden. 
 
-Engine-Mittel
+\subsubsection{Engine-Mittel}
+\label{sec:EngineMittel}
+
 Unter Berücksichtigung der Tatsache, dass eine Engine für die dreidimensionale Darstellung verwendet wurde, kann man davon ausgehen, dass diese Mittel zur Verfügung stellt, um das Problem zu lösen. 
 
 Eine mögliche Umsetzung basiert auf der Technik, die auch für die Mousepicks (siehe Abschnitt \ref{ch:mousepicking}) verwendet wurde: Gegeben seien die dreidimensionalen Objekte der Einheiten und der Kegel, in dem sie potentiell liegen könnten. Von jeder Einheit wird jetzt ein Strahl ausgesendet. Richtung ist grundsätzlich die negative y-Richtung. Naiv gesprochen: \emph{nach unten}. 
@@ -721,7 +723,9 @@ Genau wie beim Mousepicking wird jetzt geprüft, ob der Kegel getroffen wurde. Wa
 
 In der prototypischen Implementierung wurde diese Variante nicht umgesetzt. Grund dafür ist sind Probleme mit dem Algorithmus, den die Engine für die Kollisionsberechnung nutzt. Er ist auf Geschwindigkeit, nicht jedoch auf Genauigkeit ausgelegt. Ziel der Berechnung sollte aber ein sehr genaues Ergebnis sein. Deswegen entfällt diese Variante.
 
-Winkelvergleich
+\subsubsection{Winkelvergleich}
+\label{sec:Winkelvergleich}
+
 Ein Ansatz das Problem mit Analytischer Geometrie anzugehen, ist der Vergleich von Winkeln zwischen Vektoren. Für diese Variante kann o. B. d. A. der Kegel als (gleichschenkliges) Dreieck angenommen werden. Auf der Basis wird nun das Lot gefällt. Bei diesem handelt es sich um die Höhe des Dreiecks. 
 
 Als Erstes wird der Winkel zwischen den Schenkeln des Dreiecks und dem Lot berechnet. Da der Radius des Kegels mit der Höhe des Dreiecks (und ebenfalls der Höhe des Kegels) ein rechtwinkliges Dreieck aufspannt, gilt:
