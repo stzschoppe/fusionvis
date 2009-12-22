@@ -3,9 +3,36 @@
 In diesem Kapitel werden die wichtigsten Technologien, die im Laufe der Arbeit verwendet werden, vorgestellt und erläutert.
 
 \section{Java}
+Am Anfang der Arbeit stand die Wahl der Programmiersprache, die für die Implementierung verwendet werden sollte. Java in der Version 1.6 bot sich aus mehren Gründen an.
 
+Auf der einen Seite sprach ein ganz pragmatischer Grund dafür: Da Java im Rahmen der Vorlesung über Objektorientierte Programmierung gelehrt wurde, entfiel die Einarbeitungszeit. Auf der anderen Seite gibt es aber weitere Gründe für die Wahl. An die prototypische Implementierung wurde die Anforderung der Plattformunabhängigkeit gestellt. Dies spricht für die Wahl einer Sprache, die auf einer virtuellen Maschine basiert. Im Gegensatz zu einem Java-Programm müsste ein in C++ geschriebenes auf einem anderen Rechner neu kompiliert werden. Dies erhöht den Installationsaufwand und ist keine echte Unabhängigkeit.
+
+Unter den Sprachen, die auf einer Virtuellen Maschine basieren fällt aus Gründen der Plattformunabhängigkeit die .Net-Familie aus, da es sich hier um Microsoft- und somit betriebssystemspezifische Sprachen handelt. Weitere Gründe für die Wahl von Java waren existierende Klassenbibliotheken für die Verwendung von XML (siehe \ref{ch:xml}) und die Arbeit mit OpenGL als Programmierschnittstelle für die dreidimensional Visualisierung.
+
+Ein Nachteil von Java ist die Umsetzung von GUI-Elementen. Zwar gibt es mit Swing und SWT leistungsfähige Bibliotheken, aber das Layout der grafischen Benutzeroberfläche ansprechend zu gestalten, stellt sich damit als schwierig heraus. Für die Umsetzung der grafischen Benutzeroberfläche wurde Swing gewählt, da es Bestandteil der mit Java ausgelieferten Klassenbibliothek ist
+
+Weiterhin ist die Verwendung von Java für die Arbeit mit 3D-Grafik umstritten (siehe \cite{killer}). Ein großer Kritikpunkt ist dabei der Geschwindigkeitsverlust, der sich aus dem Interpretieren des Programms durch die Virtuelle Maschine ergibt. Wie stark dieser ins Gewicht fällt, ist umstritten. Da Geschwindigkeit für diese Arbeit aber nicht Ausschlaggebend ist, kann dieser Kritikpunkt vernachlässigt werden.
 \section{XML}
+\label{ch:xml}
+Die Daten für das Testen der prototypischen Entwicklung stammen von einem Gefechtssimulator. Sie sind im XML-Format abgespeichert. Um mit diesen Daten in Java arbeiten zu können, müssen sie in Java-Klassen überführt werden. An dieser Stelle kamen zwei Möglichkeiten in Frage: Auf der einen Seite hätte nur die prototypische Implementierung, die mit den Daten arbeitet, diese eingelesen. Auf der anderen Seite konnte die Funktionalität, aus XML-Dateien zu laden, auch in das entwickelte Framework integriert werden.
+
+Weil sich XML für einen plattform- und implementierungsunabhängigen Datenaustausch eignet und heute zu diesem Zweck ein Quasistandart ist [CITE]. Fiel die Entscheidung, das Laden von Daten im XML-Format im Framework zu implementieren. Die gewählte Programmiersprache eignete sich für diesen Zweck besonders gut, da bereits fertige Parser-Bibliotheken mitgeliefert werden.
+
+Hier standen DOM und SAX zur Auswahl. Beide haben Vor- und Nachteile. Welche Implementierung gewählt wird, hängt vom zu lösenden Problem ab. Wird mit großen Datenmengen gearbeitet und müssen diese oft neu geladen werden, ist SAX im Vorteil, weil es sich dabei um eine sehr performante Umsetzung handelt. Ein großer Nachteil ist die eingeschränkte Traversierbarkeit der Daten. Das hängt mit der Arbeitsweise des Parsers zusammen. Er arbeitet ereignisgesteuert. Das bedeutet, die XML-Datei wird sequentiell gelesen. Wird beispielsweise ein Element gefunden, wird eine Methode zur Verarbeitung von Elementen aufgerufen. Somit kann bei der Verarbeitung kein Rückschluss auf die Position eines Elements in der XML-Datei geschlossen werden. Genauso wenig kann auf Vorgänger, Nachfolger unter Unterelemente explizit zugegriffen werden.
+
+Der große Vorteil des DOM-Parsers ist eben die bei SAX nicht vorhandene Traversierbarkeit. Der Parser erzeugt beim Einlesen der XML-Datei einen Baum. Für jedes strukturelle Element der Daten wird ein Knoten erzeugt. Ein XML-Element ist ein Bespiel für einen solchen Knoten, aber auch ein Attribut. Auf diese Art und Weise ist es zum einen möglich, sich komfortabel durch die Daten zu bewegen. Weiterhin ist es so möglich, das Lesen von XML-Dateien in das erstellte Framework zu integrieren und für jede Implementierung mit lediglich geringem Implementierungsaufwand eine Leseroutine umzusetzen. Das Framework ist dann in der Verantwortung die Elemente zu extrahieren, die einen Datensatz darstellen. Der Anwender des Frameworks bekommt dann die Knoten der Datensätze und liest eigenständig die von ihm benötigten Informationen aus. Aus diesem Grund wurde DOM für diese Arbeit ausgewählt.
+
+Die Tatsache, dass DOM nicht so sehr für große Datenmengen geeignet ist, weil das Erzeugen der Baumstruktur vor allem speicherplatzintensiv ist. Dieser Nachteil wird aber zum Wohle des einfacheren Umgangs in Kauf genommen.
 
 \section{jMonkeyEngine}
 
 \section{Google Code}
+Bei der Entwicklung des praktischen Anteils dieser Arbeit bestand die Notwendigkeit, die erstellten Daten sicher abzulegen. Dafür eignet sich unter anderem die Arbeit auf einem Terminal-Server, wir er von der Universität der Bundeswehr angeboten wird. Dies ermöglicht, von unterschiedlichen Orten und an unterschiedlichen Rechnern zu arbeiten. Nachteil dieser Lösung ist jedoch, dass ein Speichern unterschiedlicher Versionen des erstellten Programms und auch dieser Arbeit nur schwer möglich ist.
+
+Aus diesem Grund wurde für das im Rahmen dieser Arbeit erstellte Programm, aber auch für die schriftliche Ausarbeitung, ein Versionierungssystem verwendet. Aus der Lehre bereits bekannt war Subversion. Es wurde auch hier wegen der nicht mehr notwendigen Einarbeitung gewählt. 
+
+Google stellt auf seinem Portal GoogleCode die Möglichkeit bereit, eine Projekt mit Hilfe von Subversion zu versionieren. Dieser sogenannte \emph{Project Hosting Service} hat zudem noch weitere Vorteile als nur eine komfortable Datensicherung: Der Projektstand kann online dokumentiert werden. Somit wird es möglich, den Betreuer dieser Arbeit auf dem neusten Stand zu halten. Er kann über das Abonnieren eines RSS-Feeds jederzeit Änderungen Nachverfolgen. Weiterhin bietet Google ein Wiki an, was die Vorstellung und die Dokumentation des Programms ermöglicht. Zusätzlich gibt es eine Downloadverwaltung in der Testversionen Screenshots und ähnliches zur Verfügung gestellt werden können.
+
+Wie oben angesprochen, wurde nicht nur der praktische Teil der Arbeit, also der Quellcode, über das Versionierungssystem gesichert. Auch die schriftliche Ausarbeitung in Form des Rohzustands (\TeX-Dateien) und des fertigen PDF-Kompilats wurde auf im Googleprojekt gespeichert.
+
+Zusammenfassend sind die Vorteile des oben geschilderten Vorgehens, dass der Quellcode und die schriftliche Ausarbeitung zuverlässig gesichert werden konnten.  Der Zugriff auf diese war ortsunabhängig über das Internet möglich. Mit Hilfe der Versionierung konnte nach Experimenten auf stabile Versionen zurückgegriffen werden. Durch RSS-Feeds war es dem Betreuer jederzeit möglich, den aktuellen Stand der Arbeit zu betrachten und die im Downloadbereich befindliche Version zu testen.
