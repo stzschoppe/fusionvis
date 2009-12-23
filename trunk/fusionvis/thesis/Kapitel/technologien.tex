@@ -18,13 +18,59 @@ Die Daten für das Testen der prototypischen Entwicklung stammen von einem Gefech
 
 Weil sich XML für einen plattform- und implementierungsunabhängigen Datenaustausch eignet und heute zu diesem Zweck ein Quasistandart ist [CITE]. Fiel die Entscheidung, das Laden von Daten im XML-Format im Framework zu implementieren. Die gewählte Programmiersprache eignete sich für diesen Zweck besonders gut, da bereits fertige Parser-Bibliotheken mitgeliefert werden.
 
+\subsection{SAX-Parser}
+\label{sec:SAXParser}
 Hier standen DOM und SAX zur Auswahl. Beide haben Vor- und Nachteile. Welche Implementierung gewählt wird, hängt vom zu lösenden Problem ab. Wird mit großen Datenmengen gearbeitet und müssen diese oft neu geladen werden, ist SAX im Vorteil, weil es sich dabei um eine sehr performante Umsetzung handelt. Ein großer Nachteil ist die eingeschränkte Traversierbarkeit der Daten. Das hängt mit der Arbeitsweise des Parsers zusammen. Er arbeitet ereignisgesteuert. Das bedeutet, die XML-Datei wird sequentiell gelesen. Wird beispielsweise ein Element gefunden, wird eine Methode zur Verarbeitung von Elementen aufgerufen. Somit kann bei der Verarbeitung kein Rückschluss auf die Position eines Elements in der XML-Datei geschlossen werden. Genauso wenig kann auf Vorgänger, Nachfolger unter Unterelemente explizit zugegriffen werden.
 
+\subsection{DOM-Parser}
+\label{sec:DOMParser}
 Der große Vorteil des DOM-Parsers ist eben die bei SAX nicht vorhandene Traversierbarkeit. Der Parser erzeugt beim Einlesen der XML-Datei einen Baum. Für jedes strukturelle Element der Daten wird ein Knoten erzeugt. Ein XML-Element ist ein Bespiel für einen solchen Knoten, aber auch ein Attribut. Auf diese Art und Weise ist es zum einen möglich, sich komfortabel durch die Daten zu bewegen. Weiterhin ist es so möglich, das Lesen von XML-Dateien in das erstellte Framework zu integrieren und für jede Implementierung mit lediglich geringem Implementierungsaufwand eine Leseroutine umzusetzen. Das Framework ist dann in der Verantwortung die Elemente zu extrahieren, die einen Datensatz darstellen. Der Anwender des Frameworks bekommt dann die Knoten der Datensätze und liest eigenständig die von ihm benötigten Informationen aus. Aus diesem Grund wurde DOM für diese Arbeit ausgewählt.
 
 Die Tatsache, dass DOM nicht so sehr für große Datenmengen geeignet ist, weil das Erzeugen der Baumstruktur vor allem speicherplatzintensiv ist. Dieser Nachteil wird aber zum Wohle des einfacheren Umgangs in Kauf genommen.
 
 \section{jMonkeyEngine}
+Die in Abschnitt [REF] beschriebene Anforderung, einen plattformunabhängigen Prototyp zu entwickeln, machte die Abwägung zwischen DirectX von Microsoft und der Opensource-Alternative OpenGL als 3D-Grafikschnittstelle überflüssig. Nur letztere bot eine überzeugende Möglichkeit, auf einem nicht-Windows System zu funktionieren.
+
+Nachdem dieser Entschluss feststand, musste eine Klassenbibliothek gesucht werden, die den Umgang mit OpenGL vereinfacht und im Zeitrahmen dieser Arbeit die Entwicklung eines funktionsfähigen Prototyps ermöglicht. Die Wahl fiel dabei nach erster Recherche auf die sogenannte JMonkeyEngine (JME) in der Version 2. Der entscheidende Vorteil dieser Klassenbibliothek war die sehr kurze Einarbeitungszeit. Diese wurde vor allem dadurch begünstigt wurde, dass für erste Testprogramme sehr wenig eigener Quellcode geschrieben werden musste.
+
+Ein weiterer Vorteil der Engine war die Art und Weise, wie Zeichnen der anzuzeigenden Objekte organisiert ist. Die Klassenbibliothek bedient sich eines Baums, in dem die Objekte gespeichert werden, der sogenannte Szenenbaum. Dieser und andere Eigenarten sollen im Folgenden kurz Skizziert werden.
+
+\subsection{Szenenbaum}
+\label{sec:Szenenbaum}
+
+Diese Struktur dient zur Speicherung und Organisierung von Objekten, die grafisch dargestellt werden sollen. Auf der einen Seite kann der Baum aus Knoten der \emph{Node}-Klasse bestehen. Diese dienen der Strukturierung und werden nicht angezeigt. Auf der anderen Seite können Grafikobjekte in ihm gespeichert werden. Dies sind Instanzen von Klassen, die von der Klasse \emph{Geometry} abgeleitet wurden. Welche Grundformen JME bereits mitliefert, ist in einem der folgenden Abschnitte beschrieben. Neben dreidimensionalen Objekten können aber auch Lichtquellen und die Kamera an den Szenenbaum angehängt werden.
+
+Der Vorteil des Szenenbaums besteht darin, dass sich Änderungen auf einen Knoten automatisch auch auf seine Kinder auswirken. Im, in dieser Arbeit entwickelten, Visualisierungsprototypen sollen Kugeln die Datensätze (Kampfpanzer) darstellen. Von ihrem Zentrum geht ein Kegel aus, der die Reichweite der Panzer symbolisiert. Der genaue Hintergrund ist in den  Abschnitten [REF] und [REF] erläutert. Soll nun ein Datensatz ausgeblendet werden, weil er einem gesuchten Kriterium nicht entspricht könnte man trivialer Weise den Knoten, der die Kugel enthält, und den Knoten, der den Kegel darstellt, ausblenden. 
+
+Durch die Funktionsweise des Szenenbaums ist es aber einfacher, die beiden Objekte unter einem Knoten zu vereinigen, der den Namen des Objekts enthält. So muss nur dieser -- nicht sichtbare -- Knoten ausgeblendet werden. Kreis und Kugel werden automatisch nicht mehr mit angezeigt. Weitere Änderungen, die sich auf die Kinder auswirken sind zum Beispiel Positionsänderungen, Drehungen im Raum und Änderung von sogenannten \emph{RenderStates}. Diese kapseln Zustände, wie die Textur (Oberfläche) eines Objekts oder seine Durchsichtigkeit.
+
+\subsection{Kamera}
+\label{sec:Kamera}
+
+\subsection{Grafische Objekte}
+\label{sec:GrafischeObjekte}
+
+
+\subsection{Lageveränderung}
+\label{sec:Lageveraenderung}
+
+\subsubsection{Positionierung}
+\label{sec:Positionierung}
+
+\subsubsection{Drehung}
+\label{sec:Drehung}
+
+\subsection{Licht}
+\label{sec:Licht}
+
+
+\subsection{Texturen}
+\label{sec:Texturen}
+Texturen stellen die Oberfläche von Objekten dar. Notwendig wird dies zum Beispiel, wenn eine Kugel in einer bestimmten Farbe dargestellt werden soll. Der triviale Ansatz, eine gewünschte Farbe zuzuweisen, scheitert. Diese Farbe ist nur ohne Einfluss von Lichtquellen sichtbar. Ohne den Einfluss dieser sind aber keinerlei Konturen zu erkennen und die räumliche Vorstellung eines Gegenstands geht verloren.
+
+Texturen sind der Ausweg aus diesem Problem. Um eine Kugel rot zu färben, muss lediglich eine Grafikdatei, zum Beispiel eine PNG erstellt werden, die in dieser Farbe ausgefüllt ist. Die Größe kann auf ein Minimum (1x1 Pixel) beschränkt werden. Aus der Grafik kann ein \emph{Texture}-Objekt mit Hilfe eines \emph{TextureManagers} erstellt werden. Diese kann nach der Umwandlung in eine \emph{RenderState}-Instanz der Kugel zugewiesen werden. Diese ist daraufhin rot und als Kugel zu erkennen, im Gegensatz zum trivialen Ansatz.
+
+
 
 \section{Google Code}
 Bei der Entwicklung des praktischen Anteils dieser Arbeit bestand die Notwendigkeit, die erstellten Daten sicher abzulegen. Dafür eignet sich unter anderem die Arbeit auf einem Terminal-Server, wir er von der Universität der Bundeswehr angeboten wird. Dies ermöglicht, von unterschiedlichen Orten und an unterschiedlichen Rechnern zu arbeiten. Nachteil dieser Lösung ist jedoch, dass ein Speichern unterschiedlicher Versionen des erstellten Programms und auch dieser Arbeit nur schwer möglich ist.
