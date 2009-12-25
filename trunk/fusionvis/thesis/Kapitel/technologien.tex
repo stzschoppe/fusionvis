@@ -46,10 +46,15 @@ Durch die Funktionsweise des Szenenbaums ist es aber einfacher, die beiden Objek
 
 \subsection{Kamera}
 \label{sec:Kamera}
+Eine Kamera, in JME als \emph{Camera}-Klasse umgesetzt, steht für den Blickpunkt des Beobachters. Was von der Kamera gesehen wird, kann der Benutzer auf dem Bildschirm dargestellt erkennen. Um festzulegen, was in das Blickfeld der Kamera fällt, muss diese initialisiert werden. Auf der einen Seite müssen Position und Blickrichtung festgelegt werden. Auf der anderen Seite muss der von der Kamera betrachtete Raum spezifiziert werden. Dieser ist eine Pyramide mit Rechteckiger Grundseite. 
+
+Zur genauen Definition des Sichtfeldes ist das Verhältnis von Breite und Höhe des Bildschirms wichtig, um keine ungewollten Verzerrungen zu erhalten. Weiterhin muss die  Höhe und der Winkel, mit dem die Pyramide aufgespannt wird, angegeben werden. Der Betrachter steht dabei an der Spitze der Pyramide und schaut auf die Grundseite. Der Winkel stellt die Sichtfeldbreite dar, die Höhe steht für sie Sichtweite.
 
 \subsection{Grafische Objekte}
 \label{sec:GrafischeObjekte}
+JME stellt bereits einige fertige geometrische Objekte in Form von Klassen bereit. Diese müssen im Bedarfsfall nur noch instanziiert werden. Auf der einen Seite gehören zu ihnen die zweidimensionale Scheibe, ein Viereck und ein Sechseck. Auf der anderen Seite gehören zu den dreidimensionalen Grundformen der Quader und sein an den Ecken abgerundetes Pendant, Kegel, Zylinder, Pyramide (mit viereckiger Grundfläche), Oktaeder und Ikosaeder. Weiterhin die Kugel, die Halbkugel, die Kapsel (wie sie von Medikamenten bekannt ist), ein dreidimensionaler Pfeil und ein aus drei Pfeilen gebildetes Achsenkreuz. Schlussendlich fehlen auch nicht die in der dreidimensionalen Computergrafik so beliebten Objekte Teekanne und Torus. Für Bilder und Beschreibungen sei auf [CITE] verwiesen.
 
+Weitere Objekte können durch Kombination aus den Grundformen, durch explizite Definition von Polygonen oder durch das Laden fertiger Modelle in JME verwendet werden.
 
 \subsection{Lageveränderung}
 \label{sec:Lageveraenderung}
@@ -62,17 +67,27 @@ Durch die Funktionsweise des Szenenbaums ist es aber einfacher, die beiden Objek
 
 \subsection{Licht}
 \label{sec:Licht}
+JME unterscheidet in Lichtarten und Lichtquellen. Beide Kategorien sollen hier kurz dargestellt werden.
+
+\subsubsection{Lichtquellen}
+\label{sec:Lichtquellen}
+
+Es gibt drei Arten von Lichtquellen. Die erste Art ist die punktförmige Lichtquelle (\emph{PointLight}). Sie besitzt eine Position, von der sich das Licht in alle Richtungen ausbreitet. Die Intensität nimmt standardmäßig mit der Entfernung von der Lichtquelle ab. Weiterhin gibt es das gerichtete Licht (\emph{DirectionalLight}). Es leuchtet unendlich weit und hat keine Position, sondern nur einen Vektor, der angibt, in welche Richtung die Lichtstrahlen fallen. Vergleichbar ist diese Art der Lichtquelle mit der Sonne von der Erde aus. Zwar leuchtet die Sonne nicht unendlich weit, doch für die auf der Erde auftretenden Entfernungen im Verhältnis zur Entfernung zur Sonne kann dieser Fakt vernachlässigt werden. Die dritte Lichtquelle ist ein Lichtkegel (\emph{SpotLight}). Wie der Name es andeutet, ist dies ein Kegel, der alles beleuchtet, was sich in ihm befindet. Seine Leuchtkraft nimmt standardmäßig ebenso ab wie bei einer punktförmigen Lichtquelle.
 
 
-\subsection{Texturen}
+\subsection{Oberflächengestaltung}
+\label{sec:Oberflaechengestaltung}
+Die Oberfläche von Objekten kann in vielerlei Art und Weise angepasst werden. Zwei dieser Möglichkeiten sind im Folgenden kurz vorgestellt.
+
+\subsubsection{Texturen}
 \label{sec:Texturen}
 Texturen stellen die Oberfläche von Objekten dar. Notwendig wird dies zum Beispiel, wenn eine Kugel in einer bestimmten Farbe dargestellt werden soll. Der triviale Ansatz, eine gewünschte Farbe zuzuweisen, scheitert. Diese Farbe ist nur ohne Einfluss von Lichtquellen sichtbar. Ohne den Einfluss dieser sind aber keinerlei Konturen zu erkennen und die räumliche Vorstellung eines Gegenstands geht verloren.
 
 Texturen sind der Ausweg aus diesem Problem. Um eine Kugel rot zu färben, muss lediglich eine Grafikdatei, zum Beispiel eine PNG erstellt werden, die in dieser Farbe ausgefüllt ist. Die Größe kann auf ein Minimum (1x1 Pixel) beschränkt werden. Aus der Grafik kann ein \emph{Texture}-Objekt mit Hilfe eines \emph{TextureManagers} erstellt werden. Diese kann nach der Umwandlung in eine \emph{RenderState}-Instanz der Kugel zugewiesen werden. Diese ist daraufhin rot und als Kugel zu erkennen, im Gegensatz zum trivialen Ansatz.
 
-\subsection{Transparenz}
+\subsubsection{Transparenz}
 \label{sec:Transparenz}
-
+Das Erzeugen durchsichtiger Objekte funktioniert ähnlich wie das oben beschriebene Anlegen einer Textur. Nur bedient man sich hier nicht einer Textur zum Erzeugen einer \emph{RenderState}-Instanz, die dem Objekt zugewiesen wird. Das Mittel der Wahl ist ein \emph{MaterialState}- und ein \emph{BlendingState}-Objekt. Bei der Erstellung der \emph{MaterialState}-Instanz wird unter anderem die Durchsichtigkeit bzw. die Solidität übergeben. Der Wert darf sich im Intervall [0, 1] bewegen. Null bedeutet, dass das Objekt unsichtbar ist, eins hingegen, dass es vollkommen undurchsichtig dargestellt wird.
 
 
 \section{Google Code}
