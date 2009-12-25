@@ -3,6 +3,7 @@
 In diesem Kapitel werden die wichtigsten Technologien, die im Laufe der Arbeit verwendet werden, vorgestellt und erläutert.
 
 \section{Java}
+\label{sec:java}
 Am Anfang der Arbeit stand die Wahl der Programmiersprache, die für die Implementierung verwendet werden sollte. Java in der Version 1.6 bot sich aus mehren Gründen an.
 
 Auf der einen Seite sprach ein ganz pragmatischer Grund dafür: Da Java im Rahmen der Vorlesung über Objektorientierte Programmierung gelehrt wurde, entfiel die Einarbeitungszeit. Auf der anderen Seite gibt es aber weitere Gründe für die Wahl. An die prototypische Implementierung wurde die Anforderung der Plattformunabhängigkeit gestellt. Dies spricht für die Wahl einer Sprache, die auf einer virtuellen Maschine basiert. Im Gegensatz zu einem Java-Programm müsste ein in C++ geschriebenes auf einem anderen Rechner neu kompiliert werden. Dies erhöht den Installationsaufwand und ist keine echte Unabhängigkeit.
@@ -16,7 +17,7 @@ Weiterhin ist die Verwendung von Java für die Arbeit mit 3D-Grafik umstritten (s
 \label{ch:xml}
 Die Daten für das Testen der prototypischen Entwicklung stammen von einem Gefechtssimulator. Sie sind im XML-Format abgespeichert. Um mit diesen Daten in Java arbeiten zu können, müssen sie in Java-Klassen überführt werden. An dieser Stelle kamen zwei Möglichkeiten in Frage: Auf der einen Seite hätte nur die prototypische Implementierung, die mit den Daten arbeitet, diese eingelesen. Auf der anderen Seite konnte die Funktionalität, aus XML-Dateien zu laden, auch in das entwickelte Framework integriert werden.
 
-Weil sich XML für einen plattform- und implementierungsunabhängigen Datenaustausch eignet und heute zu diesem Zweck ein Quasistandart ist [CITE]. Fiel die Entscheidung, das Laden von Daten im XML-Format im Framework zu implementieren. Die gewählte Programmiersprache eignete sich für diesen Zweck besonders gut, da bereits fertige Parser-Bibliotheken mitgeliefert werden.
+Weil sich XML für einen plattform- und implementierungsunabhängigen Datenaustausch eignet und heute zu diesem Zweck ein Quasistandart ist (\cite{xml}), fiel die Entscheidung, das Laden von Daten im XML-Format im Framework zu implementieren. Die gewählte Programmiersprache eignete sich für diesen Zweck besonders gut, da bereits fertige Parser-Bibliotheken mitgeliefert werden.
 
 \subsection{SAX-Parser}
 \label{sec:SAXParser}
@@ -29,7 +30,7 @@ Der große Vorteil des DOM-Parsers ist eben die bei SAX nicht vorhandene Traversi
 Die Tatsache, dass DOM nicht so sehr für große Datenmengen geeignet ist, weil das Erzeugen der Baumstruktur vor allem speicherplatzintensiv ist. Dieser Nachteil wird aber zum Wohle des einfacheren Umgangs in Kauf genommen.
 
 \section{jMonkeyEngine}
-Die in Abschnitt [REF] beschriebene Anforderung, einen plattformunabhängigen Prototyp zu entwickeln, machte die Abwägung zwischen DirectX von Microsoft und der Opensource-Alternative OpenGL als 3D-Grafikschnittstelle überflüssig. Nur letztere bot eine überzeugende Möglichkeit, auf einem nicht-Windows System zu funktionieren.
+Die in Abschnitt \ref{sec:java} beschriebene Anforderung, einen plattformunabhängigen Prototyp zu entwickeln, machte die Abwägung zwischen DirectX von Microsoft und der Opensource-Alternative OpenGL als 3D-Grafikschnittstelle überflüssig. Nur letztere bot eine überzeugende Möglichkeit, auf einem nicht-Windows System zu funktionieren.
 
 Nachdem dieser Entschluss feststand, musste eine Klassenbibliothek gesucht werden, die den Umgang mit OpenGL vereinfacht und im Zeitrahmen dieser Arbeit die Entwicklung eines funktionsfähigen Prototyps ermöglicht. Die Wahl fiel dabei nach erster Recherche auf die sogenannte JMonkeyEngine (JME) in der Version 2. Der entscheidende Vorteil dieser Klassenbibliothek war die sehr kurze Einarbeitungszeit. Diese wurde vor allem dadurch begünstigt wurde, dass für erste Testprogramme sehr wenig eigener Quellcode geschrieben werden musste.
 
@@ -40,7 +41,7 @@ Ein weiterer Vorteil der Engine war die Art und Weise, wie Zeichnen der anzuzeig
 
 Diese Struktur dient zur Speicherung und Organisierung von Objekten, die grafisch dargestellt werden sollen. Auf der einen Seite kann der Baum aus Knoten der \emph{Node}-Klasse bestehen. Diese dienen der Strukturierung und werden nicht angezeigt. Auf der anderen Seite können Grafikobjekte in ihm gespeichert werden. Dies sind Instanzen von Klassen, die von der Klasse \emph{Geometry} abgeleitet wurden. Welche Grundformen JME bereits mitliefert, ist in einem der folgenden Abschnitte beschrieben. Neben dreidimensionalen Objekten können aber auch Lichtquellen und die Kamera an den Szenenbaum angehängt werden.
 
-Der Vorteil des Szenenbaums besteht darin, dass sich Änderungen auf einen Knoten automatisch auch auf seine Kinder auswirken. Im, in dieser Arbeit entwickelten, Visualisierungsprototypen sollen Kugeln die Datensätze (Kampfpanzer) darstellen. Von ihrem Zentrum geht ein Kegel aus, der die Reichweite der Panzer symbolisiert. Der genaue Hintergrund ist in den  Abschnitten [REF] und [REF] erläutert. Soll nun ein Datensatz ausgeblendet werden, weil er einem gesuchten Kriterium nicht entspricht könnte man trivialer Weise den Knoten, der die Kugel enthält, und den Knoten, der den Kegel darstellt, ausblenden. 
+Der Vorteil des Szenenbaums besteht darin, dass sich Änderungen auf einen Knoten automatisch auch auf seine Kinder auswirken. Im, in dieser Arbeit entwickelten, Visualisierungsprototypen sollen Kugeln die Datensätze (Kampfpanzer) darstellen. Von ihrem Zentrum geht ein Kegel aus, der die Reichweite der Panzer symbolisiert. Der genaue Hintergrund ist in den  Abschnitten [REF], \ref{sec:Bewegungskegel} und \ref{ch:bewegungskegel} erläutert. Soll nun ein Datensatz ausgeblendet werden, weil er einem gesuchten Kriterium nicht entspricht könnte man trivialer Weise den Knoten, der die Kugel enthält, und den Knoten, der den Kegel darstellt, ausblenden. 
 
 Durch die Funktionsweise des Szenenbaums ist es aber einfacher, die beiden Objekte unter einem Knoten zu vereinigen, der den Namen des Objekts enthält. So muss nur dieser -- nicht sichtbare -- Knoten ausgeblendet werden. Kreis und Kugel werden automatisch nicht mehr mit angezeigt. Weitere Änderungen, die sich auf die Kinder auswirken sind zum Beispiel Positionsänderungen, Drehungen im Raum und Änderung von sogenannten \emph{RenderStates}. Diese kapseln Zustände, wie die Textur (Oberfläche) eines Objekts oder seine Durchsichtigkeit.
 
@@ -52,18 +53,27 @@ Zur genauen Definition des Sichtfeldes ist das Verhältnis von Breite und Höhe de
 
 \subsection{Grafische Objekte}
 \label{sec:GrafischeObjekte}
-JME stellt bereits einige fertige geometrische Objekte in Form von Klassen bereit. Diese müssen im Bedarfsfall nur noch instanziiert werden. Auf der einen Seite gehören zu ihnen die zweidimensionale Scheibe, ein Viereck und ein Sechseck. Auf der anderen Seite gehören zu den dreidimensionalen Grundformen der Quader und sein an den Ecken abgerundetes Pendant, Kegel, Zylinder, Pyramide (mit viereckiger Grundfläche), Oktaeder und Ikosaeder. Weiterhin die Kugel, die Halbkugel, die Kapsel (wie sie von Medikamenten bekannt ist), ein dreidimensionaler Pfeil und ein aus drei Pfeilen gebildetes Achsenkreuz. Schlussendlich fehlen auch nicht die in der dreidimensionalen Computergrafik so beliebten Objekte Teekanne und Torus. Für Bilder und Beschreibungen sei auf [CITE] verwiesen.
+JME stellt bereits einige fertige geometrische Objekte in Form von Klassen bereit. Diese müssen im Bedarfsfall nur noch instanziiert werden. Auf der einen Seite gehören zu ihnen die zweidimensionale Scheibe, ein Viereck und ein Sechseck. Auf der anderen Seite gehören zu den dreidimensionalen Grundformen der Quader und sein an den Ecken abgerundetes Pendant, Kegel, Zylinder, Pyramide (mit viereckiger Grundfläche), Oktaeder und Ikosaeder. Weiterhin die Kugel, die Halbkugel, die Kapsel (wie sie von Medikamenten bekannt ist), ein dreidimensionaler Pfeil und ein aus drei Pfeilen gebildetes Achsenkreuz. Schlussendlich fehlen auch nicht die in der dreidimensionalen Computergrafik so beliebten Objekte Teekanne und Torus. Für Bilder und Beschreibungen sei auf \cite{jme} verwiesen.
 
 Weitere Objekte können durch Kombination aus den Grundformen, durch explizite Definition von Polygonen oder durch das Laden fertiger Modelle in JME verwendet werden.
 
 \subsubsection{Lageveränderung}
 \label{sec:Lageveraenderung}
+Nachdem ein Objekt erzeugt wurde ist es meist notwendig, ihm einen Ort im dreidimensionalen Raum zuzuweisen. Manchmal ist es auch notwendig, ein Objekt zu drehen. Wichtig ist an dieser Stelle, dass beim Instanziieren eines Objekts keine Informationen über Position und Drehung mitgegeben werden können.
 
 \paragraph{Positionierung}
 \label{sec:Positionierung}
+Meist kann im Konstruktor eine Koordinate übergeben werden. Tut man dies, erschein das Objekt auch an der gewünschten Stelle. Problematisch ist aber, dass dadurch nicht die Position verändert wurde, sondern der Mittelpunkt des Objekts. Dieser liegt nach wie vor auf dem Koordinatenursprung. Hier gibt es einen Konflikt zwischen den lokalen Koordinaten eines Objekts und den Weltkoordinaten. Aus diesem Grund sollte der Mittelpunkt eines Objekts immer bei (0, 0, 0) belassen werden, wenn man nicht explizit einen anderen Mittelpunkt benötigt.
+
+Um ein Objekt richtig im Raum zu platzieren, wird mit Hilfe der Methode \emph{setLocalTranslation()} die gewünschte neue Koordinate übergeben. Als Parameter der Methode dient ein dreidimensionaler Vektor.
+
 
 \paragraph{Drehung}
 \label{sec:Drehung}
+Drehungen von Objekten im dreidimensionalen Raum sind rechenaufwendige Angelegenheiten. JME übernimmt diese Rechnungen, indem durch Angabe der der gewünschten Drehwinkel als Vektor (x, y, z) ein Quaternion erzeugt wird. Die Werte werden in Bogenmaß angegeben und beziehen sich auf Drehungen um die jeweiligen Achsen. Für die Bedeutung eines Quaternions sei auf [CITE] verwiesen.
+
+Mit dem erstellten Quaternion kann die Methode \emph{setLocalRotation()} des zu drehenden Objekts aufgerufen werden.
+
 
 \subsubsection{Oberflächengestaltung}
 \label{sec:Oberflaechengestaltung}
@@ -88,6 +98,10 @@ JME unterscheidet in Lichtarten und Lichtquellen. Beide Kategorien sollen hier k
 
 Es gibt drei Arten von Lichtquellen. Die erste Art ist die punktförmige Lichtquelle (\emph{PointLight}). Sie besitzt eine Position, von der sich das Licht in alle Richtungen ausbreitet. Die Intensität nimmt standardmäßig mit der Entfernung von der Lichtquelle ab. Weiterhin gibt es das gerichtete Licht (\emph{DirectionalLight}). Es leuchtet unendlich weit und hat keine Position, sondern nur einen Vektor, der angibt, in welche Richtung die Lichtstrahlen fallen. Vergleichbar ist diese Art der Lichtquelle mit der Sonne von der Erde aus. Zwar leuchtet die Sonne nicht unendlich weit, doch für die auf der Erde auftretenden Entfernungen im Verhältnis zur Entfernung zur Sonne kann dieser Fakt vernachlässigt werden. Die dritte Lichtquelle ist ein Lichtkegel (\emph{SpotLight}). Wie der Name es andeutet, ist dies ein Kegel, der alles beleuchtet, was sich in ihm befindet. Seine Leuchtkraft nimmt standardmäßig ebenso ab wie bei einer punktförmigen Lichtquelle.
 
+\subsubsection{Lichtanteile}
+\label{sec:Lichtanteile}
+
+Das von den oben beschriebenen Lichtquellen ausgehende Licht besitzt drei Anteile, die vor allem im Hinblick auf ihre Farbe verändert werden können. Zuerst ist da das Raumlicht (\emph{Ambient Light}), das angibt in welcher Intensität und Farbe die Bereiche dargestellt werden sollen, die weder direkt noch indirekt beschienen werden (zum Beispiel Schlagschatten). Als Nächstes gibt es das nichtgerichtete Licht. Es handelt sich hierbei um die diffuse Lichteinstrahlung. Der letzte Lichtanteil ist das reflektierte Licht (\emph{Specular Light}). Dies ist die reflektierte Lichteinstrahlung. Je intensiver diese Art ausgeprägt ist, umso spiegelnder erscheinen Oberflächen.
 
 
 
