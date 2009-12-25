@@ -38,7 +38,7 @@ Die Voraussetzungen an den Typ, der für die Lokalisierung herangezogenen Eigensc
 	\label{tab:mittelUnmittlGroessen}
 \end{table*}
 \paragraph{Weitere Eigenschaften}
-Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der Position und dem Namen, bietet noch keine hohe Anschaulichkeit. Um die in [Verweis, Visualisierungsmöglichkeiten] dargestellten Visualisierungen auch verwenden zu können, braucht es weitere Eigenschaften, die in optische Information umgewandelt werden kann.
+Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der Position und dem Namen, bietet noch keine hohe Anschaulichkeit. Um die in Abschnitt \ref{sec:Visualisierungsmoeglichkeiten} dargestellten Visualisierungen auch verwenden zu können, braucht es weitere Eigenschaften, die in optische Information umgewandelt werden kann.
 
 Die Art der Daten, die für solche zusätzliche Veranschaulichung verwendet werden kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich geradezu anbieten, die Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
 \subsubsection{Datenmodell}
@@ -93,7 +93,7 @@ Das zweite Kriterium, in das die Informationen der Daten zerfallen, ist ihr Typ.
 \begin{itemize}
 	\item Boolean
 	\item Char
-	\item Date [ANM]
+	\item Date \footnote{Da die Implementierung in Java erfolgt, wurde intern auf die Klasse \emph{GregorianCalendar} zurückgegriffen}
 	\item Float
 	\item Integer
 	\item String
@@ -271,18 +271,18 @@ Wie oben bereits beschrieben hat die Spezialisierung im \emph{Mapper} zwei Aspek
 \label{sec:PositionUndProjektion}
 Eine grundlegende Entscheidung bei der Visualisierung von Daten ist, wie aus den Rohdaten eines Datums die Koordinaten im dreidimensionalen Raum gewonnen werden können. Bereits in Abschnitt \ref{ch:Eingabedaten} wurde beschrieben, dass solche Rohdaten existieren müssen. Ebenfalls ist darauf verwiesen worden, dass ungeeignete Rohdaten (weder in Gleitkomma-, noch in ganzzahliger Darstellung) an dieser Stelle durch einen geeigneten Homomorphismus umzuwandeln sind.
 
-Der erste Schritt zur Individualisierung des \emph{Mappers} ist die Bestimmung der Ausmaße der Projektionsfläche. Dieser Begriff meint die Ebene, die trivialisiert durch Länge und Breite aufgespannt wird. Ihre Festlegung erfolgt durch die Implementierung der \emph{getSize()}-Methode. Hier gibt es zwei Varianten der Umsetzung. Es kann eine feste, von den Daten unabhängige Projektionsfläche gewählt werden. Eine maßstabsgetreue Abbildung entfällt somit. Vorteil dieser Art ist, dass bereits zur Implementierungszeit abschätzbar ist, wie groß die maximalen Entfernungen ausfallen. Somit können Entscheidungen, wie die Positionierung der Kamera [REF], sinnvoll getroffen werden.\\
+Der erste Schritt zur Individualisierung des \emph{Mappers} ist die Bestimmung der Ausmaße der Projektionsfläche. Dieser Begriff meint die Ebene, die trivialisiert durch Länge und Breite aufgespannt wird. Ihre Festlegung erfolgt durch die Implementierung der \emph{getSize()}-Methode. Hier gibt es zwei Varianten der Umsetzung. Es kann eine feste, von den Daten unabhängige Projektionsfläche gewählt werden. Eine maßstabsgetreue Abbildung entfällt somit. Vorteil dieser Art ist, dass bereits zur Implementierungszeit abschätzbar ist, wie groß die maximalen Entfernungen ausfallen. Somit können Entscheidungen, wie die Positionierung der Kamera (siehe Abschnitt \ref{sec:Kamera}), sinnvoll getroffen werden.\\
 Eine andere Möglichkeit ist eine von den Eingabedaten abhängige Projektionsfläche. Hier entfällt das abschätzbare Ausmaß der Darstellung zum Wohle der maßstabsgetreuen Abbildung.\\
 Eine der wichtigsten Verwendungen dieser Methode liegt im späteren Erzeugen des Gittermusters, welches eine bessere Einschätzung der Dimensionen ermöglicht.
 
 Der zweite Schritt zur Individualisierung ist die Festlegung der Skalierung der Position auf den einzelnen Dimensionen. Die Notwendigkeit hierfür kann sich aus ungünstig gestalteten Rohdaten ergeben. Um zum Beispiel Zeiten in Ortsangaben umzuwandeln, kann man auf die interne Darstellung eines Zeitpunktes in die Zahl der Millisekunden seit dem 01.01.1970 zurückgreifen. Hieraus ergeben sich jedoch schon für kurze Zeitspannen riesige Zahlenwerte, die zu ebensogroßen Ausmaßen der Darstellung führen würden.\\
 Mit der Implementierung der Methode \emph{getDimensionFactors()} kann diesem Umstand Rechnung getragen werden. Ist eine Skalierung nicht notwendig, so kann die triviale Skalierung mit dem Faktor 1 erfolgen.
 
-Der letzte Schritt zur Positionierung ist die Festlegung eines Datums auf eine genaue Koordinate in der dreidimensionalen Darstellung. Implementiert werden muss dies gleichzeitig mit der Festlegung der Gestalt eines Datensatzes. Wie dies zu erfolgen hat, ist in der allgemeinen Beschreibung zur Positionierung in Abschnitt [REF jme, Positionierung] beschrieben. Der Ort dieser Implementierung ist die im Folgenden beschriebene Methode. 
+Der letzte Schritt zur Positionierung ist die Festlegung eines Datums auf eine genaue Koordinate in der dreidimensionalen Darstellung. Implementiert werden muss dies gleichzeitig mit der Festlegung der Gestalt eines Datensatzes. Wie dies zu erfolgen hat, ist in der allgemeinen Beschreibung zur Positionierung in Abschnitt \ref{sec:Positionierung} beschrieben. Der Ort dieser Implementierung ist die im Folgenden beschriebene Methode. 
 
 \subparagraph{Gestalt}
 \label{sec:Gestalt}
-Die Gestalt eines Datums wird von der Methode \emph{extractNodeFromData()} bestimmt. Sie hat die Aufgabe, einen Szenenknoten (siehe Abschnitt [REF]) für jeden Datensatz zu erstellen. Bestandteil muss auf jeden Fall ein Grafikobjekt, wie in Abschnitt [REF, Visualisierung eines Datums] beschrieben, sein.  Im letzen Abschnitt wurde bereits angesprochen, dass ebenfalls die Festlegung der Koordinate des Grafikobjekts an dieser Stelle zu erfolgen hat. \\
+Die Gestalt eines Datums wird von der Methode \emph{extractNodeFromData()} bestimmt. Sie hat die Aufgabe, einen Szenenknoten (siehe Abschnitt \ref{sec:Szenenbaum}) für jeden Datensatz zu erstellen. Bestandteil muss auf jeden Fall ein Grafikobjekt, wie in Abschnitt \ref{ch:visualisierungDatum} beschrieben, sein.  Im letzen Abschnitt wurde bereits angesprochen, dass ebenfalls die Festlegung der Koordinate des Grafikobjekts an dieser Stelle zu erfolgen hat. \\
 In dieser Methode kann der Benutzer neben Form, Größe, Position und sonstigen Eigenschaften, wie zum Beispiel Renderingoptionen (siehe Abschnitt \ref{sec:Transparenz}), auch die Texturierung von Objekten festlegen. Es ist jedoch nicht immer zweckmäßig, für jedes Objekt eine individuelle Textur zuzuweisen. Aus diesem Grund gibt es eine weitere Methode, die es gilt zu implementieren.
 
 Die Methode \emph{texture()} hat zur Aufgabe die Grafikobjekte eines übergebenen Szeneknotens zu texturieren. Dies kann anhand von bestimmten Eigenschaften geschehen. Enumerationen eignen sich hierbei sehr gut. Wie in Abschnitt \ref{ch:visualisierungDatum} beschrieben, sollte man sich an dieser Stelle auf eine noch vom Kurzzeitgedächtnis erfassbare Menge an Farben beschränken. Ist es jedoch nicht notwendig, so kann die Implementierung dieser Methode leer verbleiben.
@@ -343,7 +343,7 @@ Problematisch ist hierbei, dass die beiden Panels bereits eine Oberklasse haben 
 \label{sec:SelektionVonDatensaetzen}
 Eine weitere Aktivität, in der die beiden Panels kooperieren müssen, ist die Selektion eines Datensatzes. Ein Datum kann entweder im \emph{ImporterPanel}, in der textuellen, oder im \emph{ViewerPanel}, in der grafischen Darstellung, ausgewählt werden.
 
-Ziel soll es sein, dass ein Datum, das in der einen Sicht ausgewählt wird, auch in der andern Sicht als selektiert erscheint. Die Auswahl an sich ist im \emph{ImporterPanel} aufgrund der Bordmittel von Swing [REF Technologie, Java, SWING] trivial. Im \emph{ViewerPanel} wird dies um einiges schwieriger, weil es sich dabei um einen sogenannten Mousepick handelt. Problematisch ist dabei, dass auf der zweidimensionalen Fläche des Bildschirms ein Objekt im dreidimensionalen Raum ausgewählt werden soll. Für die Lösung des Problems sei auf Abschnitt \ref{ch:mousepicking} verwiesen.
+Ziel soll es sein, dass ein Datum, das in der einen Sicht ausgewählt wird, auch in der andern Sicht als selektiert erscheint. Die Auswahl an sich ist im \emph{ImporterPanel} aufgrund der Bordmittel von Swing (siehe Abschnitt \ref{sec:java}) trivial. Im \emph{ViewerPanel} wird dies um einiges schwieriger, weil es sich dabei um einen sogenannten Mousepick handelt. Problematisch ist dabei, dass auf der zweidimensionalen Fläche des Bildschirms ein Objekt im dreidimensionalen Raum ausgewählt werden soll. Für die Lösung des Problems sei auf Abschnitt \ref{ch:mousepicking} verwiesen.
 
 Nachdem ein Datensatz ausgewählt wurde, wird auch an dieser Stelle wieder mit Hilfe des Observer-Patterns das jeweils andere Panel über das Ereignis informiert, sucht in seiner Darstellung den selektierten Datensatz und hebt ihn hervor.
 
@@ -706,7 +706,7 @@ Bei dieser, auf den ersten Blick sicher trivial erscheinenden Tätigkeit gibt es 
 
 Ein ähnlicher Sachverhalt ergibt sich durch das Zeigen mit der Maus auf ein Objekt im dreidimensionalen Raum, denn der Mauszeiger bewegt sich nur auf einer Ebene, einer Art Fenster zum Raum der Darstellung. Um zu berechnen, auf was gezeigt wird, braucht es einen Strahl ausgehend von der Spitze des Mauszeigers. Dasjenige Objekt, das in der kürzesten Entfernung vom Zeiger getroffen wird, soll ausgewählt werden.
 
-Aus der analytischen Geometrie ist aber bekannt [CITE], dass eine Gerade, spezieller aber auch ein Strahl, durch mindestens zwei Punkte zu spezifizieren ist. An dieser Stelle hilft die gewählte Grafikengine, indem sie ihrem Benutzer zu einer gewählten Bildschirmkoordinate den Startpunkt des Strahls, der von ihr ausgeht, im dreidimensionalen Raum liefert. Zusätzlich ist sie in der Lage, senkrecht zur Bildschirmebene einen Zielpunkt am Ende des sichtbaren Bereichs zu liefern. Aus diesen beiden Punkten kann nun der für das Mousepicking benötigte Strahl berechnet werden.
+Aus der analytischen Geometrie ist aber bekannt, dass eine Gerade, spezieller aber auch ein Strahl, durch mindestens zwei Punkte zu spezifizieren ist. An dieser Stelle hilft die gewählte Grafikengine, indem sie ihrem Benutzer zu einer gewählten Bildschirmkoordinate den Startpunkt des Strahls, der von ihr ausgeht, im dreidimensionalen Raum liefert. Zusätzlich ist sie in der Lage, senkrecht zur Bildschirmebene einen Zielpunkt am Ende des sichtbaren Bereichs zu liefern. Aus diesen beiden Punkten kann nun der für das Mousepicking benötigte Strahl berechnet werden.
 
 Bei der Übergabe der Bildschirmkoordinaten ist jedoch zu beachten, dass das von Swing verwendete Koordinatensystem seinen Ursprung in der \emph{oberen} linken Ecke besitzt. Im Vergleich zu OpenGL, das den Ursprung mathematisch eingängig in der \emph{unteren} linken Ecke platziert. Die y-Koordinate ist also vor der Berechnung von der Höhe des Bildschirms abzuziehen. 
 
