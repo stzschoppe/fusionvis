@@ -56,14 +56,28 @@ JME stellt bereits einige fertige geometrische Objekte in Form von Klassen berei
 
 Weitere Objekte können durch Kombination aus den Grundformen, durch explizite Definition von Polygonen oder durch das Laden fertiger Modelle in JME verwendet werden.
 
-\subsection{Lageveränderung}
+\subsubsection{Lageveränderung}
 \label{sec:Lageveraenderung}
 
-\subsubsection{Positionierung}
+\paragraph{Positionierung}
 \label{sec:Positionierung}
 
-\subsubsection{Drehung}
+\paragraph{Drehung}
 \label{sec:Drehung}
+
+\subsubsection{Oberflächengestaltung}
+\label{sec:Oberflaechengestaltung}
+Die Oberfläche von Objekten kann in vielerlei Art und Weise angepasst werden. Zwei dieser Möglichkeiten sind im Folgenden kurz vorgestellt.
+
+\paragraph{Texturen}
+\label{sec:Texturen}
+Texturen stellen die Oberfläche von Objekten dar. Notwendig wird dies zum Beispiel, wenn eine Kugel in einer bestimmten Farbe dargestellt werden soll. Der triviale Ansatz, eine gewünschte Farbe zuzuweisen, scheitert. Diese Farbe ist nur ohne Einfluss von Lichtquellen sichtbar. Ohne den Einfluss dieser sind aber keinerlei Konturen zu erkennen und die räumliche Vorstellung eines Gegenstands geht verloren.
+
+Texturen sind der Ausweg aus diesem Problem. Um eine Kugel rot zu färben, muss lediglich eine Grafikdatei, zum Beispiel eine PNG erstellt werden, die in dieser Farbe ausgefüllt ist. Die Größe kann auf ein Minimum (1x1 Pixel) beschränkt werden. Aus der Grafik kann ein \emph{Texture}-Objekt mit Hilfe eines \emph{TextureManagers} erstellt werden. Diese kann nach der Umwandlung in eine \emph{RenderState}-Instanz der Kugel zugewiesen werden. Diese ist daraufhin rot und als Kugel zu erkennen, im Gegensatz zum trivialen Ansatz.
+
+\paragraph{Transparenz}
+\label{sec:Transparenz}
+Das Erzeugen durchsichtiger Objekte funktioniert ähnlich wie das oben beschriebene Anlegen einer Textur. Nur bedient man sich hier nicht einer Textur zum Erzeugen einer \emph{RenderState}-Instanz, die dem Objekt zugewiesen wird. Das Mittel der Wahl ist ein \emph{MaterialState}- und ein \emph{BlendingState}-Objekt. Bei der Erstellung der \emph{MaterialState}-Instanz wird unter anderem die Durchsichtigkeit bzw. die Solidität übergeben. Der Wert darf sich im Intervall [0, 1] bewegen. Null bedeutet, dass das Objekt unsichtbar ist, eins hingegen, dass es vollkommen undurchsichtig dargestellt wird.
 
 \subsection{Licht}
 \label{sec:Licht}
@@ -75,19 +89,6 @@ JME unterscheidet in Lichtarten und Lichtquellen. Beide Kategorien sollen hier k
 Es gibt drei Arten von Lichtquellen. Die erste Art ist die punktförmige Lichtquelle (\emph{PointLight}). Sie besitzt eine Position, von der sich das Licht in alle Richtungen ausbreitet. Die Intensität nimmt standardmäßig mit der Entfernung von der Lichtquelle ab. Weiterhin gibt es das gerichtete Licht (\emph{DirectionalLight}). Es leuchtet unendlich weit und hat keine Position, sondern nur einen Vektor, der angibt, in welche Richtung die Lichtstrahlen fallen. Vergleichbar ist diese Art der Lichtquelle mit der Sonne von der Erde aus. Zwar leuchtet die Sonne nicht unendlich weit, doch für die auf der Erde auftretenden Entfernungen im Verhältnis zur Entfernung zur Sonne kann dieser Fakt vernachlässigt werden. Die dritte Lichtquelle ist ein Lichtkegel (\emph{SpotLight}). Wie der Name es andeutet, ist dies ein Kegel, der alles beleuchtet, was sich in ihm befindet. Seine Leuchtkraft nimmt standardmäßig ebenso ab wie bei einer punktförmigen Lichtquelle.
 
 
-\subsection{Oberflächengestaltung}
-\label{sec:Oberflaechengestaltung}
-Die Oberfläche von Objekten kann in vielerlei Art und Weise angepasst werden. Zwei dieser Möglichkeiten sind im Folgenden kurz vorgestellt.
-
-\subsubsection{Texturen}
-\label{sec:Texturen}
-Texturen stellen die Oberfläche von Objekten dar. Notwendig wird dies zum Beispiel, wenn eine Kugel in einer bestimmten Farbe dargestellt werden soll. Der triviale Ansatz, eine gewünschte Farbe zuzuweisen, scheitert. Diese Farbe ist nur ohne Einfluss von Lichtquellen sichtbar. Ohne den Einfluss dieser sind aber keinerlei Konturen zu erkennen und die räumliche Vorstellung eines Gegenstands geht verloren.
-
-Texturen sind der Ausweg aus diesem Problem. Um eine Kugel rot zu färben, muss lediglich eine Grafikdatei, zum Beispiel eine PNG erstellt werden, die in dieser Farbe ausgefüllt ist. Die Größe kann auf ein Minimum (1x1 Pixel) beschränkt werden. Aus der Grafik kann ein \emph{Texture}-Objekt mit Hilfe eines \emph{TextureManagers} erstellt werden. Diese kann nach der Umwandlung in eine \emph{RenderState}-Instanz der Kugel zugewiesen werden. Diese ist daraufhin rot und als Kugel zu erkennen, im Gegensatz zum trivialen Ansatz.
-
-\subsubsection{Transparenz}
-\label{sec:Transparenz}
-Das Erzeugen durchsichtiger Objekte funktioniert ähnlich wie das oben beschriebene Anlegen einer Textur. Nur bedient man sich hier nicht einer Textur zum Erzeugen einer \emph{RenderState}-Instanz, die dem Objekt zugewiesen wird. Das Mittel der Wahl ist ein \emph{MaterialState}- und ein \emph{BlendingState}-Objekt. Bei der Erstellung der \emph{MaterialState}-Instanz wird unter anderem die Durchsichtigkeit bzw. die Solidität übergeben. Der Wert darf sich im Intervall [0, 1] bewegen. Null bedeutet, dass das Objekt unsichtbar ist, eins hingegen, dass es vollkommen undurchsichtig dargestellt wird.
 
 
 \section{Google Code}
