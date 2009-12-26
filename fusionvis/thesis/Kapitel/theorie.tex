@@ -9,7 +9,7 @@ In diesem Kapitel soll zuerst der Zusammenhang zwischen dem Thema dieser Arbeit 
 
 \section{Theoretische Einordnung}
 \label{sec:TheoretischeEinordnung}
-In diesem Abschnitt soll eine Einordnung der Arbeit in den theoretischen Kontext erfolgen. [TODO]
+In diesem Abschnitt soll die  theoretische Einordnung der Arbeit erfolgen. An erster Stelle steht dabei die Erläuterung multisensorischer Daten anhand eines einfachen Beispiels. Anschließend soll mit dessen Hilfe der Begriff \emph{Multisensor Data Fusion} definiert und der praktische Teil dieser Arbeit in den theoretischen Kontext eingeordnet werden.
 
 \subsection{Multisensorische Daten}
 \label{sec:EigenschaftenVonMultisensorischenDaten}
@@ -47,7 +47,7 @@ Aus den Daten könnte die auswertende Person schließen, dass sechs Kerzen auf dem
 
 
  
-\subsection{Multisensor-Fusion}
+\subsection{Multisensor Data Fusion}
 \label{sec:MultisensorFusion}
 \cite{fusionintroduction} \cite{multisensorDataFusion} \cite{mathfusion}
 
@@ -65,15 +65,32 @@ Aus den Daten könnte die auswertende Person schließen, dass sechs Kerzen auf dem
 
 \section{Visualisierungsmöglichkeiten}
 \label{sec:Visualisierungsmoeglichkeiten}
+Im Gegensatz zur oben beschriebenen Datenfusion soll die Beseitigung von Redundanzen in dem implementierten Prototyp durch eine geschickte Visualisierung der Daten erfolgen. Beispiele dafür werden im Folgenden erläutert. Einige finden sich in der Implementierung wieder, manche können noch ergänzt werden. An manchen Stellen musste aber eine klare Abwägung getroffen werden. Konsequenz war, dass sich bestimmte Visualisierungsarten nicht oder nur bedingt eignen.
  
 \subsection{Darstellung der Dimensionen}
 \label{sec:DarstellungDerDimensionen}
-
+ Eine wichtige Entscheidung bei der Visualisierung von Daten ist, in wie vielen Dimensionen die Daten dargestellt werden sollen. Ist dies festgelegt, stellt sich die Frage, welche Eigenschaft der Daten auf welche Dimension abgebildet werden soll. 
+ 
 \subsubsection{Dreidimensionale Darstellung}
 \label{sec:DreidimensionaleDarstellung}
+Ziel der praktischen Arbeit ist die dreidimensionale Darstellung von Datensätzen aus einem Gefechtssimulator. Diese Art der Datenanzeige bietet die höchste Flexibilität, jedoch kommet man bei der Abbildung von Eigenschaften auf Dimensionen zu einem Problem: Datensätze, die reale Gegenstände beschreiben, haben meistens mehr als drei Eigenschaften, die sich für ihre Positionierung eignen. Im Allgemeinen wird der Ort eines Datums durch drei Koordinaten im Raum festgelegt. Zusätzlich gibt es bei Datensätzen, die eine Sichtung beschrieben, eine Zeitangabe. Diese beschreibt, wann die Sichtung stattgefunden hat. Für die dreidimensionale Darstellung müssen drei der vier ausgewählt werden.
+
+\paragraph{Länge-Breite-Höhe}
+\label{sec:LaengeBreiteHoehe}
+
+Eine mögliche Alternative ist die Vernachlässigung der Zeit. Diese Auswahl ist für das gestellte Problem nicht zielführend, denn durch die fehlende Zeitkomponente können Redundanzen nicht erkannt werden. Sie werden sogar gefördert. Zwei Objekte zu zwei unterschiedlichen Zeiten könnten als vier Objekte interpretiert werden. Genau diese Tatsache sollte verhindert werden. Aus diesem Grund ist diese Auswahl nicht geeignet.
+
+\paragraph{Länge-Breite-Zeit}
+\label{sec:LaengeBreiteZeit}
+
+Die andere mögliche Alternative ist die Vernachlässigung der Höhe als Positionsangabe. Zugunsten dieser kann dann die Zeit dargestellt werden. Auch hier gibt es einen Informationsverlust. Die Auswirkungen werden in Abschnitt \ref{ch:kugelkappe} beschrieben. Für das Beseitigen von Redundanzen fällt das Weglassen der Höhe im Falle eines Gefechtssimulators nur beschränkt ins Gewicht. Landeinheiten befinden sich selten übereinander, dadurch können keine zusätzlichen Redundanzen entstehen.
+
+Die Darstellung der Zeit als dritte Dimension (in die Höhe) bietet zwei klare Vorteile. Auf der einen Seite können in einer großen dreidimensionalen Visualisierung die unterschiedlichen Momentaufnahmen einer Lage dargestellt werden. Es ist somit eine Visuelle Lageentwicklung aus einem statischen Bild ablesbar. Auf der anderen Seite kann die Bewegungsreichweite einer Einheit anhand ihrer Maximalgeschwindigkeit veranschaulicht werden. Wie das dargestellt werden kann, wird in Abschnitt \ref{sec:TheorieBewegungskegel}, \ref{sec:Bewegungskegel} und \ref{ch:bewegungskegel} erläutert.
+
 
 \subsubsection{Vierdimensionale Darstellung}
 \label{sec:VierdimensionaleDarstellung}
+Die beiden im letzten Abschnitt aufgezeigten Auswahlmöglichkeiten für eine dreidimensionale Visualisierung haben beide den Nachteil, dass man einen Informationsverlust in Kauf nehmen muss. Eine Möglichkeit dies zu vermeiden, wäre eine vierdimensionale Darstellung. Auf der einen Seite ist die menschliche Vorstellungskraft nicht unbedingt in der Lage, eine solche Visualisierung zu verstehen. Auf der anderen Seite benötigt man schon für die dreidimensionale Darstellung mindestens eine zweidimensionale Projektionsfläche. Für die vierte Dimension müsste man mindestens eine echte 3D-Darstellung haben, dies ist ohne spezielle Technik nicht möglich und entfällt darum.
 
 \subsubsection{Niederdimensionale  Ansätze}
 \label{sec:NiederdimensionaleAnsaetze}
