@@ -92,17 +92,60 @@ Die Darstellung der Zeit als dritte Dimension (in die Höhe) bietet zwei klare Vo
 \label{sec:VierdimensionaleDarstellung}
 Die beiden im letzten Abschnitt aufgezeigten Auswahlmöglichkeiten für eine dreidimensionale Visualisierung haben beide den Nachteil, dass man einen Informationsverlust in Kauf nehmen muss. Eine Möglichkeit dies zu vermeiden, wäre eine vierdimensionale Darstellung. Auf der einen Seite ist die menschliche Vorstellungskraft nicht unbedingt in der Lage, eine solche Visualisierung zu verstehen. Auf der anderen Seite benötigt man schon für die dreidimensionale Darstellung mindestens eine zweidimensionale Projektionsfläche. Für die vierte Dimension müsste man mindestens eine echte 3D-Darstellung haben, dies ist ohne spezielle Technik nicht möglich und entfällt darum.
 
+Es gibt aber dennoch eine Variante, alle drei Lageinformationen (Länge, Breite und Höhe), sowie die Zeit darzustellen. Dazu werden zuerst die drei Dimensionen für die genaue Umsetzung der Position genutzt. Danach wird die Zeit visualisiert. Eine sehr einfache und eingängige Art ist die Nutzung von Transparenz. Die neusten Informationen werden dann völlig undurchsichtig angezeigt. Mit dem Alter wird die Transparenz erhöht. Auf diese Weise können alle vier Informationen dargestellt werden. Problematisch ist nur, dass die Möglichkeit einer Reichweitenanalyse durch Visualisierung ungemein schwerer, wenn nicht sogar unmöglich wird. Statt dem Kegel müsste eine Kugel dargestellt werden, die im Zentrum nicht sichtbar ist und deren Transparenz nach außen kontinuierlich nachlässt, so dass sie auf ihrer Oberfläche undurchsichtig ist. Um festzustellen, ob zwei Objekte zueinander gehören, müsste man ihren Transparenzgrad vergleichen. Für kleine Zeitunterschiede ist dies aber nicht machbar. Aus diesem Grund ist eine vierdimensionale Visualisierung sicher ein interessanter Ansatz, der aber nur einen geringen Wert für die Lösung der Aufgabe hat.
 \subsubsection{Niederdimensionale  Ansätze}
 \label{sec:NiederdimensionaleAnsaetze}
+Für die Problemstellung dieser Arbeit sicher nicht zielführend, aber dennoch zu betrachten sind niederdimensionale Ansätze. Unzweckmäßig sind sie, weil schon bei einer dreidimensionalen Darstellung von Gefechtssimulatordaten Informationen verloren gehen. Es gibt aber Fragestellungen, bei denen sie vielleicht eine Rolle spielen könnten. Auch gibt es anders geartete Probleme, bei denen weniger zu visualisierende Eigenschaften vorliegen, so dass eine ein- oder zweidimensionale Darstellung ausreicht.
+
+\paragraph{Zwei Dimensionen}
+\label{sec:ZweiDimensionen}
+
+Eine mögliche Anwendung für diese Ansicht ist die Vernachlässigung der Zeit, wenn die Frage zum Beispiel lautet, in welchem Raum treten die meisten Sichtungen auf. Dann reicht eine zweidimensionale Darstellung. 
+
+Eine andere Anwendung ist die Frage nach der Lageentwicklung in Angriffsrichtung. Dabei kann die Breite des Gefechtsfelds vernachlässigt werden. Es interessiert nur, in welcher Zeit der Gegner mit wie vielen Einheiten vorstößt. 
+
+\paragraph{Eine Dimension}
+\label{sec:EineDimension}
+
+Sicher gibt es sehr speziell geartete Fragestellungen, die eine Visualisierung von Daten auf einer Linie nötig machen. Man könnte zum Beispiel Datensätze aus einem Netzwerk darstellen. Wenn die Datensätze eine MAC-[ABK]Adresse umfassen, kann diese dazu benutzt werden, die Daten auf einer Linie anzuordnen. Dazu ist ein geeigneter Homomorphismus von dem Bereich der Adressen auf die reellen Zahlen notwendig. Ablesbar wäre dann zum Beispiel gehäuftes Auftreten von Handware eines bestimmten Herstellers.
+
+Sowohl ein- als auch zweidimensionale Darstellung kann in bestimmten Anwendungsgebieten und bei machen Fragestellungen notwendig sein. Meistens lässt sich diese Art der Visualisierung aber auch durch geeignete Position der Kamera erreichen (siehe Abschnitt \ref{sec:VoreingestellteKameraperspektiven}).
+
 
 \subsection{Darstellung der Datensätze}
 \label{ch:visualisierungDatum}
+Neben der Art und Weise wie Eigenschaften von Daten auf die Dimensionen übertragen werden können ist der nächste wichtige Aspekt der Visualisierung, wie ein Datensatz und seine Eigenschaften dargestellt werden.
 
 \subsubsection{Formen}
 \label{sec:Formen}
+Unter der Form ist hier die geometrische Darstellung eines Datums zu verstehen. Dabei gibt es eine Vielzahl von Möglichkeiten, der Kreativität sind praktisch keine Grenzen gesetzt. Für den implementierten Prototyp haben sich Kugeln als zweckmäßig erwiesen. Sie haben den Vorteil, dass sie sehr einfach zu instanziieren, zugleich aber auch noch relativ anschaulich sind. Ihr Nachteil besteht in der Aufwendigkeit ihrer Darstellung. Da alle Objekte aus Polygonen konstruiert werden, ist eine Kugel nie ganz rund. Zwar kann die Anzahl an Polygonen, aus denen eine Kugel gefertigt wird, erhöht werden, aber das führt bei vielen Datensätzen zu erheblichen Ladezeiten.
+
+Alternativ könnten Würfel oder Quader zur Visualisierung verwendet werden. Diese haben aber den Nachteil, dass sie ein falsches Bild vermitteln könnten, denn in der dreidimensionalen Darstellung sind die geometrischen Objekte nur die Visualisierung eines Datenpunkts und nicht ein echtes Objekt mit räumlichen Ausmaßen.
+
+Dasselbe Problem, aber eine bessere Anschauung der angezeigten Daten hätte die Verwendung von vorgefertigten Modellen. So könnten für die Visualisierung von Panzern tatsächlich Panzer angezeigt werden. Die Erstellung der Modelle steht aber vom Aufwand her in keiner Relation zum Nutzen durch die verbesserte Anschauung des Problems.
+[IMG]
 
 \subsubsection{Visualisierung von Eigenschaften}
 \label{sec:VisualisierungVonEigenschaften}
+Damit die Visualisierung von Datensätzen wirklich nutzbringend ist, sollten möglichst viele seiner Eigenschaften auf den ersten Blick ersichtlich sein. Möglichkeiten dazu gibt es viele. Im Folgenden sollen einige aufgezeigt werden. Wichtig ist jedoch auch bei dem größten Informationsbedarf, dass die Übersichtlichkeit gewahrt bleiben muss. Weiterhin sollte bei der Wahl von Visualisierungsmitteln für Eigenschaften das Gesetz von Miller (aus \cite{miller7}) beachtet werden. Es besagt, dass das Kurzzeitgedächtnis nur 7$\pm$2 Informationen behalten kann. So sollten zum Beispiel nicht mehr als sieben Farben zu Visualisierung verwendet werden. 
+
+\paragraph{Texturen}
+\label{sec:theorieTexturen}
+
+Texturen, wie in Abschnitt \ref{sec:Texturen} erläutert, dienen dazu Objekte farblich darzustellen. Sie sind besonders geeignet, Eigenschaften darzustellen, die nur eine endliche Menge an Werten annehmen können. So kann die Information, ob eine Einheit Freund oder Feind ist, sehr gut über einen Farbcode dargestellt werden. Üblicherweise bieten sich dafür die Farben blau für verbündete und eigene Kräfte, rot für Feinde und grün für neutrale Einheiten an. Ebenso lässt sich zum Beispiel die Darstellung der Art einer Meldung über Farben lösen. Die Umsetzung im Prototyp ist in Abschnitt \ref{sec:FarbigeDarstellungDerEigenschaften} beschrieben.
+
+Um mehrere Eigenschaften über Farben zu visualisieren, kann die wichtigste Eigenschaft die Farbe bestimmen. Eine andere Eigenschaft kann die auf die Helligkeit, in der die Farbe angezeigt wird Einfluss nehmen.
+[IMG]
+
+\paragraph{Pfeile}
+\label{sec:Pfeile}
+ 
+Zur Visualisierung von vektoriellen Eigenschaften wie Blickrichtung (Eigenschaft ohne einen Betrag) oder Geschwindigkeit (Eigenschaft mit Betrag) können Pfeile verwendet werden, die entweder eine einheitliche Länge haben oder deren Länge dem Betrag der Größe entspricht, die Visualisiert werden soll.
+
+\paragraph{Beschriftungen}
+\label{sec:Beschriftungen}
+
+Zur Darstellung von Eigenschaften können auch auf oder neben dem Datensatz eingeblendete Texte verwendet werden. Dieses Mittel eignet sich jedoch nicht besonders gut, da Zeit zum erfassen der Information relativ hoch ist, weil der Text gelesen werden muss. Auch wird die Visualisierung sehr schnell unübersichtlich.
 
 \subsection{Informationsgewinnung durch Visualisierung}
 \label{sec:InformationsgewinnungDurchVisualisierung}
