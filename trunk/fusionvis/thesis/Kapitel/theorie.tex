@@ -89,12 +89,19 @@ Die in dieser Arbeit umgesetzte Fusion durch Visualisierung soll im nächsten Abs
 \paragraph{Einordnung der Arbeit}
 \label{sec:EinordnungDerArbeit}
 
+Der Sachverhalt des S2-Offiziers, der Meldungen aus dem Gefechtsfeld bekommt, und diese zu einer großen Lage zusammenfügt könnte sehr einfach in die zweite Ebene eingeordnet werden, schließlich erstellt er eine Lage. Diese Einschätzung ist jedoch falsch, denn um auf dieses Level zu kommen, muss die Redundanz in den Objekten beseitigt sein, und genau das ist schließlich erst das Ziel. Dies ist das erste Problem bei der Einordnung.
 
+Ein weiteres Problem entsteht durch die Sensoren, welche die Daten für die Visualisierung und damit für die Fusion liefern. Es handelt sich (in der Realität im Gegensatz zum Gefechtssimulator)  entweder um Menschen, oder Computer, die sich in militärischen Fahrzeugen befinden. Wenn diese zum Beispiel ein gegnerisches Fahrzeug erkannt haben und dieses Melden, ist bis dahin bereits Datenfusion geschehen. Der jeweilige Mensch (oder Computer) hat Daten gesammelt und zu einer Meldung eines Objekts fusioniert. Da hier eine Identifikation und eine Bestimmung der Eigenschaften vorgenommen wurden, handelt es sich bei diesem Vorgang um Level 1 Fusion.
 
+ Diese Daten werden nun an den S2-Offizier übermittelt. An dieser Stelle würde nach dem JDL Prozess ein System die Daten, die ermittelt wurden, zusammenführen. Ziel dieser Arbeit war jedoch, diesen Schritt durch Visualisierung vom S2-Offizier selbst durchführen zu lassen.
+
+An dieser Stelle entsteht ein Bruch zwischen dem JDL Prozess und dem hier verfolgten Ansatz. Im ursprünglichen Prozess ist die erste große Hürde, die Daten der unterschiedlichsten Sensoren (Radar, visuell Sensoren, Infrarot, Schall) zu korrelieren. Nachdem der Schritt geschafft ist, ist die Verwaltung unterschiedlicher Meldungen nur noch eine Nebensache. In dieser Arbeit wird aber genau dieser Aspekt in den Vordergrund gerückt. 
+
+Weil der S2-Offizier mit der Aufgabe betraut ist, die Redundanzen zu beseitigen und das erzeugen einer Lage vorzubereiten, ist die visuelle Fusion immer noch auf der ersten Ebene. Der nächste Schritt ist darauf folgend die Aggregation von Daten, in diesem Fall das zusammenfassen von einzelnen gegnerischen Panzern zu Zügen, diese zu Kompanien usw.
 
 \section{Visualisierungsmöglichkeiten}
 \label{sec:Visualisierungsmoeglichkeiten}
-Im Gegensatz zur oben beschriebenen Datenfusion soll die Beseitigung von Redundanzen in dem implementierten Prototyp durch eine geschickte Visualisierung der Daten erfolgen. Beispiele dafür werden im Folgenden erläutert. Einige finden sich in der Implementierung wieder, manche können noch ergänzt werden. An manchen Stellen musste aber eine klare Abwägung getroffen werden. Konsequenz war, dass sich bestimmte Visualisierungsarten nicht oder nur bedingt eignen.
+Im Gegensatz zur in \cite{fusionintroduction} definierten Datenfusion soll die Beseitigung von Redundanzen in dem implementierten Prototyp durch eine geschickte Visualisierung der Daten erfolgen. Beispiele dafür werden im Folgenden erläutert. Einige finden sich in der Implementierung wieder, manche können noch ergänzt werden. An manchen Stellen musste aber eine klare Abwägung getroffen werden. Konsequenz war, dass sich bestimmte Visualisierungsarten nicht oder nur bedingt eignen.
  
 \subsection{Darstellung der Dimensionen}
 \label{sec:DarstellungDerDimensionen}
