@@ -49,13 +49,42 @@ Aus den Daten könnte die auswertende Person schließen, dass sechs Kerzen auf dem
  
 \subsection{Multisensor Data Fusion}
 \label{sec:MultisensorFusion}
-\cite{fusionintroduction} \cite{multisensorDataFusion} \cite{mathfusion}
-
+Um die Redundanz aus den von mehreren Sensoren gewonnenen Daten herauszufiltern, müssen die Datensätze fusioniert werden. Die theoretischen Hintergründe zu dem \emph{Multisensor Data Fusion} genannten Vorgang sind im Folgenden dargelegt. 
 \paragraph{Begriffsbestimmung}
 \label{sec:Begriffsbestimmung}
+Der Begriff \emph{Fusion} kann wie folgt definiert werden:
+\begin{quote}
+		"`[Fusion is] the integration of information from multiple sources to procedure specific and comprehensive unified data about an entity"' \protect\cite{fusionintroduction}
+\end{quote}
+
+
+Aus dieser Definition kann geschlossen werden, dass durch die Fusion von Daten nicht nur ungewollte Redundanzen beseitigt werden können. Es wird auch ein Informationsgewinn erreicht, der auf den Vorteilen mehrerer Sensoren beruht (siehe \ref{sec:Vorteile}), frei nach Aristoteles: "`Das Ganze ist mehr als die Summe seiner Teile."'. Datenfusion ist ein Prozess, der nach \cite{MDFLLINAS} drei Aspekte in sich vereint:
+
+\begin{itemize}
+	\item Datenfusion ist ein Prozess, der auf Unterschiedlichen Ebenen Abläuft. Die unterschiedlichen \emph{Level} beziehen sich auf den unterschiedlich hohen Abstraktionsgrad der Daten. Sie sind im nächsten Abschnitt beschrieben.
+
+	\item Datenfusion schließt die Vorgänge der Erkennung, Assoziation, Korrelation, Beurteilung und Vereinigung von Daten ein.
+
+	\item Das Ergebnis des Prozesses umfasst Anschätzung zu Identifikation und Eigenschaften von Daten bis hin zu Erkenntnissen über komplexe Lagen oder Situationen.
+\end{itemize}
+
+Datenfusion findet in vielen Breichen, vor allem beim Militär, Anwendung. Beispiele werden in \cite{mathfusion} aufgezeigt. Dazu gehören unter anderem die Überwachung der Meere, Luftverteidigung (durch Boden- und durch Lufteinheiten), Aufklärung auf dem Gefechtsfeld, strategische Luftaufklärung, Suche nach Bodenschätzen, Diagnostik in der Medizin und vor allem Robotik. 
 
 \paragraph{Fusion Level}
 \label{sec:FusionLevel}
+
+Die Datenfusion kann, wie oben bereits angesprochen, in insgesamt fünf unterschiedliche Ebenen unterteilt werden. Grundlage dafür ist das vom Joint Directors of Laboratories (JDL) entwickelte Prozessmodell (\cite{mathfusion}). Der Abstraktionsgrad erhöht sich mit aufsteigender Stufennummer. Für die praktische Anwendung von Datenfusion sind vor allem die ersten drei Stufen relevant.
+
+\begin{itemize}
+	\item Level 1 -- Object Assessment: Bestimmung der Identität und der Eigenschaften eines Objekts
+
+	\item Level 2 -- Situation Assessment: Bewertung einer Lage einschließlich der Bestimmung von Beziehungen zwischen Objekten, zwischen den Objekten und ihrer Umgebung und ihrer Bedeutung.
+
+	\item Level 3 -- Impact Assessment: Entwicklung der gegenwärtigen Lage in die Zukunft und damit verbundene Auswirkungen (zum Beispiel Bedrohungen)
+\end{itemize}
+
+Die in dieser Arbeit umgesetzte Fusion durch Visualisierung soll im nächsten Abschnitt in dieses Modell eingeordnet werden.
+
 
 \paragraph{Einordnung der Arbeit}
 \label{sec:EinordnungDerArbeit}
@@ -149,9 +178,12 @@ Zur Darstellung von Eigenschaften können auch auf oder neben dem Datensatz einge
 
 \subsection{Informationsgewinnung durch Visualisierung}
 \label{sec:InformationsgewinnungDurchVisualisierung}
+Zusätzlich zum Erfassen von Daten durch den Benutzer kann die Visualisierung auch zur Informationsgewinnung beitragen. Möglich ist dies, indem die Daten ausgewertet werden und grafisch Zusatzinformationen eingeblendet werden. Diese ermöglichen weitere Schlüsse aus den Daten über die Daten. Als Beispiel soll hier die Reichweitenanalyse dienen. Sie wurde bereits in Abschnitt \ref{sec:LaengeBreiteZeit} angesprochen.
 
 \subsubsection{Bewegungskegel}
 \label{sec:TheorieBewegungskegel}
+Bewegungskegel visualisieren dir Reichweite einer Einheit an Abhängigkeit von ihrer Maximalgeschwindigkeit. Sie ermöglichen eine Aussage darüber, welche Meldungen, die zu unterschiedlichen Zeitpunkten gemacht wurden, wahrscheinlich zu ein und derselben Einheit gehören. Gesicherte Informationen können jedoch nur darüber gewonnen werden, ob zwei Meldungen zu unterschiedlichen Einheiten gehören. Dies ist der Fall, wenn sich die eine außerhalb des Kegels der anderen Einheit befindet. Für weitergehende Informationen sei auf Abschnitt \ref{sec:Bewegungskegel} und \ref{ch:bewegungskegel} verwiesen. [IMG]
 
 \subsubsection{Zugehörigkeitslinien}
 \label{sec:Zugehoerigkeitslinien}
+Die Bewegungskegel haben den Nachteil, dass die Einblendung mehrerer schnell die Übersichtlichkeit einschränkt. Aus diesem Grunde kann man alternativ mit Linien arbeiten. Rechnerisch wird von jedem Datum aus bestimmt, welches andere Datum sich im Kegel befindet. Wie diese Berechnung erfolgt, ist in Abschnitt \ref{ch:bewegungskegel} beschrieben. Alle Daten, die sich rechnerisch im Kegel befinden, werden nun mit dem Datum, das theoretisch an der Spitze des Kegels steht, verbunden. Der Kegel muss nun nicht mehr eingeblendet werden, die wahrscheinliche Zusammengehörigkeit ergibt sich aus den Linien. So können die Bewegungen von Objekten aus einer statischen Ansicht nachvollzogen werden. [IMG]
