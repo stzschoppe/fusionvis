@@ -578,7 +578,7 @@ Der erste Ansatz ist die naive Anwendung des Satzes von Pythagoras. Ausgangspunk
 	d=\sqrt{(x_{2} -x_{1})^2 + (y_{2} -y_{1})^2}
 \end{equation}
 
-Der Abstand hat dieselbe Einheit, wie die in kartesischen Koordinaten angegebenen Punkte \emph{P1(x1, y1)} und  \emph{P2(x2, y2)}.
+Der Abstand hat dieselbe Einheit, wie die in kartesischen Koordinaten angegebenen Punkte \emph{$P_{1}$($x_{1}$,  $y_{1}$)} und  \emph{$P_{2}$($x_{2}$, $y_{2}$)}.
 
 Abhängig von der geografischen Breite, an der die Berechnung durchgeführt wird, resultieren die in Tabelle \ref{tab:PythagorasFehler} dargelegten Fehler bei einer tatsächlichen Länge von 20km.
 
@@ -602,19 +602,19 @@ Da die für die Veranschaulichung gewählte Länge durchaus in der Realität, zum Be
 \label{sec:Seitenkosinussatz}
 \begin{figure}[htb]
 	\centering
-		\includegraphics[width=0.30\textwidth]{Bilder/Law-of-haversines.png}
-	\caption{Kugeldreieck mit Beschriftung}
+		\includegraphics[width=0.50\textwidth]{Bilder/sphere2.png}
+	\caption{Kugeldreieck mit Beschriftung \cite{kugeldreieck}}
 	\label{fig:Law-of-haversines}
 \end{figure}
 
 Um die Entfernung zweier Punkte auf einer Kugel mathematisch korrekt zu berechnen, behilft man sich der sphärischen Geometrie. Für das in Abbildung \ref{fig:Law-of-haversines} dargestellte Kugeldreieck gilt der Seitenkosinussatz:
 
 \begin{equation}\label{eq:zwei}
-	\cos{c} = \cos{a} \cos{b} + \sin{a} \sin{b} \cos{C} 
+	\cos{c} = \cos{a} \cos{b} + \sin{a} \sin{b} \cos{\gamma} 
 \end{equation}
 
-Dabei soll die Entfernung \emph{c} von Punkt \emph{v} nach Punkt \emph{w} berechnet werden.\\
-Nimmt man für den Punkt \emph{u} den Nordpol an, und arbeitet auf einer Einheitskugel, dann folgt:
+Dabei soll die Entfernung \emph{c} von Punkt \emph{$P_{1}$} nach Punkt \emph{$P_{2}$} berechnet werden.\\
+Nimmt man für den oberen Punkt als Nordpol an, und arbeitet auf einer Einheitskugel, dann folgt:
 
 \begin{subequations}\label{grp}
 \begin{align}
@@ -633,16 +633,16 @@ Bekannt ist folgender Zusammenhang:
 
 Daraus ergibt sich nach Umformung eine Formel zur Berechnung der Länge. Das Ergebnis hängt von den Einheiten der Eingabedaten ab. Werden die Koordinaten im Gradmaß angegeben, so ist zusätzlich zum Erdradius mit dem Faktor $\frac{\pi}{180^\circ}$ zu multiplizieren. Werden die Daten im Bogenmaß eingegeben, entfällt der letzte Faktor.
 
-Der so berechnete Abstand ist unter Berücksichtigung der gemachten Vereinfachung, auf einer Kugel zu rechnen, mathematisch korrekt. Ideal ist diese Lösung jedoch nicht, da die Formel für sehr kleine Entfernungen schlecht konditioniert ist. Kritisch ist hier vor allem der Kosinus der Längengraddifferenz. Abhängig von der Gleitkommapräzision (weniger als sieben signifikante Stellen) können bereits Längen kleiner einer Bogenminute nicht mehr unterschieden werden. Der Grund hierfür ist in Tabelle \ref{tab:Kosinus} illustriert.
+Der so berechnete Abstand ist unter Berücksichtigung der gemachten Vereinfachung, auf einer Kugel zu rechnen, mathematisch korrekt. Ideal ist diese Lösung jedoch nicht, da die Formel für sehr kleine Entfernungen schlecht konditioniert ist. Kritisch ist hier vor allem der Kosinus der Längengraddifferenz. Abhängig von der Gleitkommapräzision (weniger als sieben signifikante Stellen) können bereits Längen kleiner einer Nautischen Meile (1.852m) nicht mehr unterschieden werden. Der Grund hierfür ist in Tabelle \ref{tab:Kosinus} illustriert.
 
 \begin{table*}[ht!]
 	\centering
 		\begin{tabular}{ | l | l |}
 		\hline
 			$x$      & $\cos{x}$       \\ \hline
-		  1 Bogenminute       & 0,99999995769202532795126248717334        \\ \hline
-      30 Bogensekunden    & 0,99999998942300627605141750356948 \\ \hline
-      1 Bogensekunde			& 0,99999999998824778473047407621793 \\
+		  1' (1.852m)       & 0,99999995769202532795126248717334        \\ \hline
+      30'' (926m)    & 0,99999998942300627605141750356948 \\ \hline
+      1'' (30,86m) 			& 0,99999999998824778473047407621793 \\
       \hline
 		\end{tabular}
 	\caption{Schlechte Konditionierung des Kosinus}
@@ -663,6 +663,12 @@ Aus diesem Grund wurde diese Formel zur Entfernungsberechnung verwendet.
 
 \subsection{Informationsverlust durch Projektion einer Kugelkappe auf eine Ebene}
 \label{ch:kugelkappe}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.20\textwidth]{Bilder/kreisbogen.pdf}
+	\caption{Schnitt durch die Erde mit Kreisbogen und darunterliegender Strecke}
+	\label{fig:kreisbogen}
+\end{figure}
 
 Um im vorgestellten Prototyp eine Dimension für die Zeit verwenden zu können, war es notwendig die Höhe einer Einheit außer Acht zu lassen. Dadurch ergibt sich eine Ungenauigkeit, denn die Eingabedaten befinden sich eigentlich auf einer sogenannten Kugelkappe. So bezeichnet man einen Ausschnitt einer Kugeloberfläche. Durch das Fortlassen der Zeit wird dieser in die Ebene projiziert. 
 
@@ -731,6 +737,12 @@ In der prototypischen Implementierung wurde diese Variante nicht umgesetzt. Grun
 
 \subsubsection{Winkelvergleich}
 \label{sec:Winkelvergleich}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.20\textwidth]{Bilder/bewegungskegel.pdf}
+	\caption{Schnitt durch einen Kegel. $b$ ist dabei der Ortsvektor eines zu prüfenden Punkts.}
+	\label{fig:bewegungskegel}
+\end{figure}
 
 Ein Ansatz das Problem mit Analytischer Geometrie anzugehen, ist der Vergleich von Winkeln zwischen Vektoren. Für diese Variante kann o. B. d. A. der Kegel als (gleichschenkliges) Dreieck angenommen werden. Auf der Basis wird nun das Lot gefällt. Bei diesem handelt es sich um die Höhe des Dreiecks. 
 
