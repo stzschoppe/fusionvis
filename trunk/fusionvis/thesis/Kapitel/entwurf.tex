@@ -139,12 +139,18 @@ Das erstellte Framework besteht im Wesentlichen aus zwei Teilen. Auf der einen S
 
 Die Benutzeroberfläche enthält weiterhin zwei \emph{JPanel}-Klassen, die es dem Benutzer ermöglichen, eine textuelle und eine visuelle Darstellung der Daten zu sehen. 
 \begin{description}
-	\item[ImporterPanel] Für die textuelle Sicht ist das \emph{ImporterPanel} vorgesehen. Es bietet die Möglichkeit, die Daten nach bestimmten Eigenschaften zu filtern und diese mit ihren Eigenschaften in Textform anzuzeigen. Das Model, auf dem gearbeitet wird, ist das in Abschnitt \ref{ch:Datenmodell} beschriebene Datenmodell. Somit ist das ImporterPanel auch völlig unabhängig von dem genauen Inhalt der Daten, solange diese in das beschriebene Model überführt wurden. Dafür ist der Importer zuständig, der im nächsten Abschnitt beschrieben wird.
+	\item[ImporterPanel] Für die textuelle Sicht ist das \emph{ImporterPanel} vorgesehen. Es bietet die Möglichkeit, die Daten nach bestimmten Eigenschaften zu filtern und diese mit ihren Eigenschaften in Textform anzuzeigen. Das Model, auf dem gearbeitet wird, ist das in Abschnitt \ref{ch:Datenmodell} beschriebene Datenmodell. Somit ist das \emph{ImporterPanel} auch völlig unabhängig von dem genauen Inhalt der Daten, solange diese in das beschriebene Model überführt wurden. Dafür ist der \emph{Importer} zuständig, der im nächsten Abschnitt beschrieben wird. Das \emph{ImporterPanel} ist in Abbildung \ref{fig:FrontendBackend} in rot dargestellt.
 
-	\item[ViewerPanel]Die zweite \emph{JPanel}-Klasse ist das \emph{ViewerPanel}. Es ist verantwortlich für die dreidimensionale Anzeige der Daten. Dazu ist es notwendig, das vorhandene Datenmodell in die Struktur eines Szenenbaums zu überführen. Der Szenenbaum wird in Abschnitt \ref{sec:Szenenbaum} beschrieben. Dieser Schritt wird vom \emph{Mapper} bewerkstelligt, der im nächsten Abschnitt erklärt wird.
+	\item[ViewerPanel]Die zweite \emph{JPanel}-Klasse ist das \emph{ViewerPanel}. Es ist verantwortlich für die dreidimensionale Anzeige der Daten. Dazu ist es notwendig, das vorhandene Datenmodell in die Struktur eines Szenenbaums zu überführen. Der Szenenbaum wird in Abschnitt \ref{sec:Szenenbaum} beschrieben. Dieser Schritt wird vom \emph{Mapper} bewerkstelligt, der im nächsten Abschnitt erklärt wird. Das \emph{ViewerPanel} ist in Abbildung \ref{fig:FrontendBackend} in grün dargestellt.
 
-Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser beinhaltet eine OpenGL-Anzeigefläche, welche die dreidimensionale Darstellung übernimmt und es dem Benutzer erlaubt, sich in den visualisierten Daten zu bewegen, Datensätze mittels Mousepickings (siehe Abschnitt \ref{ch:mousepicking}) auszuwählen und diese somit im \emph{ImporterPanel} zu inspizieren. Auch der umgekehrte Weg ist möglich, also das Auswählen eines Datums in der textuellen Ansicht, was eine Hervorhebung seiner Visualisierung im ViewerPanel zur Folge hat.
+Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser beinhaltet eine OpenGL-Anzeigefläche, welche die dreidimensionale Darstellung übernimmt und es dem Benutzer erlaubt, sich in den visualisierten Daten zu bewegen, Datensätze mittels Mousepickings (siehe Abschnitt \ref{ch:mousepicking}) auszuwählen und diese somit im \emph{ImporterPanel} zu inspizieren. Auch der umgekehrte Weg ist möglich, also das Auswählen eines Datums in der textuellen Ansicht, was eine Hervorhebung seiner Visualisierung im \emph{ViewerPanel} zur Folge hat.
 \end{description}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.80\textwidth]{Bilder/FrontendBackend.png}
+	\caption{Frontend des Frameworks mit \emph{FusionVisForm} (orange), \emph{ImporterPanel} (rot) und \emph{ViewerPanel} (grün)}
+	\label{fig:FrontendBackend}
+\end{figure}
 
 Zusammenfassend kann man zum Frontend des Frameworks sagen, dass die von den konkreten XML-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was wie dargestellt werden soll. Das \emph{Was} ist der Prozess des Überführens von XML in das Datenmodell des Frameworks und wird im \emph{Importer} festgeschrieben. Das \emph{Wie} ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im \emph{Mapper} beantwortet.
 
@@ -159,9 +165,9 @@ Ist die Voraussetzung erfüllt, liest der \emph{Importer} die XML-Datei aus und e
 
 \lstset{%
 language=XML,
-basicstyle={\ttfamily,\footnotesize},
+basicstyle={\ttfamily, \scriptsize},
 numbers=left,                   % where to put the line-numbers
-numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+numberstyle=\scriptsize,      % the size of the fonts that are used for the line-numbers
 stepnumber=2,
 }%
 \begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispiel für eine wohlgeformte XML-Datei},label=code:xmlexample]
@@ -211,9 +217,9 @@ frame=single
 commentstyle=\color{blue},
 stringstyle=\color{green},
 backgroundcolor=\color{white},
-basicstyle={\ttfamily,\footnotesize},       % the size of the fonts that are used for the code
+basicstyle={\ttfamily,\scriptsize},       % the size of the fonts that are used for the code
 numbers=left,                   % where to put the line-numbers
-numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+numberstyle=\scriptsize,      % the size of the fonts that are used for the line-numbers
 stepnumber=2
 }%
 \begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispielhafte Implementierung der \emph{extractDataFromNode()}-Methode}, ,label=code:extractDataFromNode]

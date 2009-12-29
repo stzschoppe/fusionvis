@@ -182,7 +182,7 @@ public class ViewerPanel extends JPanel implements Observer{
         }
         catch (Exception ex) 
         {
-            logger.throwing(this.getClass().toString(),"SceneEditorDemo()",ex);
+            logger.throwing(this.getClass().toString(),"ViewerPanel",ex);
         }
     }
     
