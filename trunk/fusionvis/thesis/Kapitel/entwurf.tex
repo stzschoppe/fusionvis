@@ -197,13 +197,13 @@ Der \emph{Importer} hält bereits notwendige Datenstrukturen vor. Zum einen sind 
 
 \paragraph{Spezialisierung}
 \label{sec:ImporterSpezialisierung}
-Zur  Spezialisierung eines \emph{Importers} für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden XML-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
+Zur  Spezialisierung eines \emph{Importers} für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als Erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden XML-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
 
-Als nächstes muss nun die Methode \emph{extractDataFromNode()} implementiert werden. Ihr wird ein Knoten des DOM-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun, nach den Vorstellungen des Anwenders ein Data-Objekt zu instanzieren, das die in den vorher spezifizierten Listen stehenden Eigenschaften enthält.
+Als Nächstes muss nun die Methode \emph{extractDataFromNode()} implementiert werden. Ihr wird ein Knoten des DOM-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun, nach den Vorstellungen des Anwenders ein Data-Objekt zu instanzieren, das die in den vorher spezifizierten Listen stehenden Eigenschaften enthält.
 
 \paragraph{Hilfsfunktionen}
 \label{sec:ImporterHilfsfunktionen}
-In der \emph{Importer}-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
+In der \emph{Importer}-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim Erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
 
 Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem DOM-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:xmlexample} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt. Zusätzlich wird der gewünschte Typ (hier: \emph{Type.TString}) übergeben.
 
@@ -264,11 +264,11 @@ stepnumber=2
 %\paragraph{Anbindung an XML}
 %\paragraph{Instanzieren des Datenmodells}
 \subsubsection{Mapper}
-Bereits im vorletzten Abschnitt wurde angesprochen, dass der \emph{Mapper} dafür Sorge trägt, dass das Datenmodell in eine dreidimensionale Darstellung überführt wird. Da nicht für jedes Problem auch dieselbe Visualisierung zielführend ist, besteht hier die Möglichkeit zur Individualisierung.
+Bereits im vorletzten Abschnitt wurde angesprochen, dass der \emph{Mapper} dafür Sorge trägt, das Datenmodell in eine dreidimensionale Darstellung zu überführen. Da nicht für jedes Problem auch dieselbe Visualisierung zielführend ist, besteht hier die Möglichkeit zur Individualisierung.
 
 Bei der konkreten Implementierung sind zwei unterschiedliche Aspekte zu unterscheiden: Auf der einen Seite ist die Frage, wie die Daten an sich dargestellt werden, zum Beispiel in Bezug auf Form und Farbe und das sonstige Erscheinungsbild. Auf der anderen Seite muss spezifiziert werden, in welcher Art und Weise die Dimensionen der Daten dargestellt werden.
 
-Resultat des Mappingvorgangs soll ein Szenenbaum sein. Er ist die für die Grafikengine lesbare Form des Datenmodells. Dieser Szenenbaum muss bei jeder Veränderung des Datenmodells aktualisiert werden. Als solche zählt zum Beispiel das Filtern von Daten nach bestimmten Eigenschaften oder das Erstellen einer Sicht auf das Datenmodell.
+Resultat des Mappingvorgangs soll ein Szenenbaum sein (siehe Abschnitt \ref{sec:Szenenbaum}). Er ist die für die Grafikengine lesbare Form des Datenmodells. Dieser Szenenbaum muss bei jeder Veränderung des Datenmodells aktualisiert werden. Als solche zählt zum Beispiel das Filtern von Daten nach bestimmten Eigenschaften oder das Erstellen einer Sicht auf das Datenmodell.
 \paragraph{Spezialisierung}
 \label{sec:MapperSpezialisierung}
 Wie oben bereits beschrieben hat die Spezialisierung im \emph{Mapper} zwei Aspekte. Auf der einen Seite kann die Gestalt eines einzelnen Datums spezifiziert werden und auf der anderen Seite die Position dieses Datums im dreidimensionalen Raum. Eine vollständige Trennung ist in der derzeitigen Version nicht gelungen. Inwiefern sich das auswirkt, wird im Folgenden gezeigt.
@@ -613,7 +613,7 @@ Da die für die Veranschaulichung gewählte Länge durchaus in der Realität, zum Be
 	\label{fig:Law-of-haversines}
 \end{figure}
 
-Um die Entfernung zweier Punkte auf einer Kugel mathematisch korrekt zu berechnen, behilft man sich der sphärischen Geometrie. Für das in Abbildung \ref{fig:Law-of-haversines} dargestellte Kugeldreieck gilt der Seitenkosinussatz:
+Um die Entfernung zweier Punkte auf einer Kugel mathematisch korrekt zu berechnen, bedient man sich der sphärischen Geometrie. Für das in Abbildung \ref{fig:Law-of-haversines} dargestellte Kugeldreieck gilt der Seitenkosinussatz:
 
 \begin{equation}\label{eq:zwei}
 	\cos{c} = \cos{a} \cos{b} + \sin{a} \sin{b} \cos{\gamma} 
@@ -664,7 +664,7 @@ Die gleiche Berechnung wie oben kann durch geeignetes Umstellen der Gleichung au
 	d = 2 R \arcsin{\sqrt{\sin^2{\frac{lat_{2}-lat_{1}}{2}} + \cos{lat_{1}} \cos{lat_{2}} \sin^2{\frac{\Delta lon}{2}}}}
 \end{equation}
 
-Auch diese Formel ist für ein spezielles Problem schlecht konditioniert. Problematisch sind Entfernungen zwischen antipodalen Punkten, also Orten, die sich auf dem Erdball gegenüberliegen. Da dieser Fall in Kontext des erstellten Prototyps keine Rolle spielt, ist dieser Fall auch zu vernachlässigen. \\
+Auch diese Formel ist für ein spezielles Problem schlecht konditioniert. Problematisch sind Entfernungen zwischen antipodalen Punkten, also Orten, die sich auf dem Erdball gegenüberliegen. Da dieser Fall in Kontext des erstellten Prototyps keine Rolle spielt, ist dieser Fall aber zu vernachlässigen. \\
 Aus diesem Grund wurde diese Formel zur Entfernungsberechnung verwendet.
 
 \subsection{Informationsverlust durch Projektion einer Kugelkappe auf eine Ebene}
@@ -676,7 +676,7 @@ Aus diesem Grund wurde diese Formel zur Entfernungsberechnung verwendet.
 	\label{fig:kreisbogen}
 \end{figure}
 
-Um im vorgestellten Prototyp eine Dimension für die Zeit verwenden zu können, war es notwendig die Höhe einer Einheit außer Acht zu lassen. Dadurch ergibt sich eine Ungenauigkeit, denn die Eingabedaten befinden sich eigentlich auf einer sogenannten Kugelkappe. So bezeichnet man einen Ausschnitt einer Kugeloberfläche. Durch das Fortlassen der Zeit wird dieser in die Ebene projiziert. 
+Um im vorgestellten Prototyp eine Dimension für die Zeit verwenden zu können, war es notwendig die Höhe einer Einheit außer Acht zu lassen. Dadurch ergibt sich eine Ungenauigkeit, denn die Eingabedaten befinden sich eigentlich auf einer sogenannten Kugelkappe. So bezeichnet man einen Ausschnitt einer Kugeloberfläche. Zusätzlich sind sie eventuell sogar auf Bergen. Durch das Fortlassen der Höhe wird die Kugelkappe in die Ebene projiziert. 
 
 Um diesen Sachverhalt einfacher durchdenken zu können, soll er in den zweidimensionalen Raum übertragen werden. Folglich geht es dann nicht mehr um eine Kugelkappe, die in eine Ebene abgebildet wird, sondern um einen Kreisbogen, der auf eine Gerade projiziert wird.
 
@@ -701,7 +701,7 @@ l &= 2 \sin{\alpha} \cdot 6371km
 \end{align}
 \end{subequations}
 
-Die Länge der Strecke ist somit etwa  29,999972km. Der absolute Fehler beträgt 2,72cm. Relativ sind das 0,001\,\textperthousand. Das Vernachlässigen der Höhe fällt also viel schwerer ins Gewicht, als die beschriebene Vereinfachung.
+Die Länge der Strecke ist somit etwa  29,999972km. Der absolute Fehler beträgt 2,72cm. Relativ sind das 0,001\,\textperthousand. Das Vernachlässigen der Höhe fällt also viel schwerer ins Gewicht, als die Projektion der Kugelkappe in die Ebene.
 
 
 \subsection{Mousepicking}
@@ -726,14 +726,14 @@ In Abbildung \ref{fig:mousepickingscreen} ist eine Visualisierung der Strahlen n
 
 \subsection{Bewegungskegel}
 \label{ch:bewegungskegel}
-Im der prototypischen Implementierung ist es möglich, eine Reichweitenanalyse zu einer Einheit durchzuführen. Das heißt, wie weit sie sich unter Annahme einer bestimmten Maximalgeschwindigkeit bewegen kann. Dargestellt wird diese Reichweite durch einen Kegel, der seine Spitze im Ausgangsort der Einheit hat.
+In der prototypischen Implementierung ist es möglich, eine Reichweitenanalyse zu einer Einheit durchzuführen. Das heißt, wie weit sie sich unter Annahme einer bestimmten Maximalgeschwindigkeit bewegen kann. Dargestellt wird diese Reichweite durch einen Kegel, der seine Spitze im Ausgangsort der Einheit hat.
 
 Interessant ist es, festzustellen, welche anderen Einheiten sich in dem Kegel befinden. Visuell ist dies meist möglich, das heißt eine Berechnung ist nicht immer notwendig. Aber es gibt Grenzfälle, in welchen eine genaue Aussage nur mathematisch getroffen werden kann. Wie diese Berechnung aussehen kann, soll im Folgenden dargelegt werden. 
 
 \subsubsection{Engine-Mittel}
 \label{sec:EngineMittel}
 
-Unter Berücksichtigung der Tatsache, dass eine Engine für die dreidimensionale Darstellung verwendet wurde, kann man davon ausgehen, dass diese Mittel zur Verfügung stellt, um das Problem zu lösen. 
+Unter Berücksichtigung der Tatsache, dass eine Engine für die dreidimensionale Darstellung verwendet wurde, kann man davon ausgehen, dass davon Mittel zur Verfügung gestellt werden, um das Problem zu lösen. 
 
 Eine mögliche Umsetzung basiert auf der Technik, die auch für die Mousepicks (siehe Abschnitt \ref{ch:mousepicking}) verwendet wurde: Gegeben seien die dreidimensionalen Objekte der Einheiten und der Kegel, in dem sie potentiell liegen könnten. Von jeder Einheit wird jetzt ein Strahl ausgesendet. Richtung ist grundsätzlich die negative y-Richtung. Naiv gesprochen: \emph{nach unten}. 
 
@@ -750,7 +750,7 @@ In der prototypischen Implementierung wurde diese Variante nicht umgesetzt. Grun
 	\label{fig:bewegungskegel}
 \end{figure}
 
-Ein Ansatz das Problem mit Analytischer Geometrie anzugehen, ist der Vergleich von Winkeln zwischen Vektoren. Für diese Variante kann o. B. d. A. der Kegel als (gleichschenkliges) Dreieck angenommen werden. Auf der Basis wird nun das Lot gefällt. Bei diesem handelt es sich um die Höhe des Dreiecks. 
+Ein Ansatz das Problem mit analytischer Geometrie anzugehen, ist der Vergleich von Winkeln zwischen Vektoren. Für diese Variante kann o. B. d. A. der Kegel als (gleichschenkliges) Dreieck angenommen werden. Auf der Basis wird nun das Lot gefällt. Bei diesem handelt es sich um die Höhe des Dreiecks. 
 
 Als Erstes wird der Winkel zwischen den Schenkeln des Dreiecks und dem Lot berechnet. Da der Radius des Kegels mit der Höhe des Dreiecks (und ebenfalls der Höhe des Kegels) ein rechtwinkliges Dreieck aufspannt, gilt:
 \begin{subequations}\label{eq:tan}
@@ -767,14 +767,14 @@ Als Zweites wird der Winkel berechnet, der sich für jede zu prüfende Einheit zwi
 
 Ist dieser Winkel größer, liegt die Einheit außerhalb des Kegels. Ist er anderenfalls kleiner, befindet sich die geprüfte Einheit im Kegel. 
 
-Insgesamt handelt es sich hierbei um ein recht rechenaufwendiges Verfahren, da es für jede Einheit durchgeführt werden muss. Aus diesem Grund stellt sich die Frage, ob das es Möglichkeiten zur Vereinfachung gibt.
+Insgesamt handelt es sich hierbei um ein recht rechenaufwendiges Verfahren, da es für jede Einheit durchgeführt werden muss. Aus diesem Grund stellt sich die Frage, ob es Möglichkeiten zur Vereinfachung gibt.
 
 Vergleich der y-Komponenten
 Berechnet man den Winkel $\alpha$ nicht mit der Gleichung \ref{eq:tan}, sondern mit Gleichung \ref{eq:winkel}, ergibt sich eine Vereinfachung: Da der Richtungsvektor nur in der y-Komponente von null verschieden ist, geht auch nur die y-Komponente des Schenkelvektors ein. Damit degeneriert das Skalarprodukt zu einer einzigen Multiplikation. 
 
 Für die Winkelbrechnung sind die Längen der Vektoren, die für die Berechnung herangezogen werden, unerheblich. Darum muss für das Lot nicht mit dem Vektor (0, h, 0) gerechnet werden. Es genügt (0, 1, 0). Das Skalarprodukt muss nun schlicht nicht mehr ausgerechnet werden.
 
-Ebenso können der Schenkelvektor und der Vektor von der zu prüfenden Einheit Richtung Kegelspitze normalisiert werden. Resultat ist, dass der Nenner der Formel zur Winkelberechnung gleich eins ist. Die Berechnung des Arkuskosinus ist zum Vergleich der beiden Winkel hinfällig. Schließlich müsste er nur von den y-Komponenten berechnet werden. Diese können aber auch gleich verglichen werden: Ist die des normalisierten Vektors der zu prüfenden Einheit kleiner, liegt sie außerhalb. Ist die des normalisierten Schenkelvektors kleiner, liegt sie im Kegel.
+Ebenso können der Schenkelvektor und der Vektor der zu prüfenden Einheit Richtung Kegelspitze normalisiert werden. Resultat ist, dass der Nenner der Formel zur Winkelberechnung gleich eins ist. Die Berechnung des Arkuskosinus ist zum Vergleich der beiden Winkel hinfällig. Schließlich müsste er nur von den y-Komponenten berechnet werden. Diese können aber auch gleich verglichen werden: Ist die Höhe (y-Komponente) des normalisierten Vektors der zu prüfenden Einheit kleiner, liegt sie außerhalb. Ist die des normalisierten Schenkelvektors kleiner, liegt sie im Kegel.
 
 Zusammenfassen müssen zur Berechnung nur noch folgende Schritte durchlaufen werden: 
 \begin{enumerate}

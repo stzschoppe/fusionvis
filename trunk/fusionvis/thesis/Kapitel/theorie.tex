@@ -5,7 +5,7 @@
 \chapter{Multisensorische Daten und ihre Visualisierung}
 \label{ch:theorie}
 
-In diesem Kapitel soll zuerst der Zusammenhang zwischen dem Thema dieser Arbeit und den dafür relevanten Theoretischen Grundlagen dargelegt werden. Darauf folgend sollen Möglichkeiten der Datenvisualisierung aufgezeigt. Einige davon sind in der prototypischen Implementierung umgesetzt, andere wurden nicht aufgenommen. Die gründe dafür sollen an geeigneter Stelle dargelegt werden.
+In diesem Kapitel soll zuerst der Zusammenhang zwischen dem Thema dieser Arbeit und den dafür relevanten theoretischen Grundlagen dargelegt werden. Darauf folgend sollen Möglichkeiten der Datenvisualisierung aufgezeigt. Einige davon sind in der prototypischen Implementierung umgesetzt, andere wurden nicht aufgenommen. Die Gründe dafür sollen an geeigneter Stelle dargelegt werden.
 
 \section{Theoretische Einordnung}
 \label{sec:TheoretischeEinordnung}
@@ -16,25 +16,25 @@ In diesem Abschnitt soll die  theoretische Einordnung der Arbeit erfolgen. An er
 Der Begriff der \emph{multisensorischen Daten} existiert in der Literatur nicht losgelöst. Interessant ist er nur in Verbindung der Fusion von Daten. Trotzdem soll an dieser Stelle eine kurze begriffliche Betrachtung stehen.
 
 \label{beispiel}
-Ein kleines Beispiel verdeutlicht sehr gut, worum es hier geht: Man stelle sich einen Tisch vor, auf dem zwei brennende Kerzen stehen. Davor befinden sich drei Beobachter. Jeder soll unabhängig von den anderen auf einem Blatt Papier jeden Gegenstand beschreiben, den er sieht. Bei den entstehenden Dokumenten handelt es sich um eine Form von multisensorischen Daten. Ein Datum ist dabei eine Beschreibung eines Gegenstandes. Ein Sensor ist jeweils einer der Beobachter.  Dies ist ein Ansatz, sich der Thematik zu nähern. 
+Ein kleines Beispiel verdeutlicht sehr gut, worum es hier geht: Man stelle sich einen Tisch vor, auf dem zwei brennende Kerzen stehen. Davor befinden sich drei Beobachter. Jeder soll unabhängig von den anderen jeden Gegenstand, den er sieht, auf je einem Blatt Papier beschreiben. Bei den entstehenden Dokumenten handelt es sich um eine Form von multisensorischen Daten. Ein Datum ist dabei eine Beschreibung eines Gegenstandes. Ein Sensor ist jeweils einer der Beobachter.  Dies ist ein Ansatz, sich der Thematik zu nähern. 
 
 Ein anderer Ansatz könnte bei selbem Aufbau mit einer Person gemacht werden. Denn der Mensch, oder besser seine Sinne liefert schon multisensorische Daten. Die Person sieht eine Lichtquelle und fühlt eine Hitzequelle. Diese beiden Beobachtungen sind die Daten, die Sensoren sind Tastsinn und Sehsinn.
 
-Multisensorische Daten wie oben geschildert sind aber in der Theorie und Praxis nicht von Bedeutung, wenn sie für sich genommen werden. Schlüssige Informationen daraus sind nämlich nicht möglich, ohne die Eingangsdaten zu interpretieren. Dieser Vorgang, man spricht von \emph{Multisensor Data Fusion}, soll in Abschnitt [REF] erläutert werden.
+Multisensorische Daten wie oben geschildert sind aber in der Theorie und Praxis nicht von Bedeutung, wenn sie für sich genommen werden. Schlüssige Informationen daraus sind nämlich nicht möglich, ohne die Eingangsdaten zu interpretieren. Dieser Vorgang, man spricht von \emph{Multisensor Data Fusion}, soll in Abschnitt \ref{sec:MultisensorFusion} erläutert werden.
 \paragraph{Vorteile}
 \label{sec:Vorteile}
 In \cite{MDFLLINAS} werden neun Vorteile von multisensorischen Systemen (und den von ihnen gelieferten Daten) aufgezählt, die hier in Auswahl sinngemäß wiedergegeben werden sollen:
 
 \begin{enumerate}
-	\item \textbf{Robustheit:} Informationen können weiter gesammelt werden, auch wenn einer oder mehrere Sensoren keine Daten mehr liefern.
+	\item \textbf{Robustheit:} Informationen können weiter gesammelt werden, auch wenn ein oder mehrere Sensoren keine Daten mehr liefern.
 
-	\item \textbf{R\protect\"aumlich weitreichende Abdeckung:} Daten, die vielleicht nur von einem der vielen Sensoren gesehen werden, würden nicht entdeckt, wenn nur ein einzelner Sensor an der falschen Stelle steht.
+	\item \textbf{R\protect\"aumlich weitreichende Abdeckung:} Daten, die vielleicht nur von einem ein paar Sensoren gesehen werden, würden nicht entdeckt, wenn nur ein einzelner Sensor an der falschen Stelle steht.
 
 	\item \textbf{Zeitlich weitreichende Abdeckung:} Nicht jeder Sensor steht zu jeder Zeit zur Verfügung. Bei zeitlichem Versatz und Überlappung kann eine dauerhafte Datensammlung betrieben werden.
 
 	\item \textbf{Gesteigerte Informationssicherheit:} Wird ein Datum durch mehrere Sensoren erfasst, verringert sich die Wahrscheinlichkeit eines Messfehlers.
 
-	\item \textbf{Erhöhte Informationsdichte:} Die Auflösung, mit der mehrer Sensoren ein gebiet abtasten können, ist höher als die Auflösung eines einzelnen Sensors.
+	\item \textbf{Erhöhte Informationsdichte:} Die Auflösung, mit der mehrer Sensoren ein Gebiet abtasten können, ist höher als die Auflösung eines einzelnen Sensors.
 \end{enumerate}
 
 Diese Reihe von Vorteilen zeigt, dass die Datensammlung mit mehreren Sensoren durchaus betrieben werden sollte. Die entstehenden Daten bieten vor allem durch ihre Redundanzen  mehr und sichere Informationen als die eines einzelnen Sensors.
