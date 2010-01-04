@@ -4,20 +4,34 @@
 \input{header}
 
 \begin{document}
-
+\pagenumbering{Roman}
 \include{kapitel/acronyms}
 
 \include{kapitel/titelseite}
-
-\include{kapitel/erklaerung}
-
+\singlespacing
 %\include{kapitel/abstract}
+\printglossary[type=\acronymtype,toctitle=Abkürzungsverzeichnis,title=Abkürzungsverzeichnis,style=long]
+\clearpage
+
+%\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+\listoffigures
+\clearpage
+
+%\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+\listoftables
+\clearpage
+
+%\addcontentsline{toc}{chapter}{Listingverzeichnis}
+\lstlistoflistings
+\clearpage
+
+
 
 \tableofcontents
 
 %Resets the acronyms after abstract
 \glsresetall
-
+\onehalfspacing
 \include{kapitel/einleitung}
 
 \include{kapitel/technologien}
@@ -35,20 +49,12 @@
 %\include{anhang/installation}
 
 %\include{anhang/anleitung}
-
-\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+\singlespacing
+%\addcontentsline{toc}{chapter}{Literaturverzeichnis}
 \bibliographystyle{geralpha}
 \bibliography{literatur}
 \clearpage
-
-\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
-\listoffigures
-\clearpage
-
-\addcontentsline{toc}{chapter}{Listingverzeichnis}
-\lstlistoflistings
-\clearpage
-
-\printglossary[type=\acronymtype,toctitle=Abkürzungsverzeichnis,title=Abkürzungsverzeichnis,style=long]
+\onehalfspacing
+\include{kapitel/erklaerung}
 
 \end{document}
