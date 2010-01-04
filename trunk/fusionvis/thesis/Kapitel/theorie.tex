@@ -58,7 +58,7 @@ Der Begriff \emph{Fusion} kann wie folgt definiert werden:
 \end{quote}
 
 
-Aus dieser Definition kann geschlossen werden, dass durch die Fusion von Daten nicht nur ungewollte Redundanzen beseitigt werden können. Es wird auch ein Informationsgewinn erreicht, der auf den Vorteilen mehrerer Sensoren beruht (siehe \ref{sec:Vorteile}), frei nach Aristoteles: "`Das Ganze ist mehr als die Summe seiner Teile."'. Datenfusion ist ein Prozess, der nach \cite{MDFLLINAS} drei Aspekte in sich vereint:
+Aus dieser Definition kann geschlossen werden, dass durch die Fusion von Daten nicht nur ungewollte Redundanzen beseitigt werden können. Es wird auch ein Informationsgewinn erreicht, der auf den Vorteilen mehrerer Sensoren beruht (siehe Abschnitt \ref{sec:Vorteile}), frei nach Aristoteles: "`Das Ganze ist mehr als die Summe seiner Teile."'. Datenfusion ist ein Prozess, der nach \cite{MDFLLINAS} drei Aspekte in sich vereint:
 
 \begin{itemize}
 	\item Datenfusion ist ein Prozess, der auf Unterschiedlichen Ebenen Abläuft. Die unterschiedlichen \emph{Level} beziehen sich auf den unterschiedlich hohen Abstraktionsgrad der Daten. Sie sind im nächsten Abschnitt beschrieben.
@@ -73,7 +73,7 @@ Datenfusion findet in vielen Breichen, vor allem beim Militär, Anwendung. Beispi
 \paragraph{Fusion Level}
 \label{sec:FusionLevel}
 
-Die Datenfusion kann, wie oben bereits angesprochen, in insgesamt fünf unterschiedliche Ebenen unterteilt werden. Grundlage dafür ist das vom Joint Directors of Laboratories (JDL) entwickelte Prozessmodell (\cite{mathfusion}). Der Abstraktionsgrad erhöht sich mit aufsteigender Stufennummer. Für die praktische Anwendung von Datenfusion sind vor allem die ersten drei Stufen relevant.
+Die Datenfusion kann, wie oben bereits angesprochen, in insgesamt fünf unterschiedliche Ebenen unterteilt werden. Grundlage dafür ist das vom \gls{jdl} entwickelte Prozessmodell (\cite{mathfusion}). Der Abstraktionsgrad erhöht sich mit aufsteigender Stufennummer. Für die praktische Anwendung von Datenfusion sind vor allem die ersten drei Stufen relevant.
 
 \begin{itemize}
 	\item Level 1 -- Object Assessment: Bestimmung der Identität und der Eigenschaften eines Objekts
@@ -93,9 +93,9 @@ Der Sachverhalt des S2-Offiziers, der Meldungen aus dem Gefechtsfeld bekommt, un
 
 Ein weiteres Problem entsteht durch die Sensoren, welche die Daten für die Visualisierung und damit für die Fusion liefern. Es handelt sich (in der Realität im Gegensatz zum Gefechtssimulator)  entweder um Menschen, oder Computer, die sich in militärischen Fahrzeugen befinden. Wenn diese zum Beispiel ein gegnerisches Fahrzeug erkannt haben und dieses Melden, ist bis dahin bereits Datenfusion geschehen. Der jeweilige Mensch (oder Computer) hat Daten gesammelt und zu einer Meldung eines Objekts fusioniert. Da hier eine Identifikation und eine Bestimmung der Eigenschaften vorgenommen wurden, handelt es sich bei diesem Vorgang um Level 1 Fusion.
 
- Diese Daten werden nun an den S2-Offizier übermittelt. An dieser Stelle würde nach dem JDL Prozess ein System die Daten, die ermittelt wurden, zusammenführen. Ziel dieser Arbeit war jedoch, diesen Schritt durch Visualisierung vom S2-Offizier selbst durchführen zu lassen.
+ Diese Daten werden nun an den S2-Offizier übermittelt. An dieser Stelle würde nach dem \gls{jdl} Prozess ein System die Daten, die ermittelt wurden, zusammenführen. Ziel dieser Arbeit war jedoch, diesen Schritt durch Visualisierung vom S2-Offizier selbst durchführen zu lassen.
 
-An dieser Stelle entsteht ein Bruch zwischen dem JDL Prozess und dem hier verfolgten Ansatz. Im ursprünglichen Prozess ist die erste große Hürde, die Daten der unterschiedlichsten Sensoren (Radar, visuell Sensoren, Infrarot, Schall) zu korrelieren. Nachdem der Schritt geschafft ist, ist die Verwaltung unterschiedlicher Meldungen nur noch eine Nebensache. In dieser Arbeit wird aber genau dieser Aspekt in den Vordergrund gerückt. 
+An dieser Stelle entsteht ein Bruch zwischen dem \gls{jdl} Prozess und dem hier verfolgten Ansatz. Im ursprünglichen Prozess ist die erste große Hürde, die Daten der unterschiedlichsten Sensoren (Radar, visuell Sensoren, Infrarot, Schall) zu korrelieren. Nachdem der Schritt geschafft ist, ist die Verwaltung unterschiedlicher Meldungen nur noch eine Nebensache. In dieser Arbeit wird aber genau dieser Aspekt in den Vordergrund gerückt. 
 
 Weil der S2-Offizier mit der Aufgabe betraut ist, die Redundanzen zu beseitigen und das erzeugen einer Lage vorzubereiten, ist die visuelle Fusion immer noch auf der ersten Ebene. Der nächste Schritt ist darauf folgend die Aggregation von Daten, in diesem Fall das zusammenfassen von einzelnen gegnerischen Panzern zu Zügen, diese zu Kompanien usw.
 
@@ -143,7 +143,7 @@ Eine andere Anwendung ist die Frage nach der Lageentwicklung in Angriffsrichtung
 \paragraph{Eine Dimension}
 \label{sec:EineDimension}
 
-Sicher gibt es sehr speziell geartete Fragestellungen, die eine Visualisierung von Daten auf einer Linie nötig machen. Man könnte zum Beispiel Datensätze aus einem Netzwerk darstellen. Wenn die Datensätze eine MAC-[ABK]Adresse umfassen, kann diese dazu benutzt werden, die Daten auf einer Linie anzuordnen. Dazu ist ein geeigneter Homomorphismus von dem Bereich der Adressen auf die reellen Zahlen notwendig. Ablesbar wäre dann zum Beispiel gehäuftes Auftreten von Handware eines bestimmten Herstellers.
+Sicher gibt es sehr speziell geartete Fragestellungen, die eine Visualisierung von Daten auf einer Linie nötig machen. Man könnte zum Beispiel Datensätze aus einem Netzwerk darstellen. Wenn die Datensätze eine \gls{mac}-Adresse umfassen, kann diese dazu benutzt werden, die Daten auf einer Linie anzuordnen. Dazu ist ein geeigneter Homomorphismus von dem Bereich der Adressen auf die reellen Zahlen notwendig. Ablesbar wäre dann zum Beispiel gehäuftes Auftreten von Handware eines bestimmten Herstellers.
 
 Sowohl ein- als auch zweidimensionale Darstellung kann in bestimmten Anwendungsgebieten und bei machen Fragestellungen notwendig sein. Meistens lässt sich diese Art der Visualisierung aber auch durch geeignete Position der Kamera erreichen (siehe Abschnitt \ref{sec:VoreingestellteKameraperspektiven}).
 

@@ -2,7 +2,7 @@
 % entwurf.tex						    			    										       %
 %----------------------------------------------------------------%
 \chapter{Entwurf und Umsetzung einer Visualisierungsumgebung}
-In diesem Kapitel werden der Entwurf eines Visualisierungsframeworks und eine prototypische Implementierung auf dessen Basis beschrieben. Dazu werden die einzelnen Komponenten des Frameworks erklärt und ihr Zusammenspiel erläutert. Basierend auf dem Wissen über die Bestandteile können die Möglichkeiten der Erweiterbarkeit und der Individualisierbarkeit skizziert werden. Die Grundlage hierfür stellt zum einen eine prototypische Implementierung einer Visualisierung einer militärischen Lage und des Weiteren der Versuch, Daten des NDP [ABK] dreidimensional darzustellen.
+In diesem Kapitel werden der Entwurf eines Visualisierungsframeworks und eine prototypische Implementierung auf dessen Basis beschrieben. Dazu werden die einzelnen Komponenten des Frameworks erklärt und ihr Zusammenspiel erläutert. Basierend auf dem Wissen über die Bestandteile können die Möglichkeiten der Erweiterbarkeit und der Individualisierbarkeit skizziert werden. Die Grundlage hierfür stellt eine prototypische Implementierung einer Visualisierung einer militärischen Lage.
 
 Abschließend werden interessante Aspekte der Implementierung aufgezeigt, die neben den umgesetzten Implementierungsentscheidungen auch andere Wege aufzeigen sollen.
 
@@ -29,8 +29,8 @@ Die Voraussetzungen an den Typ, der für die Lokalisierung herangezogenen Eigensc
 		\begin{tabular}{ | l | l |}
 		\hline
 			\emph{mittelbar geeignet}      & \emph{unmittelbar geeignet}       \\ \hline
-		  IP [ABK] Adressen       & Entfernungsangaben         \\ \hline
-      MAC [ABK] Adressen      & Ortsangaben (Länge/Breite) \\ \hline
+		  \gls{ip} Adressen       & Entfernungsangaben         \\ \hline
+     \gls{mac} Adressen      & Ortsangaben (Länge/Breite) \\ \hline
       Zeichenketten allgemein & Zeitangaben \\
       \hline
 		\end{tabular}
@@ -135,7 +135,7 @@ Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
 	\label{fig:framework}
 \end{figure}
 
-Das erstellte Framework besteht im Wesentlichen aus zwei Teilen. Auf der einen Seite stehen die für den Benutzer sichtbaren Klassen, an denen nicht notwendigerweise eine Anpassung vorgenommen werden muss, um ein lauffähiges Programm zu erstellen. Zu diesen Klassen gehört auf oberster Ebene die Klasse \emph{FusionVisForm}. Das ist die dem Benutzer angezeigte Programmoberfläche. Sie besteht aus einem Menü mit implementierter Funktion zum Auswählen von XML-Dateien und zum Schließen des Programms. 
+Das erstellte Framework besteht im Wesentlichen aus zwei Teilen. Auf der einen Seite stehen die für den Benutzer sichtbaren Klassen, an denen nicht notwendigerweise eine Anpassung vorgenommen werden muss, um ein lauffähiges Programm zu erstellen. Zu diesen Klassen gehört auf oberster Ebene die Klasse \emph{FusionVisForm}. Das ist die dem Benutzer angezeigte Programmoberfläche. Sie besteht aus einem Menü mit implementierter Funktion zum Auswählen von \gls{xml}-Dateien und zum Schließen des Programms. 
 
 Die Benutzeroberfläche enthält weiterhin zwei \emph{JPanel}-Klassen, die es dem Benutzer ermöglichen, eine textuelle und eine visuelle Darstellung der Daten zu sehen. 
 \begin{description}
@@ -152,16 +152,16 @@ Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser bein
 	\label{fig:FrontendBackend}
 \end{figure}
 
-Zusammenfassend kann man zum Frontend des Frameworks sagen, dass die von den konkreten XML-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was wie dargestellt werden soll. Das \emph{Was} ist der Prozess des Überführens von XML in das Datenmodell des Frameworks und wird im \emph{Importer} festgeschrieben. Das \emph{Wie} ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im \emph{Mapper} beantwortet.
+Zusammenfassend kann man zum Frontend des Frameworks sagen, dass die von den konkreten \gls{xml}-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was wie dargestellt werden soll. Das \emph{Was} ist der Prozess des Überführens von \gls{xml} in das Datenmodell des Frameworks und wird im \emph{Importer} festgeschrieben. Das \emph{Wie} ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im \emph{Mapper} beantwortet.
 
 \subsection{Übersicht über das Backend des Frameworks}
 Das Backend besteht im Wesentlichen aus den zwei oben erwähnten Komponenten \emph{Importer} und \emph{Mapper}. Im Folgenden soll die Funktion der beiden erläutert und notwendige Schritte der Spezialisierung beschrieben werden.
 
 Die Spezialisierung bezieht sich auf das Implementieren abstrakter Methoden, die in den beiden als abstrakt gekennzeichneten Klassen die eigentliche Funktion enthalten sollen.
 \subsubsection{Importer}
-Der \emph{Importer} ist, wie bereits im vorherigen Abschnitt angemerkt, dafür verantwortlich, die Daten aus einer XML-Datei zu lesen. An die Struktur muss eine Voraussetzung gemacht werden, um den Import automatisiert durchführen zu können: Die Datensätze müssen als Elemente des ersten Elements unter dem Wurzelknoten in der XML-Dateien stehen. Ein Beispiel für eine XML-Datei, die diese Anforderung erfüllt, ist in Listing \ref{code:xmlexample} aufgeführt.
+Der \emph{Importer} ist, wie bereits im vorherigen Abschnitt angemerkt, dafür verantwortlich, die Daten aus einer \gls{xml}-Datei zu lesen. An die Struktur muss eine Voraussetzung gemacht werden, um den Import automatisiert durchführen zu können: Die Datensätze müssen als Elemente des ersten Elements unter dem Wurzelknoten in der \gls{xml}-Dateien stehen. Ein Beispiel für eine \gls{xml}-Datei, die diese Anforderung erfüllt, ist in Listing \ref{code:xmlexample} aufgeführt.
 
-Ist die Voraussetzung erfüllt, liest der \emph{Importer} die XML-Datei aus und extrahiert die DOM-Knoten der Datenelemente. Die Wahl des DOM-Parsers für diese Aufgabe wird noch in Abschnitt \ref{sec:DOMParser} genauer erläutert. 
+Ist die Voraussetzung erfüllt, liest der \emph{Importer} die \gls{xml}-Datei aus und extrahiert die \gls{dom}-Knoten der Datenelemente. Die Wahl des \gls{dom}-Parsers für diese Aufgabe wird noch in Abschnitt \ref{sec:DOMParser} genauer erläutert. 
 
 \lstset{%
 language=XML,
@@ -170,7 +170,7 @@ numbers=left,                   % where to put the line-numbers
 numberstyle=\scriptsize,      % the size of the fonts that are used for the line-numbers
 stepnumber=2,
 }%
-\begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispiel für eine wohlgeformte XML-Datei},label=code:xmlexample]
+\begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispiel für eine wohlgeformte \protect\gls{xml}-Datei},label=code:xmlexample]
 <Situation>
   <Units>
    <Unit>
@@ -193,19 +193,19 @@ stepnumber=2,
 </Situation>
 \end{lstlisting}
 
-Der \emph{Importer} hält bereits notwendige Datenstrukturen vor. Zum einen sind dies zwei Membervariablen (\emph{id}, \emph{position}). Diese dienen dem Speichern der XML-Elementnamen, die den Wert für Position und Bezeichner eines Datums liefern. Ähnlich gibt es drei Listen, die die Elementnamen enthalten, die als einfache, zusammengesetzte Eigenschaften oder als Taxonomie extrahiert werden.
+Der \emph{Importer} hält bereits notwendige Datenstrukturen vor. Zum einen sind dies zwei Membervariablen (\emph{id}, \emph{position}). Diese dienen dem Speichern der \gls{xml}-Elementnamen, die den Wert für Position und Bezeichner eines Datums liefern. Ähnlich gibt es drei Listen, die die Elementnamen enthalten, die als einfache, zusammengesetzte Eigenschaften oder als Taxonomie extrahiert werden.
 
 \paragraph{Spezialisierung}
 \label{sec:ImporterSpezialisierung}
-Zur  Spezialisierung eines \emph{Importers} für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als Erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden XML-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
+Zur  Spezialisierung eines \emph{Importers} für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als Erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden \gls{xml}-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
 
-Als Nächstes muss nun die Methode \emph{extractDataFromNode()} implementiert werden. Ihr wird ein Knoten des DOM-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun, nach den Vorstellungen des Anwenders ein Data-Objekt zu instanzieren, das die in den vorher spezifizierten Listen stehenden Eigenschaften enthält.
+Als Nächstes muss nun die Methode \emph{extractDataFromNode()} implementiert werden. Ihr wird ein Knoten des \gls{dom}-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun, nach den Vorstellungen des Anwenders ein Data-Objekt zu instanzieren, das die in den vorher spezifizierten Listen stehenden Eigenschaften enthält.
 
 \paragraph{Hilfsfunktionen}
 \label{sec:ImporterHilfsfunktionen}
 In der \emph{Importer}-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim Erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
 
-Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem DOM-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:xmlexample} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt. Zusätzlich wird der gewünschte Typ (hier: \emph{Type.TString}) übergeben.
+Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem \gls{dom}-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:xmlexample} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt. Zusätzlich wird der gewünschte Typ (hier: \emph{Type.TString}) übergeben.
 
 
 \lstset{%
@@ -310,7 +310,7 @@ Nachdem im letzten Abschnitt die notwendigen Möglichkeiten zur Individualisierun
 Ein wesentlicher Punkt in der Interaktion der Komponenten ist der Visualisierungsprozess, der alle Komponenten des Frontends und des Backends erfasst. Hier die dazugehörige chronologische Abfolge:
 
 \begin{enumerate}
-	\item Der Benutzer wählt eine XML-Datei aus. Die Benutzeroberfläche ruft daraufhin vom zu ihr gehörenden \emph{ImporterPanel} den \emph{Importer} ab.
+	\item Der Benutzer wählt eine \gls{xml}-Datei aus. Die Benutzeroberfläche ruft daraufhin vom zu ihr gehörenden \emph{ImporterPanel} den \emph{Importer} ab.
 
 	\item Das \emph{ImporterPanel} liefert den geforderten \emph{Importer}.
 
@@ -451,7 +451,7 @@ Der Grund für diese Auswahl ist die später beschriebene Möglichkeit, die Reichwe
 
 \paragraph{Import der Daten:}
 \label{sec:ImportDerDaten}
- \emph{BattleSimVis} ist durch das verwendete Visualisierungsframework in der Lage, Daten im XML-Format zu lesen. Für den Testgebrauch wurde eine XML-Datenstruktur verwendet, die aus einem Simulationsproxy stammt. Die importierten Daten werden in eine textuelle und eine grafische Ansicht umgewandelt.
+ \emph{BattleSimVis} ist durch das verwendete Visualisierungsframework in der Lage, Daten im \gls{xml}-Format zu lesen. Für den Testgebrauch wurde eine \gls{xml}-Datenstruktur verwendet, die aus einem Simulationsproxy stammt. Die importierten Daten werden in eine textuelle und eine grafische Ansicht umgewandelt.
 
 \begin{figure}[H]
 	\centering
@@ -720,7 +720,7 @@ Ein ähnlicher Sachverhalt ergibt sich durch das Zeigen mit der Maus auf ein Obje
 
 Aus der analytischen Geometrie ist aber bekannt, dass eine Gerade, spezieller aber auch ein Strahl, durch mindestens zwei Punkte zu spezifizieren ist. An dieser Stelle hilft die gewählte Grafikengine, indem sie ihrem Benutzer zu einer gewählten Bildschirmkoordinate den Startpunkt des Strahls, der von ihr ausgeht, im dreidimensionalen Raum liefert. Zusätzlich ist sie in der Lage, senkrecht zur Bildschirmebene einen Zielpunkt am Ende des sichtbaren Bereichs zu liefern. Aus diesen beiden Punkten kann nun der für das Mousepicking benötigte Strahl berechnet werden.
 
-Bei der Übergabe der Bildschirmkoordinaten ist jedoch zu beachten, dass das von Swing verwendete Koordinatensystem seinen Ursprung in der \emph{oberen} linken Ecke besitzt. Im Vergleich zu OpenGL, das den Ursprung mathematisch eingängig in der \emph{unteren} linken Ecke platziert. Die y-Koordinate ist also vor der Berechnung von der Höhe des Bildschirms abzuziehen. 
+Bei der Übergabe der Bildschirmkoordinaten ist jedoch zu beachten, dass das von Swing verwendete Koordinatensystem seinen Ursprung in der \emph{oberen} linken Ecke besitzt. Im Vergleich zu \gls{opengl}, das den Ursprung mathematisch eingängig in der \emph{unteren} linken Ecke platziert. Die y-Koordinate ist also vor der Berechnung von der Höhe des Bildschirms abzuziehen. 
 
 In Abbildung \ref{fig:mousepickingscreen} ist eine Visualisierung der Strahlen nachzuvollziehen.
 
