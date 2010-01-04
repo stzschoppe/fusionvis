@@ -579,7 +579,7 @@ Zur Entfernungsberechnung sollen drei Ansätze aufgezeigt und auf ihre Tauglichke
 
 \subsubsection{Pythagoras}
 \label{sec:Pythagoras}
-Der erste Ansatz ist die naive Anwendung des Satzes von Pythagoras. Ausgangspunkt  dafür ist die Annahme, sich nicht auf der Oberfläche einer Kugel zu bewegen, sondern auf einer Ebene. Dies hat Ungenauigkeiten zur Folge, die in \ref{ch:kugelkappe} beschrieben sind. Der Abstand \emph{d} zweier Punkte berechnet sich somit wie flogt:
+Der erste Ansatz ist die naive Anwendung des Satzes von Pythagoras. Ausgangspunkt  dafür ist die Annahme, sich nicht auf der Oberfläche einer Kugel zu bewegen, sondern auf einer Ebene. Dies hat Ungenauigkeiten zur Folge, die in Abschnitt \ref{ch:kugelkappe} beschrieben sind. Der Abstand \emph{d} zweier Punkte berechnet sich somit wie flogt:
 \begin{equation}\label{eq:eins}
 	d=\sqrt{(x_{2} -x_{1})^2 + (y_{2} -y_{1})^2}
 \end{equation}
@@ -661,7 +661,7 @@ Der so berechnete Abstand ist unter Berücksichtigung der gemachten Vereinfachung
 Die gleiche Berechnung wie oben kann durch geeignetes Umstellen der Gleichung auch ohne das geschilderte Problem durchgeführt werden. Grundlage bilden die Additionstheoreme und die heute weniger gebräuchliche trigonometrische Funktion des Semiversus (im englischen Haversine, daher der Name der Formel). 
 
 \begin{equation}
-	d = 2 R \arcsin{\sqrt{\sin^2{\frac{lat_{2}-lat_{1}}{2}} + \cos{lat_{1}} \cos{lat_{2}} \sin^2{\frac{\Delta lon}{2}}}}
+	d = 2 R \arcsin{\sqrt{\sin^2{\left(\frac{lat_{2}-lat_{1}}{2}\right)} + \cos{\left(lat_{1}\right)} \cos{\left(lat_{2}\right)} \sin^2{\left(\frac{\Delta lon}{2}\right)}}}
 \end{equation}
 
 Auch diese Formel ist für ein spezielles Problem schlecht konditioniert. Problematisch sind Entfernungen zwischen antipodalen Punkten, also Orten, die sich auf dem Erdball gegenüberliegen. Da dieser Fall in Kontext des erstellten Prototyps keine Rolle spielt, ist dieser Fall aber zu vernachlässigen. \\
