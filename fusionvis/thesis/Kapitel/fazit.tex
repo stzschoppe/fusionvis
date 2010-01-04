@@ -12,7 +12,7 @@ Das resultierende Ergebnis der arbeit ist vielversprechend. Im Prinzip konnten a
 \subsubsection{Framework zur Visualisierung von Multisensorischen Daten}
 \label{sec:FrameworkZurVisualisierungVonMultisensorischenDaten}
 
-Im Zuge der Implementierung  ist ein Klassengerüst entstanden, das aus drei Teilen besteht. Der erste ist eine Datenstruktur, die durch ihre modulare Struktur eine hohe Flexibilität und Erweiterbarkeit bietet. Weiterhin ein Backend, welches auf der einen Seite den einfachen Import von XML-Dateien in die geschaffene Datenstruktur ermöglicht und auf der anderen Seite diese mit weitreichenden Möglichkeiten der Individualisierung in eine dreidimensionale Ansicht umformen kann. Im dritten Teil, dem Frontend, können die Daten visuell und textuell betrachtet werden. Es ist also ein funktionsfähiges Framework entstanden.
+Im Zuge der Implementierung  ist ein Klassengerüst entstanden, das aus drei Teilen besteht. Der erste ist eine Datenstruktur, die durch ihre modulare Struktur eine hohe Flexibilität und Erweiterbarkeit bietet. Weiterhin ein Backend, welches auf der einen Seite den einfachen Import von \gls{xml}-Dateien in die geschaffene Datenstruktur ermöglicht und auf der anderen Seite diese mit weitreichenden Möglichkeiten der Individualisierung in eine dreidimensionale Ansicht umformen kann. Im dritten Teil, dem Frontend, können die Daten visuell und textuell betrachtet werden. Es ist also ein funktionsfähiges Framework entstanden.
 
 \subsubsection{Prototypische Implementierung}
 \label{sec:PrototypischeImplementierung}
@@ -29,7 +29,7 @@ Weiterhin wurde durch die Darstellung von Bewegungskegeln eine Möglichkeit der R
 \subsubsection{Plattformunabhängigkeit}
 \label{sec:fazitPlattformunabhaengigkeit}
 
-Aufgrund der Umsetzung in Java, der Verwendung von Swing und einer Grafikklassenbibliothek, die für alle gängigen Betriebssysteme vorhanden ist, entstand ein plattformunabhängiges System. Der Prototyp wurde erfolgreich auf Microsoft-Systemen (Windows XP, Vista, 7), auf Linux-Systemen (Ubuntu 9.04/9.10) und MacOS X getestet. Beschränkt wird die Unabhängigkeit nur von der Verfügbarkeit nativer LWJGL-Bibliotheken und der OpenGL-Fähigkeit des Betriebssystems. Da letztere für Windowssysteme bereits ab Win98 der Fall ist, scheitert es daran sicher mit sehr geringer Wahrscheinlichkeit.
+Aufgrund der Umsetzung in Java, der Verwendung von Swing und einer Grafikklassenbibliothek, die für alle gängigen Betriebssysteme vorhanden ist, entstand ein plattformunabhängiges System. Der Prototyp wurde erfolgreich auf Microsoft-Systemen (Windows XP, Vista, 7), auf Linux-Systemen (Ubuntu 9.04/9.10) und MacOS X getestet. Beschränkt wird die Unabhängigkeit nur von der Verfügbarkeit nativer \gls{lwjgl}-Bibliotheken und der \gls{opengl}-Fähigkeit des Betriebssystems. Da letztere für Windowssysteme bereits ab Win98 der Fall ist, scheitert es daran sicher mit sehr geringer Wahrscheinlichkeit.
 
 \section{Weiterführende Arbeit}
 Die Ziele der Arbeit sind erfüllt worden, trotzdem gibt es Ansätze für weiterführende Arbeit und Punkte, die sicher noch verbessert werden können. Diese beiden Aspekte sollen im Folgenden beleuchtet werden.
@@ -51,12 +51,12 @@ Ein weiterer Ansatz, an dem Verbesserungen vorgenommen werden können, ist die Er
 
 Der nächste Schritt muss, vor allem im Hinblick auf die Erprobung des Frameworks, die Visualisierung eines anderen Datenbestandes sein. Einige Möglichkeiten sollen hier aufgezählt werden:
 
-\paragraph{Neighbor Discovery Protokoll}
+\paragraph{Neighbor Discovery Protocol}
 \label{sec:NeighborDiscoveryProtokoll}
 
-NDP ist ein Protokoll, das unter anderem die Übersetzung von IPv6-Adressen in Link-Layer-Adressen leistet. Es ist die Entsprechung zum Address Resolution Protokoll in IPv4-Netzen. [CITE]
+\gls{ndp} ist ein Protokoll, das unter anderem die Übersetzung von \gls{ip}v6-Adressen in Link-Layer-Adressen leistet. Es ist die Entsprechung zum Address Resolution Protocol in \gls{ip}v4-Netzen.
 
-Thomas Bühring hat sich in seiner Arbeit [CITE] und [CITE] mit einem Monitoring-Ansatz für NDP befasst. In diesem Zusammenhang entstand die Idee, die anfallenden Daten zu visualisieren. Als Dimensionen könnten jeweils die IPv4-, IPv6- und MAC-Adressen dienen. Daraus könnten Schlüsse über häufig verwendete Hersteller der Netzhardware gezogen werden. Auch könnten Informationen gewonnen werden, welche Benutzer des Netzwerks aufgrund von häufigem Adresswechsel im Netz verdächtig erscheinen. 
+Thomas Bühring hat sich in seiner Arbeit \cite{thomas1} und [CITE] mit einem Monitoring-Ansatz für \gls{ndp} befasst. In diesem Zusammenhang entstand die Idee, die anfallenden Daten zu visualisieren. Als Dimensionen könnten jeweils die \gls{ip}v4-, \gls{ip}v6- und \gls{mac}-Adressen dienen. Daraus könnten Schlüsse über häufig verwendete Hersteller der Netzhardware gezogen werden. Auch könnten Informationen gewonnen werden, welche Benutzer des Netzwerks aufgrund von häufigem Adresswechsel im Netz verdächtig erscheinen. 
 
 \paragraph{Internethandel}
 \label{sec:Internethandel}
