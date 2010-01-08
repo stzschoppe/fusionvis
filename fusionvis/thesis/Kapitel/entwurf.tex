@@ -359,7 +359,7 @@ Auf diese Art und Weise kann die Zahl der potentiellen Einheiten weiter der Zahl
 \begin{figure}[htb]
 	\centering
 		\includegraphics[width=0.90\textwidth]{Bilder/gesamtesFenster.png}
-	\caption{BattleSimVis als prototypische Implementierung einer militärischen Lagedarstellung}
+	\caption{BattleSimVis als prototypische Implementierung einer militärischen Lagedarstellung. Dargestellt sind zwei eigene Einheiten, die zu drei Zeitpunkten jeweils zwei Feinde sehen. Es ergeben sich 12 Sichtungen.}
 	\label{fig:gesamtesFenster}
 \end{figure}
 Dass die oben dargestellten Lösungsansätze mit Hilfe von Berechnungen umgesetzt werden können, steht außer Frage. Mit dem im Folgenden vorgestellten Prototypen soll aber ein anderer Ansatz verfolgt werden: Der S2-Offizier soll mit dem umgesetzten Programm, allein durch die Betrachtung der visualisierten Darstellung, aus den redundanten Daten ein der Realität nahe kommendes Lagebild erstellen können.
@@ -479,7 +479,7 @@ Auch wenn oben beschrieben wurde, dass der S2--Offizier mit Hilfe von \emph{Batt
 Mit den oben dargestellten Fähigkeiten von \emph{BattleSimVis} ist es dem S2-Offizier nun möglich, die beiden in diesem Abschnitt aufgezeigten Lösungsansätze zu nutzen, um ein geeignetes Bild von der Lage zu bekommen.
 
 Das Problem der mehrfachen Meldung von Feindeinheiten durch eigene Kräfte, die gleichzeitig zum Beispiel einen roten Panzer entdecken, wird vom Programm dadurch behoben, dass die Einheiten auch am selben Ort dargestellt werden. Idealerweise sieht der S2-Offizier somit nur einen Panzer, wo auch nur ein Panzer in der Realität steht. \\
-Weichen die Daten geringfügig ab, fällt dies bei Berechnungen auf, jedoch erkennt man Unterschiede in der Position beim Ansehen erst bei so signifikanten Entfernungen, dass es sich um unterschiedliche Einheiten handeln muss.
+Weichen die Daten geringfügig ab, fällt dies bei Berechnungen auf, jedoch erkennt man Unterschiede in der Position beim Ansehen erst bei so signifikanten Entfernungen, dass es sich um unterschiedliche Einheiten handeln muss. In Abbildung \ref{fig:gesamtesFenster} werden 12 feindliche Einheiten angezeigt. Da jeweils aber immer zwei Sichtungen eines Objekts vorliegen, sieht man lediglich sechs rote Kugeln.
 
 Um eine Reichweitenanalyse durchzuführen, also um zwei zu unterschiedlichen Zeitpunkten gemeldete Objekte eindeutig als auch in der Realität nicht identisch zu identifizieren, wird dem S2-Offizier die Möglichkeit an die Hand gegeben, zu jeder Einheit einen in die Zukunft oder einen in die Vergangenheit ragenden Trichter anzeigen zu können. Damit lässt sich die theoretische Reichweite eines Objekts anhand der Maximalgeschwindigkeit visualisieren. Alles, was nicht in diesem Trichter ist, muss auch eine andere Einheit sein.
 
@@ -747,5 +747,7 @@ Durch diese Optimierung werden pro zu prüfender Einheit folgende absoluten und r
 	\caption{Erreichte Verbesserungen durch Vereinfachung der Berechnung}
 	\label{tab:verbesserungen}
 \end{table*}
+
+Unter der Annahme, dass alle Berechnungen die gleiche Zeit (eine Zeiteinheit) in Anspruch nehmen, werden durch die Optimierung 14 von 27 Zeiteinheiten eingespart. Somit ergibt sich ein Infimum für die theoretische Geschwindigkeitsverbesserung von 51,9\%. 
 
 
