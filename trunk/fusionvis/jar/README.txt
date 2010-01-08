@@ -1,4 +1,4 @@
-BETA-Version BattleSimVis
+Version 1.0 BattleSimVis
 
 Zum Starten
 
