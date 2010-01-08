@@ -8,24 +8,6 @@
 \include{kapitel/acronyms}
 
 \include{kapitel/titelseite}
-\singlespacing
-%\include{kapitel/abstract}
-\printglossary[type=\acronymtype,toctitle=Abkürzungsverzeichnis,title=Abkürzungsverzeichnis,style=long]
-\clearpage
-
-%\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
-\listoffigures
-\clearpage
-
-%\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
-\listoftables
-\clearpage
-
-%\addcontentsline{toc}{chapter}{Listingverzeichnis}
-\lstlistoflistings
-\clearpage
-
-
 
 \tableofcontents
 
@@ -42,6 +24,35 @@
 
 \include{kapitel/fazit}
 
+\singlespacing
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+\bibliographystyle{geralpha}
+\bibliography{literatur}
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Abk\"urzungsverzeichnis}
+\printglossary[type=\acronymtype,toctitle=Abkürzungsverzeichnis,title=Abkürzungsverzeichnis,style=long]
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+\listoffigures
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+\listoftables
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Listingverzeichnis}
+\lstlistoflistings
+\clearpage
+
 \appendix
 
 %\include{anhang/cdcontent}
@@ -49,11 +60,7 @@
 %\include{anhang/installation}
 
 %\include{anhang/anleitung}
-\singlespacing
-%\addcontentsline{toc}{chapter}{Literaturverzeichnis}
-\bibliographystyle{geralpha}
-\bibliography{literatur}
-\clearpage
+
 \onehalfspacing
 \include{kapitel/erklaerung}
 
