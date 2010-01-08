@@ -138,7 +138,7 @@ public class FusionVisForm extends javax.swing.JFrame {
         fusionvisMenu.add(fusionvisFileMenu);
 
         fusionvisHelpMenu.setText("Hilfe");
-
+        fusionvisHelpMenu.setVisible(false);
         fusionvisInfoMenuItem.setText("Info..");
         fusionvisInfoMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
