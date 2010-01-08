@@ -23,7 +23,7 @@ public class BattleSimVisForm extends FusionVisForm {
 	/**
 	 * Konstruktor
 	 * @param importerPanel ImporterPanel
-	 * @param viewerPanel ImporterPanel
+	 * @param viewerPanel ViewerPanel
 	 */
 	public BattleSimVisForm(ImporterPanel importerPanel,
 			ViewerPanel viewerPanel) {
