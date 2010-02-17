@@ -1,41 +1,6 @@
-\documentclass[handout]{beamer}
-%\documentclass{beamer}
-\usepackage{pgfpages}
-\usepackage{eurosym}
-\setbeamertemplate{footline}[frame number]
-%\pgfpagesuselayout{2 on 1}[a4paper,portrait,border shrink=5mm]
-\usetheme{Copenhagen} % Beamer Theme
-\usecolortheme{crane_unibw} % BeamerColor Theme
-%\useoutertheme[subsection=false]{smoothbars} % Beamer Outer Theme
-\setbeamertemplate{blocks}[rounded][shadow=true]
-%\useoutertheme{infolines}
-%\useinnertheme{rectangles}
-\setbeamercovered{transparent}
-%\usepackage{beamerthemeshadow}
-\usepackage[latin9]{inputenc}
-\usepackage{graphicx}
-\usepackage[british,ngerman]{babel}
-\usepackage{curves}
-\usepackage{epic}
-\usepackage{setspace}
-\usepackage{amsmath,amssymb,dsfont,stmaryrd}
-\usepackage{pgfpages}
-\usepackage{hyperref}
-%\include{newcommand}
-\definecolor{darkblue}{rgb}{0,0,.5}
-\hypersetup{pdftex=true, colorlinks=true, breaklinks=true,
-  linkcolor=darkblue, menucolor=darkblue,
- pagecolor=darkblue, urlcolor=darkblue}
-%\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
-
-%% FrameNr setzen (links unten) Frame / FrameGes.
-\setbeamertemplate{footline}{%
-\begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex]{date in
-head/foot}%
-\hfill \insertframenumber{} / \inserttotalframenumber \hspace*{1ex} 
-% 
-\end{beamercolorbox}}%
+\include{header}
 \include{Bilder/newcommand}
+
 \begin{document}
 \title{Visualisierung multisensorischer Daten zur Vorbereitung von Datenfusion}
 \subtitle{am Beispiel einer militärischen Lage}
@@ -45,7 +10,7 @@ Mathematik und Operations Research \\
 
 Fakultät für Informatik \\
 }
-%\institute[]{Institut fÃ¼r \\ FakultÃ¤t fÃ¼r Informatik\\UniversitÃ¤t der Bundeswehr MÃ¼nchen}
+%\institute[]{Institut für \\ Fakultät für Informatik\\Universität der Bundeswehr München}
 \date{18.02.2010}
 %%%%%Logo auf jeder Seite%%%%%%%%%%%%%%%%%%%%%%%
 \pgfdeclareimage[height=2cm]{bwlogo}{Bilder/UniBwM_logo} \logo{\pgfuseimage{bwlogo}}
