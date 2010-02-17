@@ -1,20 +1,23 @@
 \section{Motivation}
 \subsection{Militärische Lage}
-\begin{frame}\frametitle{Lagebeispiel}
-  \begin{itemize}[<+-| alert@+>]
-  \item 2 eigene Panzer (blau)
+\begin{frame}\frametitle{Lagebeispiel}  
+
+ \begin{columns}[t]
+\begin{column}{5cm}
+  \begin{block}{2 eigene Panzer (blau)}
     \begin{itemize}[<+-| alert@+>]
   	  \item bewegen sich nicht
   	  \item melden Beobachtungen in konstanten Zeitabständen
     \end{itemize}
-  
-  \item 2 feindliche Panzer (rot)
-  
+  \end{block}\end{column}
+\begin{column}{5cm}
+  \begin{block}{2 feindliche Panzer (rot)}
   \begin{itemize}[<+-| alert@+>]
   	\item ein Panzer in Querfahrt
   	\item ein Panzer in in Richtung der eigenen Kräfte
     \end{itemize}
-\end{itemize}
+\end{block}\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}\frametitle{Darstellung der Beispiellage}
@@ -46,16 +49,16 @@
 
 \subsection{Repräsentation der Daten}
 
-\begin{frame}[fragile,allowframebreaks]
+\begin{frame}[fragile]
 \frametitle{Darstellung der Meldungen in XML}
 \lstset{%
 language=XML,
-basicstyle={\ttfamily, \tiny},
+basicstyle={\ttfamily \tiny},
 numbers=left,                   % where to put the line-numbers
 numberstyle=\tiny,      % the size of the fonts that are used for the line-numbers
 stepnumber=1
 }%
-\begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Darstellung einer Meldung in XML},label=code:xmlexample]
+\begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Darstellung einer Meldung in XML}] 
 <Situation>
   <Units>
    <Unit>
