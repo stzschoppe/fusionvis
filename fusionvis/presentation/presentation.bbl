@@ -1,0 +1,14 @@
+\begin{thebibliography}{Sch08}
+
+\bibitem[HL97]{fusionintroduction}
+D.~L. Hall and J.~Llinas.
+\newblock An introduction to multisensor data fusion.
+\newblock {\em Proceedings of the IEEE}, 85(1):6--23, 1997.
+
+\bibitem[Sch08]{guide}
+Ulrich Schregenberger.
+\newblock Lernkurs zum erstellen eines wysiwyg-editors in einer 3d game engine.
+\newblock \protect\url{http://jmonkeyengine.com/documentation/guide.pdf},
+  (Stand 25.12.2009), 2008.
+
+\end{thebibliography}
