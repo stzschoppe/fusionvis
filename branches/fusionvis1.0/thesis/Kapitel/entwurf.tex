@@ -1,0 +1,753 @@
+%----------------------------------------------------------------%
+% entwurf.tex						    			    										       %
+%----------------------------------------------------------------%
+\chapter{Entwurf und Umsetzung einer Visualisierungsumgebung}
+In diesem Kapitel werden der Entwurf eines Visualisierungsframeworks und eine prototypische Implementierung auf dessen Basis beschrieben. Dazu werden die einzelnen Komponenten des Frameworks erklärt und ihr Zusammenspiel erläutert. Basierend auf dem Wissen über die Bestandteile können die Möglichkeiten der Erweiterbarkeit und der Individualisierbarkeit skizziert werden. Die Grundlage hierfür stellt eine prototypische Implementierung einer Visualisierung einer militärischen Lage.
+
+Abschließend werden interessante Aspekte der Implementierung aufgezeigt, die neben den umgesetzten Implementierungsentscheidungen auch andere Wege aufzeigen sollen.
+
+Dem Leser, der sich vorrangig für den entstandenen Prototyp interessiert, sei der Abschnitt \ref{ch:Prototyp} empfohlen. Die Details des Frameworks sollten für das Verständnis des Funktionsumfangs und die Bedienung keine Rolle spielen, können aber bei Bedarf nachgeschlagen werden.
+\section{Entwurf eines Visualisierungsframeworks}
+Das Ergebnis dieser Arbeit soll nicht nur eine potentielle Visualisierungs-Umgebung sein, sondern ein Framework. Es soll zum einen die Möglichkeit bieten, mit geringem Aufwand Daten anzeigen zu können, auf der anderen Seite aber umfangreiche Erweiterungsmöglichkeiten zulassen.
+Wie das Framework konkret entworfen und umgesetzt wurde, soll im Folgenden dargestellt werden.
+\subsection{Eingabedaten und Datenmodell}
+Grundlage für die weitere Arbeit sollen Eingabedaten sein, die bestimmte Voraussetzungen erfüllen. Diese gestellten Bedingungen werden im Folgenden kurz beschrieben. Darauf basierend wird das Datenmodell erläutert, in das die Quelldaten überführt werden sollen.
+\subsubsection{Eingabedaten}
+\label{ch:Eingabedaten}
+Um Daten dreidimensional visualisieren zu können, müssen diese bestimmte Voraussetzungen erfüllen. Diese sollen hier kurz aufgezeigt werden.
+\paragraph{Identifizierbarkeit}
+\label{sec:Identifizierbarkeit}
+Unabhängig von der Art der Visualisierung ist es unabdingbar, dass jedes einzelne Datum identifizierbar ist. Aus diesem Grund sollte in den Quelldaten bereits eine eindeutige Benennung vorliegen. Sollte das nicht der Fall sein, muss dieser Misstand spätestens beim Importieren der Daten behoben werden. 
+
+Probleme, die sich ergeben können, wenn diese Bedingung nicht beachtet wird, sind zum einen, dass keine aussagekräftigen Berechnungen auf den importierten Daten durchgeführt werden können. Zum anderen ist die Markierung eines gezielten  Datensatzes unmöglich.
+\paragraph{Lokalisierbarkeit}
+Aus dem Ziel, die Eingabedaten im dreidimensionalen, kartesischen Raum darzustellen, ergibt sich eine ganz logische Voraussetzung: Es sollte mindestens für jede der drei Dimensionen eine Eigenschaft der Daten existieren, die eine Positionierbarkeit möglich macht. Zwar ist es genauso möglich, die Daten auf einer Linie anzuordnen und somit nur eine Positionierungseigenschaft vorauszusetzen oder sich analog auf den zweidimensionalen Raum zu beschränken. Der daraus resultierende Informationsverlust muss aber in Kauf genommen werden.
+
+Die Voraussetzungen an den Typ, der für die Lokalisierung herangezogenen Eigenschaften, sind nicht sehr streng. Es ist zielführend, wenn es sich hier um kontinuierliche oder zumindest diskrete oder ganzzahlige Größen handelt. Ist dies nicht der Fall, so müssen diese lediglich zur Berechnung der Anzeigekoordinaten mit einer geeigneten Abbildungsvorschrift umgerechnet werden.
+\begin{table*}[ht!]
+	\centering
+		\begin{tabular}{ | l | l |}
+		\hline
+			\emph{mittelbar geeignet}      & \emph{unmittelbar geeignet}       \\ \hline
+		  \gls{ip} Adressen       & Entfernungsangaben         \\ \hline
+     \gls{mac} Adressen      & Ortsangaben (Länge/Breite) \\ \hline
+      Zeichenketten allgemein & Zeitangaben \\
+      \hline
+		\end{tabular}
+	\caption{Beispiele für unmittelbar und mittelbar geeignete Größen}
+	\label{tab:mittelUnmittlGroessen}
+\end{table*}
+\paragraph{Weitere Eigenschaften}
+Die Darstellung von Daten im dreidimensionalen Raum, lediglich basierend auf der Position und dem Namen, bietet noch keine hohe Anschaulichkeit. Um die in Abschnitt \ref{sec:Visualisierungsmoeglichkeiten} dargestellten Visualisierungen auch verwenden zu können, braucht es weitere Eigenschaften, die in optische Information umgewandelt werden kann.
+
+Die Art der Daten, die für solche zusätzliche Veranschaulichung verwendet werden kann, muss nicht genau spezifiziert werden. Trotzdem gibt es Typen, die sich für bestimmte Visualisierungsmöglichkeiten besser eignen. Als einfaches Bespiel seien hier Aufzählungsdatentypen genannt, die sich geradezu anbieten, die Objekte in unterschiedlichen Farben darzustellen. Dabei können auch unterschiedliche Enumerationen gleichzeitig visualisiert werden, indem pro Eigenschaft eine Farbe verwendet wird, die je nach Wert der Eigenschaft in unterschiedlichen Helligkeiten dargestellt wird. Der Kreativität sind hier keine Grenzen gesetzt.
+\subsubsection{Datenmodell}
+\label{ch:Datenmodell}
+Das im Rahmen dieser Arbeit entwickelte Datenmodell setzt den Grundstock für das später entworfene Framework. Es hat zum Ziel, durch generische Gestaltung in der Lage zu sein, unterschiedlichste Quelldaten ohne Anpassung speichern zu können.
+
+Umgesetzt wurden diese Anforderungen durch die Trennung in eine Datensammlung und deren Daten auf der einen und Eigenschaften auf der anderen Seite. 
+\paragraph{Datensammlung mit Daten}
+Wie in Abbildung \ref{fig:DataModelOverview} dargestellt, besteht das wesentliche Datenmodell aus zwei Klassen.
+\begin{description}
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.75\textwidth]{Bilder/DataModelOverview.png}
+	\caption{Übersicht des Datenmodells}
+	\label{fig:DataModelOverview}
+\end{figure}
+	\item[DataSet] Die Klasse \emph{DataSet} kapselt die einzelnen Datensätze in Form einer Liste. Diese Klasse ist die zentrale Datenstruktur, die für alle weiteren Prozesse die notwendigen Informationen bereithält. Sie besteht im Wesentlichen aus zwei Bestandteilen. Der erste ist die angesprochene Liste der gespeicherten Daten. Weiterhin kann sie Eigenschaften erfassen, die nicht einem bestimmten Datum zu eigen sind, sondern global für die gesamte Datensammlung gelten. Das Benutzen dieser Eigenschaften ist aber fakultativ, um eine hohe Flexibilität zu gewährleisten.
+Die Typisierung der Eigenschaften wird weiter unten dargestellt.
+
+  \item[Data] Die Klasse \emph{Data} kapselt ein einzelnes Datum. Wie bereits in Abschnitt \ref{ch:Eingabedaten} dargelegt, sind die notwendigen Bestandteile eines Datensatzes ein Bezeichner, der innerhalb einer Datensammlung eindeutig sein muss, sowie eine Positionsangabe. Diese ist mithilfe einer zusammengesetzten Eigenschaft festgehalten. Das Eigenschaftssystem wird weiter unten noch detailliert beschrieben.
+  
+\begin{figure}[hb!]
+	\centering
+		\includegraphics[width=0.5\textwidth]{Bilder/dataModelData.png}
+	\caption{Aufbau der Klasse Data}
+	\label{fig:dataModelData}
+\end{figure}
+
+
+Zusätzlich zu diesen beiden obligatorischen Angaben erfasst die Data-Klasse weiterhin drei Listen von Eigenschaften.
+\begin{itemize}
+	\item einfache Eigenschaften
+	\item zusammengesetzte Eigenschaften
+	\item Taxonomien
+\end{itemize}
+Die einfachen Eigenschaften sind in der Lage textuelle und numerische Merkmale eines Datensatzes zu erfassen. Sie sind Grundlage für die spätere Visualisierung. Die zusammengesetzten Eigenschaften ermöglichen das Ablegen von vektoriellen Größen, wie zum Beispiel einer Blickrichtung, Geschwindigkeiten oder Beschleunigungen usw. Auch ist es möglich, mit ihrer Hilfe baumartig strukturierte Eigenschaften zu erfassen.
+
+Die Taxonomien umfassen eine Liste möglicher Klassifikationen, die einem Datensatz zu eigen sein können. Auch ihre Angabe ist nicht zwingend erforderlich.
+
+Der Aufbau einer \emph{Data}-Klasse kann in Abbildung \ref{fig:dataModelData} nachvollzogen werden.
+\end{description}
+\paragraph{Eigenschaften}
+\label{sec:Eigenschaften}
+Die Eigenschaften der Datensammlung, wie auch die der Daten an sich, sollten so generisch aufgebaut sein, dass sie für möglichst viele unterschiedliche Anwendungsgebiete ohne Änderung und Anpassung übernommen werden können. 
+
+Beim Entwurf fiel auf, dass die auftretenden Eigenschaften nach zwei Kriterien zerfallen. Auf der einen Seite kann nach Dimension der Eigenschaften unterschieden werden. So kann zum Beispiel gespeichert werden, ob die Einheit in einem Gefechtssimulator feindlich, freundlich oder neutral ist. Weiterhin wäre es möglich, eine Gewichtsangabe zu speichern. In beiden Fällen handelt es sich um eine einfache, weil eindimensionale, Eigenschaft. 
+
+Im Gegensatz dazu gibt es zusammengesetzte Eigenschaften wie vektorielle Größen (Ausrichtung, Beschleunigung). In diesen Bereich fallen auch Gliederungsinformationen oder Unterstellungsverhältnisse. Eine zusammengesetzte Eigenschaft besteht damit entweder aus einfachen oder wiederum aus zusammengesetzten Eigenschaften.
+Diese Unterscheidung führte im Entwurf zur Auswahl des Composite-Patterns (nach \cite{designpatterns}) für die Modellierung des Sachverhalts.
+
+Das zweite Kriterium, in das die Informationen der Daten zerfallen, ist ihr Typ. Um einen Kompromiss zwischen einem kompakten Datenmodell und einem breiten Spektrum unterstützter Typen zu gewährleisten, fiel die Entscheidung auf folgende Datentypen:
+\begin{itemize}
+	\item Boolean
+	\item Char
+	\item Date \footnote{Da die Implementierung in Java erfolgt, wurde intern auf die Klasse \emph{GregorianCalendar} zurückgegriffen}
+	\item Float
+	\item Integer
+	\item String
+\end{itemize}
+Um die grundlegenden Bedürfnisse zu stillen, hätte auch die Auswahl eines Fließkommadatentyps, mit dem sich auch ganze Zahlen darstellen lassen, und ein Zeichenkettendatentyp, mit dem alle anderen Informationen gespeichert werden können, ausgereicht. Eine noch kleinere Teilmenge, die nur den String-Datentyp umfasst, wäre unter Ausnutzung von programmiersprachenspezifischen Typumwandlungen auch denkbar gewesen. Diese beiden Möglichkeiten wurden aber im Hinblick auf die komfortablere Handhabung verworfen.
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.75\textwidth]{Bilder/dataModelProperties.png}
+	\caption{Eigenschaftssystem im Datenmodell}
+	\label{fig:dataModelProperties}
+\end{figure}
+
+Der resultierende Entwurf ist in Abbildung \ref{fig:dataModelProperties} dargestellt. Er besteht aus der abstrakten Eigenschaft, den konkreten Implementierungen nach Datentypen und der Zusammengesetzten Eigenschaft.
+
+\begin{description}
+	\item[AbstractProperty] Die abstrakte Klasse dient als Muster für die konkreten Implementierungen. Sie wird über einen Bezeichner eindeutig identifiziert. Es bietet sich hier an, menschenlesbare Namen zu verwenden, die zugleich beschreibenden Charakter haben. Zusätzlich hat jede Eigenschaft einen Typ. Dieser ist bereits in der abstrakten Klasse implementiert, um zur Laufzeit ohne Kenntnis der genauen Implementierung den jeweiligen Typ der Eigenschaft abfragen zu können.
+	
+Der Satz an abstrakten Methoden bildet die notwendige Schnittstelle, um den Wert einer Eigenschaft zu lesen und zu schreiben. Hier stellt sich die Frage, warum eine abstrakte Klasse und nicht etwa ein Interface gewählt wurde. Die Antwort ergibt sich aus der Möglichkeit, die Typinformationen und den Bezeichner in der allgemeinen Eigenschaft vorhalten zu können. Das entlastet den Programmierer bei der Umsetzung der konkreten Implementierungen, da er sich darum nicht mehr kümmern muss.
+
+Aus Sicht des Composite-Patterns stellt \emph{AbstractProperty} die Component-Klasse dar.
+\item[Typ-Property] Die Implementierungen der abstrakten Klasse tragen in der Umsetzung die Verantwortung, einen zum Typ passenden Wert zu speichern. Dieser wird in der Ausgestaltung der Manipulationsmethoden gesetzt und gelesen. Wo notwendig sind Typumwandlungen durchzuführen, unsinnige Umwandlungen (zum Beispiel das Konvertieren eines bool'schen Datentyps in ein Datum) mit einer Ausnahmebehandlung quitiert werden.
+
+Eine Typ-Property ist die im Composite-Pattern als \emph{Leaf} bezeichnete Klasse.
+\item[ContainerProperty] Die zusammengesetzte Eigenschaft verwaltet ihre zugehörigen Eigenschaften in einer Liste von \emph{AbstractProperty}-Klassen. Sie kann aus diesem Grund aus Typ-Property-Klassen bestehen oder wiederum aus zusammengesetzten Eigenschaften. \emph{ContainerProperty} stellt im Pattern den Composite dar.
+\end{description}
+\paragraph{Erweiterbarkeit}
+Das Datenmodell ist an der Stelle der Eigenschaften erweiterbar. Um einen neuen Typ einzuführen müssen vier Schritte durchgeführt werden: 
+
+In der Enumeration der Typen ist der neue einzuführen. Weiterhin müssen in der \emph{AbstractProperty} die Zugriffs- und Manipulationsmethoden für den neuen Typ abstrakt definiert werden. Daraus folgt, dass bestehende Typen diese Methoden implementieren müssen. Macht eine Typumwandlung Sinn, dann kann diese umgesetzt werden. Wenn sie unsinnig sind, dann wendet man Ausnahmenbehandlung an.
+
+Abschließend muss nun eine neue Typ-Property Klasse erstellt und implementiert werden, die von ihrem abstrakten Vorbild erbt. 
+Durch diese vier Schritte hat man somit das Datenmodell um einen Typ erweitert.
+\subsection{Übersicht über das Frontend des Frameworks}
+\label{ch:Framework}
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[width=0.75\textwidth]{Bilder/framework.png}
+	\caption{Übersicht des Frameworks (Frontend/Backend)}
+	\label{fig:framework}
+\end{figure}
+
+Das erstellte Framework besteht im Wesentlichen aus zwei Teilen. Auf der einen Seite stehen die für den Benutzer sichtbaren Klassen, an denen nicht notwendigerweise eine Anpassung vorgenommen werden muss, um ein lauffähiges Programm zu erstellen. Zu diesen Klassen gehört auf oberster Ebene die Klasse \emph{FusionVisForm}. Das ist die dem Benutzer angezeigte Programmoberfläche. Sie besteht aus einem Menü mit implementierter Funktion zum Auswählen von \gls{xml}-Dateien und zum Schließen des Programms. 
+
+Die Benutzeroberfläche enthält weiterhin zwei \emph{JPanel}-Klassen, die es dem Benutzer ermöglichen, eine textuelle und eine visuelle Darstellung der Daten zu sehen. 
+\begin{description}
+	\item[ImporterPanel] Für die textuelle Sicht ist das \emph{ImporterPanel} vorgesehen. Es bietet die Möglichkeit, die Daten nach bestimmten Eigenschaften zu filtern und diese mit ihren Eigenschaften in Textform anzuzeigen. Das Model, auf dem gearbeitet wird, ist das in Abschnitt \ref{ch:Datenmodell} beschriebene Datenmodell. Somit ist das \emph{ImporterPanel} auch völlig unabhängig von dem genauen Inhalt der Daten, solange diese in das beschriebene Model überführt wurden. Dafür ist der \emph{Importer} zuständig, der im nächsten Abschnitt beschrieben wird. Das \emph{ImporterPanel} ist in Abbildung \ref{fig:FrontendBackend} in rot dargestellt.
+
+	\item[ViewerPanel]Die zweite \emph{JPanel}-Klasse ist das \emph{ViewerPanel}. Es ist verantwortlich für die dreidimensionale Anzeige der Daten. Dazu ist es notwendig, das vorhandene Datenmodell in die Struktur eines Szenenbaums zu überführen. Der Szenenbaum wird in Abschnitt \ref{sec:Szenenbaum} beschrieben. Dieser Schritt wird vom \emph{Mapper} bewerkstelligt, der im nächsten Abschnitt erklärt wird. Das \emph{ViewerPanel} ist in Abbildung \ref{fig:FrontendBackend} in grün dargestellt.
+
+Der erstellte Szenenbaum kann nun von einem Viewer angezeigt werden. Dieser beinhaltet eine OpenGL-Anzeigefläche, welche die dreidimensionale Darstellung übernimmt und es dem Benutzer erlaubt, sich in den visualisierten Daten zu bewegen, Datensätze mittels Mousepickings (siehe Abschnitt \ref{ch:mousepicking}) auszuwählen und diese somit im \emph{ImporterPanel} zu inspizieren. Auch der umgekehrte Weg ist möglich, also das Auswählen eines Datums in der textuellen Ansicht, was eine Hervorhebung seiner Visualisierung im \emph{ViewerPanel} zur Folge hat.
+\end{description}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.80\textwidth]{Bilder/FrontendBackend.png}
+	\caption{Frontend des Frameworks mit \emph{FusionVisForm} (orange), \emph{ImporterPanel} (rot) und \emph{ViewerPanel} (grün)}
+	\label{fig:FrontendBackend}
+\end{figure}
+
+Zusammenfassend kann man zum Frontend des Frameworks sagen, dass die von den konkreten \gls{xml}-Daten unabhängigen Funktionen bereits implementiert sind. Der Anwender muss lediglich festlegen, was wie dargestellt werden soll. Das \emph{Was} ist der Prozess des Überführens von \gls{xml} in das Datenmodell des Frameworks und wird im \emph{Importer} festgeschrieben. Das \emph{Wie} ist die Frage nach der Art und Weise, wie die Daten dreidimensional dargestellt werden sollen und wird im \emph{Mapper} beantwortet.
+
+\subsection{Übersicht über das Backend des Frameworks}
+Das Backend besteht im Wesentlichen aus den zwei oben erwähnten Komponenten \emph{Importer} und \emph{Mapper}. Im Folgenden soll die Funktion der beiden erläutert und notwendige Schritte der Spezialisierung beschrieben werden.
+
+Die Spezialisierung bezieht sich auf das Implementieren abstrakter Methoden, die in den beiden als abstrakt gekennzeichneten Klassen die eigentliche Funktion enthalten sollen.
+\subsubsection{Importer}
+Der \emph{Importer} ist, wie bereits im vorherigen Abschnitt angemerkt, dafür verantwortlich, die Daten aus einer \gls{xml}-Datei zu lesen. An die Struktur muss eine Voraussetzung gemacht werden, um den Import automatisiert durchführen zu können: Die Datensätze müssen als Elemente des ersten Elements unter dem Wurzelknoten in der \gls{xml}-Dateien stehen. Ein Beispiel für eine \gls{xml}-Datei, die diese Anforderung erfüllt, ist in Listing \ref{code:xmlexample} aufgeführt.
+
+Ist die Voraussetzung erfüllt, liest der \emph{Importer} die \gls{xml}-Datei aus und extrahiert die \gls{dom}-Knoten der Datenelemente. Die Wahl des \gls{dom}-Parsers für diese Aufgabe wird noch in Abschnitt \ref{sec:DOMParser} genauer erläutert. 
+
+\lstset{%
+language=XML,
+basicstyle={\ttfamily, \scriptsize},
+numbers=left,                   % where to put the line-numbers
+numberstyle=\scriptsize,      % the size of the fonts that are used for the line-numbers
+stepnumber=2,
+}%
+\begin{lstlisting}[breaklines=true,frame=tlRB,captionpos=b,caption={Beispiel für eine wohlgeformte \protect\gls{xml}-Datei},label=code:xmlexample]
+<Situation>
+  <Units>
+   <Unit>
+      <Name>FriendlyTank1</Name>
+      <Location>
+        <Lat>52.796629714678467</Lat>
+        <Lon>9.89990561649954</Lon>
+        <LastModified>2009-02-20T10:25:36+01:00</LastModified>
+      </Location>
+    </Unit>
+    <Unit>
+      <Name>FriendlyTank2</Name>
+      <Location>
+        <Lat>52.794038961891268</Lat>
+        <Lon>9.9011727699025922</Lon>
+        <LastModified>2009-02-20T10:25:36+01:00</LastModified>
+      </Location>
+    </Unit>
+  </Units>
+</Situation>
+\end{lstlisting}
+
+Der \emph{Importer} hält bereits notwendige Datenstrukturen vor. Zum einen sind dies zwei Membervariablen (\emph{id}, \emph{position}). Diese dienen dem Speichern der \gls{xml}-Elementnamen, die den Wert für Position und Bezeichner eines Datums liefern. Ähnlich gibt es drei Listen, die die Elementnamen enthalten, die als einfache, zusammengesetzte Eigenschaften oder als Taxonomie extrahiert werden.
+
+\paragraph{Spezialisierung}
+\label{sec:ImporterSpezialisierung}
+Zur  Spezialisierung eines \emph{Importers} für ein bestimmtes Datenformat müssen zwei Schritte durchlaufen werden.  Als Erstes sollten die in das Datenmodell als Eigenschaft von Daten zu übernehmenden \gls{xml}-Elemente auf die oben angesprochenen Membervariablen und Listen verteilt werden. 
+
+Als Nächstes muss nun die Methode \emph{extractDataFromNode()} implementiert werden. Ihr wird ein Knoten des \gls{dom}-Dokumentbaums übergeben. Dieser zeigt auf ein Element, dass als Datum in das Datenmodell übernommen werden soll. Die Aufgabe der Funktion ist es nun, nach den Vorstellungen des Anwenders ein Data-Objekt zu instanzieren, das die in den vorher spezifizierten Listen stehenden Eigenschaften enthält.
+
+\paragraph{Hilfsfunktionen}
+\label{sec:ImporterHilfsfunktionen}
+In der \emph{Importer}-Klasse sind bereits zwei Hilfsfunktionen implementiert, die dem Anwender die Arbeit beim Erzeugen der Data-Objekte vereinfachen sollen. Die Methode \emph{parseDate()} dient dem Auslesen eines Datums aus einem String. Für die genauere Dokumentation sei hier auf das JavaDoc verwiesen.
+
+Die Methode  \emph{extractSimpleProperty(Node, Type)} erzeugt eine einfache Eigenschaft (siehe \ref{sec:Eigenschaften}) eines angegebenen Typs aus einem \gls{dom}-Knoten. Um beispielsweise in Zeile 4 von Listing \ref{code:xmlexample} eine Eigenschaft \emph{Name} als String zu extrahieren, muss die Hilfsfunktion lediglich mit der Node aufgerufen werden, die auf dieses Element zeigt. Zusätzlich wird der gewünschte Typ (hier: \emph{Type.TString}) übergeben.
+
+\subsubsection{Mapper}
+Bereits im vorletzten Abschnitt wurde angesprochen, dass der \emph{Mapper} dafür Sorge trägt, das Datenmodell in eine dreidimensionale Darstellung zu überführen. Da nicht für jedes Problem auch dieselbe Visualisierung zielführend ist, besteht hier die Möglichkeit zur Individualisierung.
+
+Bei der konkreten Implementierung sind zwei unterschiedliche Aspekte zu unterscheiden: Auf der einen Seite ist die Frage, wie die Daten an sich dargestellt werden, zum Beispiel in Bezug auf Form und Farbe und das sonstige Erscheinungsbild. Auf der anderen Seite muss spezifiziert werden, in welcher Art und Weise die Dimensionen der Daten dargestellt werden.
+
+Resultat des Mappingvorgangs soll ein Szenenbaum sein (siehe Abschnitt \ref{sec:Szenenbaum}). Er ist die für die Grafikengine lesbare Form des Datenmodells. Dieser Szenenbaum muss bei jeder Veränderung des Datenmodells aktualisiert werden. Als solche zählt zum Beispiel das Filtern von Daten nach bestimmten Eigenschaften oder das Erstellen einer Sicht auf das Datenmodell.
+\paragraph{Spezialisierung}
+\label{sec:MapperSpezialisierung}
+Wie oben bereits beschrieben hat die Spezialisierung im \emph{Mapper} zwei Aspekte. Auf der einen Seite kann die Gestalt eines einzelnen Datums spezifiziert werden und auf der anderen Seite die Position dieses Datums im dreidimensionalen Raum. Eine vollständige Trennung ist in der derzeitigen Version nicht gelungen. Inwiefern sich das auswirkt, wird im Folgenden gezeigt.
+
+\subparagraph{Position und Projektion}
+\label{sec:PositionUndProjektion}
+Eine grundlegende Entscheidung bei der Visualisierung von Daten ist, wie aus den Rohdaten eines Datums die Koordinaten im dreidimensionalen Raum gewonnen werden können. Bereits in Abschnitt \ref{ch:Eingabedaten} wurde beschrieben, dass solche Rohdaten existieren müssen. Ebenfalls ist darauf verwiesen worden, dass ungeeignete Rohdaten (weder in Gleitkomma-, noch in ganzzahliger Darstellung) an dieser Stelle durch einen geeigneten Homomorphismus umzuwandeln sind.
+
+Der erste Schritt zur Individualisierung des \emph{Mappers} ist die Bestimmung der Ausmaße der Projektionsfläche. Dieser Begriff meint die Ebene, die trivialisiert durch Länge und Breite aufgespannt wird. Ihre Festlegung erfolgt durch die Implementierung der \emph{getSize()}-Methode. Hier gibt es zwei Varianten der Umsetzung. Es kann eine feste, von den Daten unabhängige Projektionsfläche gewählt werden. Eine maßstabsgetreue Abbildung entfällt somit. Vorteil dieser Art ist, dass bereits zur Implementierungszeit abschätzbar ist, wie groß die maximalen Entfernungen ausfallen. Somit können Entscheidungen, wie die Positionierung der Kamera (siehe Abschnitt \ref{sec:Kamera}), sinnvoll getroffen werden.\\
+Eine andere Möglichkeit ist eine von den Eingabedaten abhängige Projektionsfläche. Hier entfällt das abschätzbare Ausmaß der Darstellung zum Wohle der maßstabsgetreuen Abbildung.\\
+Eine der wichtigsten Verwendungen dieser Methode liegt im späteren Erzeugen des Gittermusters, welches eine bessere Einschätzung der Dimensionen ermöglicht.
+
+Der zweite Schritt zur Individualisierung ist die Festlegung der Skalierung der Position auf den einzelnen Dimensionen. Die Notwendigkeit hierfür kann sich aus ungünstig gestalteten Rohdaten ergeben. Um zum Beispiel Zeiten in Ortsangaben umzuwandeln, kann man auf die interne Darstellung eines Zeitpunktes in die Zahl der Millisekunden seit dem 01.01.1970 zurückgreifen. Hieraus ergeben sich jedoch schon für kurze Zeitspannen riesige Zahlenwerte, die zu ebensogroßen Ausmaßen der Darstellung führen würden.\\
+Mit der Implementierung der Methode \emph{getDimensionFactors()} kann diesem Umstand Rechnung getragen werden. Ist eine Skalierung nicht notwendig, so kann die triviale Skalierung mit dem Faktor 1 erfolgen.
+
+Der letzte Schritt zur Positionierung ist die Festlegung eines Datums auf eine genaue Koordinate in der dreidimensionalen Darstellung. Implementiert werden muss dies gleichzeitig mit der Festlegung der Gestalt eines Datensatzes. Wie dies zu erfolgen hat, ist in der allgemeinen Beschreibung zur Positionierung in Abschnitt \ref{sec:Positionierung} beschrieben. Der Ort dieser Implementierung ist die im Folgenden beschriebene Methode. 
+
+\subparagraph{Gestalt}
+\label{sec:Gestalt}
+Die Gestalt eines Datums wird von der Methode \emph{extractNodeFromData()} bestimmt. Sie hat die Aufgabe, einen Szenenknoten (siehe Abschnitt \ref{sec:Szenenbaum}) für jeden Datensatz zu erstellen. Bestandteil muss auf jeden Fall ein Grafikobjekt, wie in Abschnitt \ref{ch:visualisierungDatum} beschrieben, sein.  Im letzen Abschnitt wurde bereits angesprochen, dass ebenfalls die Festlegung der Koordinate des Grafikobjekts an dieser Stelle zu erfolgen hat. \\
+In dieser Methode kann der Benutzer neben Form, Größe, Position und sonstigen Eigenschaften, wie zum Beispiel Renderingoptionen (siehe Abschnitt \ref{sec:Transparenz}), auch die Texturierung von Objekten festlegen. Es ist jedoch nicht immer zweckmäßig, für jedes Objekt eine individuelle Textur zuzuweisen. Aus diesem Grund gibt es eine weitere Methode, die es gilt zu implementieren.
+
+Die Methode \emph{texture()} hat zur Aufgabe die Grafikobjekte eines übergebenen Szeneknotens zu texturieren. Dies kann anhand von bestimmten Eigenschaften geschehen. Enumerationen eignen sich hierbei sehr gut. Wie in Abschnitt \ref{ch:visualisierungDatum} beschrieben, sollte man sich an dieser Stelle auf eine noch vom Kurzzeitgedächtnis erfassbare Menge an Farben beschränken. Ist es jedoch nicht notwendig, so kann die Implementierung dieser Methode leer verbleiben.
+\paragraph{Hilfsfunktionen}
+\label{sec:MapperHilfsfunktionen}
+Hilfsfunktionen der Art, wie sie aus dem \emph{Importer} bekannt sind, gibt es im \emph{Mapper} nicht. An dieser Stelle soll jedoch die Methode \emph{getDataRoot()} erwähnt werden, die den Zugriff auf den vom \emph{Mapper} erstellten Szenegraphen ermöglicht. Sie ist in zwei Ausprägungen vorhanden: Einerseits ohne Angabe von Argumenten um an die Visualisierung des Datenmodells zu gelangen, das bei der Erstellung des \emph{Mappers} übergeben wurde. Andererseits kann auch ein Datenmodell, welches zum Beispiel durch Filtern entstanden ist, übergeben werden. Es wird automatisch zum neuen Modell des \emph{Mappers} und daraus wird der neue Szenengraph erzeugt.
+
+
+\subsection{Zusammenspiel der Komponenten}
+Nachdem im letzten Abschnitt die notwendigen Möglichkeiten zur Individualisierung durch konkrete Implementierung erläutert wurden, soll im Folgenden das Zusammenspiel der Komponenten und damit die Funktionsweise des Frameworks anhand von ausgewählten Aspekten skizziert werden. 
+\subsubsection{Visualisierungsprozess}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.90\textwidth]{Bilder/VisualisierungsProzess.png}
+	\caption{Ablauf des Visualisierungsprozesses}
+	\label{fig:VisualisierungsProzess}
+\end{figure}
+
+Ein wesentlicher Punkt in der Interaktion der Komponenten ist der Visualisierungsprozess, der alle Komponenten des Frontends und des Backends erfasst. Hier die dazugehörige chronologische Abfolge:
+
+\begin{enumerate}
+	\item Der Benutzer wählt eine \gls{xml}-Datei aus. Die Benutzeroberfläche ruft daraufhin vom zu ihr gehörenden \emph{ImporterPanel} den \emph{Importer} ab.
+
+	\item Das \emph{ImporterPanel} liefert den geforderten \emph{Importer}.
+
+	\item Die Form stößt nun den eigentlichen Importvorgang im \emph{Importer} an. Der \emph{Importer} greift dabei auf die vom Benutzer implementierte  \emph{extractDataFormNode()}-Methode zurück.
+
+	\item Nach dem Anstoßen hat die Form nichts mehr mit dem restlichen Vorgang zu tun.
+
+	\item Aufgrund der Veränderung des Datenmodells durch das Laden von Daten müssen die Sichten in den Panels aktualisiert werden. Auf der einen Seite aktualisiert das \emph{ImporterPanel} die textuelle Darstellung der Daten. 
+
+	\item Auf der anderen Seite muss das \emph{ViewerPanel} die grafische Datensicht aktualisieren.
+
+\begin{enumerate}
+	\item Dazu muss das Datenmodell in einen Szenenbaum umgewandelt werden. Diese Aufgabe delegiert das Panel an den \emph{Mapper}. Dieser erstellt mithilfe der aus dem letzten Abschnitt bekannten Methode \emph{extractNodeFromData()} den Baum. Mit der Methode \emph{texture()} werden die Visualisierungen der Daten anschließend eingefärbt.
+
+	\item Den fertigen Szenenbaum gibt der \emph{Mapper} an das \emph{ViewerPanel} zurück.
+
+	\item Abschließend stellt das \emph{ViewerPanel} die Daten grafisch dar.
+\end{enumerate}
+\end{enumerate}
+
+Der beschriebene Prozess kann in Abbildung \ref{fig:VisualisierungsProzess} nachvollzogen werden.
+
+Die angesprochene Aktualisierung der beiden unterschiedlichen Darstellungen erfolgt durch die Anwendung des Observer-Patterns (nach \cite{ designpatterns}). Dabei trägt die Form die Verantwortung, dass auch beide Panels beim Importer als Observer registriert werden. Diese Funktion ist aber bereits in der FusionVisForm implementiert, sodass der Benutzer von dieser Aufgabe unbehelligt bleibt.  
+\subsubsection{ImporterPanel und ViewerPanel}
+Bereits im letzten Abschnitt ist deutlich geworden, dass bei Änderungen am Datenmodell zwangsläufig die Sichten aktualisiert werden müssen. Eine Situation, bei der diese Aktion notwendig ist, ist der Datenimport. Im Folgenden werde ich die beiden weiteren Aktivitäten beschreiben, bei denen sich die Panels abstimmen müssen.
+
+\paragraph{Filtern des Datenmodels}
+\label{sec:FilternDesDatenmodels}
+Über das \emph{ImporterPanel} ist es möglich, die Sicht auf das Datenmodell zu beschränken, indem Datensätze anhand von nicht vorhandenen Eigenschaften ausgeblendet werden. Wie dies aussieht, ist in Abschnitt \ref{ch:Prototyp} beschrieben.
+
+Das Verändern des Datenmodells durch Ausgrenzen bestimmter Datensätze macht die Aktualisierung der Sicht im \emph{ViewerPanel} notwendig. Dies geschieht auf die gleiche Art und Weise wie ein Neuimport von Daten, denn prinzipiell ist das Filtern von Daten nur die Gegenoperation zum Import und somit nur eine Veränderung am Datenmodell. Aus diesem Grund wird auch an dieser Stelle das Observerpattern genutzt. 
+
+Problematisch ist hierbei, dass die beiden Panels bereits eine Oberklasse haben und somit nicht von der in Java bereits zur Verfügung gestellten Observerklasse erben können. Ein Ausweg aus diesem Problem wird in Abschnitt \ref{sec:ObserverPatternBeiAbgeleitetenKlassen} dargestellt.
+
+\paragraph{Selektion von Datensätzen}
+\label{sec:SelektionVonDatensaetzen}
+Eine weitere Aktivität, in der die beiden Panels kooperieren müssen, ist die Selektion eines Datensatzes. Ein Datum kann entweder im \emph{ImporterPanel}, in der textuellen, oder im \emph{ViewerPanel}, in der grafischen Darstellung, ausgewählt werden.
+
+Ziel soll es sein, dass ein Datum, das in der einen Sicht ausgewählt wird, auch in der andern Sicht als selektiert erscheint. Die Auswahl an sich ist im \emph{ImporterPanel} aufgrund der Bordmittel von Swing (siehe Abschnitt \ref{sec:java}) trivial. Im \emph{ViewerPanel} wird dies um einiges schwieriger, weil es sich dabei um einen sogenannten Mousepick handelt. Problematisch ist dabei, dass auf der zweidimensionalen Fläche des Bildschirms ein Objekt im dreidimensionalen Raum ausgewählt werden soll. Für die Lösung des Problems sei auf Abschnitt \ref{ch:mousepicking} verwiesen.
+
+Nachdem ein Datensatz ausgewählt wurde, wird auch an dieser Stelle wieder mit Hilfe des Observer-Patterns das jeweils andere Panel über das Ereignis informiert, sucht in seiner Darstellung den selektierten Datensatz und hebt ihn hervor.
+
+Die Kopplung der beiden Datenbestände erfolgt über den Bezeichner des Datums. Bereits in Abschnitt \ref{sec:Identifizierbarkeit} wurde gefordert, dass es sich hierbei um eine eindeutige Eigenschaft handeln muss. Wäre dies nicht der Fall, ist das geforderte Ziel der abgestimmten Auswahl schlicht nicht zu erreichen. 
+
+\subsubsection{ViewerPanel und Viewer}
+Aus der Abbildung \ref{fig:framework} wird deutlich, dass der Viewer aus dem allgemeinen Rahmen der Struktur heraus fällt, da er als innere Klasse des ViewerPanels umgesetzt ist. Dies ist ein aus entwurfsästhetischen Gesichtspunkten unschöner Sachverhalt. \\
+Betrachtet man jedoch die enge Zusammenarbeit zwischen dem Panel und dem Viewer, wird klar, warum die pragmatische zugunsten der ästhetischen Lösung gewählt wurde. 
+
+Zum Einen sollte das Panel in Hinblick auf Erweiterbarkeit, wie zum Beispiel einstellbare Kameraperspektiven, eine Schnittstelle zum \emph{Viewer} bieten. Wäre dieser als separate Klasse umgesetzt,  hätten viele Methoden und Instanzvariablen publik gemacht werden müssen. Eine geeignete Kapselung wird so unmöglich. Aus diesem Grund bietet es sich an, den \emph{Viewer} zwecks der Abschirmung in  das Panel einzubinden.
+
+Ein anderer Aspekt, bei dem genau derselbe Zwiespalt auftritt, ist das Auswählen von Daten im \emph{ViewerPanel}. Da der Aufbau von Komponenten in Swing hierarchisch organisiert ist, klickt der Benutzer beim Selektieren eines Objekts in der dreidimensionalen Darstellung nicht auf die vom Viewer bereitgestellte Zeichenfläche, sondern in die Form, die wiederum nativ das Ereignis an das zuständige Panel weitergibt.
+
+An dieser Stelle bricht jedoch die Kette, denn der \emph{Viewer} ist nicht in die Swing- Klassenstruktur eingebettet. Aus diesem Grunde kümmert sich das ViewerPanel um die für das Auswählen notwendigen Schritte. Zu diesem Zweck benötigt es, ähnlich wie oben angesprochen, einen weitreichenden Zugriff auf den \emph{Viewer}. Ohne ihn komplett öffentlich zu gestalten, führt auch hier der Weg an einer inneren Klasse nicht vorbei.
+
+Aus Sicht der Unterscheidung Framework-Komponenten in Frontend und Backend ist die Zuordnung des Viewers in das Panel vertretbar, denn er ist mit seiner Zeichenfläche im Gegensatz zum Importer eine sichtbare Komponente.
+\section{Visualisierung einer militärischen Lage}
+\label{ch:Prototyp}
+\begin{figure}[htb!]
+	\centering
+		\includegraphics[width=1\textwidth]{Bilder/screen.png}
+	\caption{Darstellung einer Lage mit zwei aufeinandertreffenden Bataillonen, insgesamt 251 Datensätze}
+	\label{fig:screen}
+\end{figure}
+
+
+Bereits in Abschnitt \ref{motivation}  wurde die Lage des S2-Offiziers angesprochen, der von den Panzern seines Bataillons Positions- und Feindmeldungen bekommt. Dies geschieht aus Gründen der Datenübertragung in textueller, beschränkt menschenlesbarer Form.
+
+\subsection{Problemdarstellung}
+\label{sec:Problemdarstellung}
+
+Die Aufgabe des S2-Offiziers ist es, aus diesen Daten ein Lagebild zu erstellen, also die Daten zu visualisieren. Problematisch sind hierbei vor allem die Feindmeldungen. Folgende Lage veranschaulicht das Problem:
+
+In der Norddeutschen Tiefebene treffen zwei eigene Panzer auf zwei gegnerische. Die eigenen Einheiten bewegen sich nicht, sie stehen in teilgedeckter Stellung. Die feindlichen Einheiten bewegen sich mit hoher Geschwindigkeit, eine in Richtung auf die beiden blauen\footnote{Im Kontext von militärischen Lagen spricht man von blauen und roten Einheiten. Rot steht hierbei für feindliche, blau für eigene oder verbündete Einheiten.} Panzer, die andere in Querfahrt von Rechts nach Links aus Sicht der beobachtenden Einheiten.
+
+Im Abstand von 60 Sekunden geben die beiden eigenen Panzer drei Mal nacheinander Meldungen über die gesichteten Feinde ab.  Daraus resultieren zwölf Feindmeldungen.
+
+Für den Offizier, der nun die Daten erhält, stellen sich potentiell zwölf Feindeinheiten dar. Von der Anzahl ergäbe das die Stärke einer Kompanie. Dies entspricht nicht der Wirklichkeit. Das Problem, das es nun zu lösen gilt, ist durch geeignete Visualisierung aus der vermeintlichen Kompanie wieder die zwei eigentlichen Feindpanzer erkennen zu können.
+
+\subsection{Lösungsansatz}
+\label{sec:Loesungsansatz}
+
+Die zahlenmäßige Explosion der potentiellen Feindmeldungen kann durch zwei Ansätze reduziert werden: 
+
+\subsubsection{Ortsgleichheit}
+\label{sec:Ortsgleichheit}
+
+Als erstes gilt es, dass alle Meldungen, die zur selben Zeit gemacht wurden, auf die Lage des gemeldeten Objekts überprüft werden. Wurde an einem Ort (mit einer gewissen Toleranz)  gleichzeitig mehrere Einheiten gemeldet, so kann das daher kommen, dass diese eben von mehreren eigenen Panzern gleichzeitig gesehen wurden.
+
+Mit diesem Ansatz können die zwölf Meldungen auf nur noch vermeintlich sechs Feindeinheiten reduziert werden.
+
+\subsubsection{Reichweitenberechnung}
+\label{sec:Reichweitenberechnung}
+
+Der nächste Schritt ist die Analyse der Meldungen, die zu unterschiedlichen Zeiten abgegeben wurden. Unter Annahme der maximalen Geschwindigkeit kann man nämlich feststellen, ob zwei Meldungen definitiv von unterschiedlichen Feindeinheiten ausgelöst wurden, oder ob die Möglichkeit besteht, dass es sich um ein und dasselbe Objekt handelt.
+
+Gegeben seien dafür zwei Meldungen. Aus ihnen lassen sich die Zeitdifferenz und die räumliche Entfernung der beiden voneinander bestimmen. Ist ihre Entfernung größer, als die Distanz, die in der errechneten Zeit, unter Annahme der Höchstgeschwindigkeit, hätte zurückgelegt werden können, so handelt es sich definitiv um unterschiedliche Einheiten.
+
+Auf diese Art und Weise kann die Zahl der potentiellen Einheiten weiter der Zahl der echten Einheiten angenähert werden und ein aussagekräftigeres Lagebild entsteht.
+
+\subsection{Umsetzung mithilfe des Visualisierungsframeworks}
+\label{sec:UmsetzungMithilfeDesVisualisierungsframeworks}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.90\textwidth]{Bilder/gesamtesFenster.png}
+	\caption{BattleSimVis als prototypische Implementierung einer militärischen Lagedarstellung. Dargestellt sind zwei eigene Einheiten, die zu drei Zeitpunkten jeweils zwei Feinde sehen. Es ergeben sich 12 Sichtungen.}
+	\label{fig:gesamtesFenster}
+\end{figure}
+Dass die oben dargestellten Lösungsansätze mit Hilfe von Berechnungen umgesetzt werden können, steht außer Frage. Mit dem im Folgenden vorgestellten Prototypen soll aber ein anderer Ansatz verfolgt werden: Der S2-Offizier soll mit dem umgesetzten Programm, allein durch die Betrachtung der visualisierten Darstellung, aus den redundanten Daten ein der Realität nahe kommendes Lagebild erstellen können.
+
+\subsubsection{Aufbau der Benutzerschnittstelle}
+\label{sec:AufbauDerBenutzerschnittstelle}
+
+Die Benutzeroberfläche ist in zwei Teile gegliedert. Auf der einen Seite gibt es die textuelle Sicht auf die Lage und alle Möglichkeiten, diese zu manipulieren. Auf der anderen Seite sind die grafische Lagendarstellung in dreidimensionaler Form und die Mittel, diese zu beeinflussen. Welche das im Detail sind, wird im Folgenden beschrieben. Grundlage dieser Aufteilung ist die Struktur, die durch das Visualisierungsframework vorgegeben wird (siehe Abschnitt \ref{ch:Framework}).
+
+\subsubsection{Auswahl der Dimensionen}
+\label{sec:AuswahlDerDimensionen}
+
+Um die folgenden Überlegungen und die Grundidee hinter der Visualisierung der Lage im Prototypen zu verstehen, ist es notwendig, zu erklären, welche Dimension im dreidimensionalen Raum mit welcher Größe der Daten übereinstimmt.
+
+Die Ebene, aufgespannt durch Länge und Breite, spiegelt die Position eines Objekts im Raum wieder. Dabei ist die Höhe vernachlässigt worden. Da die Eingabedaten in geographischer Länge und Breite angegeben sind, kommt es hier zu einem, durch die Projektion einer Kugelkappe in die Ebene entstandenen Fehler bezüglich der maßstabsgetreuen Darstellung von Entfernungen. Wie stark sich dieser auswirkt, wird in Abschnitt \ref{ch:kugelkappe} erläutert. Dabei ist die Bezeichnung der einzelnen Komponenten eines Vektors an das System von OpenGL angepasst. Das bedeutet, x-Komponente und z-Komponente spannen die Grundebene auf. In Abbildung \ref{fig:gesamtesFenster} ist diese als Gitter gekennzeichnet. Die y-Komponente geht in die Höhe. Es handelt sich hierbei um ein rechtshändiges dreidimensionales Koordinatensystem wie in Abbildung \ref{fig:Koordinaten} dargestellt.
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.35\textwidth]{Bilder/Koordinatensystem.png}
+	\caption{Rechtsh\protect\"{a}ndiges Koordinatensystem, wie es OpenGL verwendet \cite{guide}}
+	\label{fig:Koordinaten}
+\end{figure}
+
+Die dritte Dimension, die man so durch die Vernachlässigung der Höhe gewinnt, kann durch die Zeit eingenommen werden. Meldungen, die am ältesten sind, werden direkt auf der durch Gitternetzlinien angezeigten Grundebene dargestellt. Die Anzeige jüngerer Meldungen erfolgt kontinuierlich inpositive y-Richtung (\emph{in die Höhe}).
+
+Der Grund für diese Auswahl ist die später beschriebene Möglichkeit, die Reichweite einer Einheit in Abhängigkeit von ihrer Höchstgeschwindigkeit darzustellen.
+
+\subsubsection{Umgesetzte Fähigkeiten}
+\label{sec:UmgesetzteFaehigkeiten}
+
+\paragraph{Plattformunabhängigkeit}
+\label{sec:Plattformunabhaengigkeit}
+\emph{BattleSimVis} ist plattformunabhängig. Es wurde entwickelt um auf allen gängigen Betribssystemen zu funktionieren. Getestet ist es mit MS Windows (XP, Vista, 7), MacOS X, Linux (Ubuntu 9.10). Einzige Voraussetzung neben einer aktuellen Java Runtime Environment (mindestens 1.6) ist eine 3D-fähige Grafikkarte mit zugehörigen Treibern. OpenGL in der notwendigen Version ist bereits Bestandteil der genannten Betriebssysteme.
+
+\paragraph{Import der Daten:}
+\label{sec:ImportDerDaten}
+ \emph{BattleSimVis} ist durch das verwendete Visualisierungsframework in der Lage, Daten im \gls{xml}-Format zu lesen. Für den Testgebrauch wurde eine \gls{xml}-Datenstruktur verwendet, die aus einem Simulationsproxy stammt. Die importierten Daten werden in eine textuelle und eine grafische Ansicht umgewandelt.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.20\textwidth]{Bilder/Eigenschaftsansicht.png}
+	\caption{Baumstruktur der textuellen Darstellung}
+	\label{fig:Eigenschaftsansicht}
+\end{figure}
+
+
+\paragraph{Baumartige Datenanzeige:}
+\label{sec:BaumartigeDatenanzeige}
+ Die textuelle Anzeige der Daten erfolgt in einer Baumstruktur. Auf erster Ebene befinden sich die Datensätze, dargestellt durch ihren Bezeichner. Darunter sind für jeden Datensatz die eingelesenen Eigenschaften dargestellt.
+
+\paragraph{Dreidimensionale Datenanzeige:}
+\label{sec:DreidimensionaleDatenanzeige}
+ Im dafür vorgesehenen Bereich des Prototypen werden die gelesenen Datensätze im dreidimensionalen Raum dargestellt.
+
+\paragraph{Freie Navigierbarkeit:}
+\label{sec:FreieNavigierbarkeit}
+ Durch einen Klick in die grafische Visualisierung ist es dem Benutzer möglich, frei durch den dreidimensionalen Raum zu navigieren. Durch Druck der mittleren Maustaste und Bewegung der Maus kann die Ansicht frei gedreht werden. Die Position des Betrachters wird, ähnlich zu der Steuerung von Computerspielen aus der Ego-Perspektive, mit den Tasten \keystroke{W}, \keystroke{A}, \keystroke{S} und \keystroke{D} gesteuert.
+
+\paragraph{Maßstabsgetreue Abbildung:}
+\label{sec:MassstabsgetreueAbbildung}
+ Bis auf die oben gemachte Einschränkung bezüglich des Fehlers der Projektion einer Kugelkappe in die Ebene, werden die Daten maßstabsgetreu dargestellt. Die Berechnung der Entfernung erfolgt aufgrund der Tatsache, dass die eigentlichen Koordinaten die Position der Einheit auf einer Kugel beschreiben, durch die in Abschnitt \ref{ch:haversine} dargestellte Haversine-Formel. \\
+Die Gitternetzlinien sind auf die importierten Daten angepasst und werden nur in einem notwendigen Bereich auch angezeigt.
+
+\paragraph{Farbige Darstellung der Eigenschaften:}
+\label{sec:FarbigeDarstellungDerEigenschaften}
+ Um eine militärische Lage zu überblicken, ist die Kenntnis über die Zuordnung der Einheiten zu Freund und Feind unabdingbar. Aus diesem Grund stellt \emph{BattleSimVis} feindliche Einheiten in rot und freundliche in blau dar. Weiterhin wird über die Helligkeit der Farbe unterschieden, ob es sich um eine echte Einheit (ein meldender eigener Panzer) oder um eine Meldung (einen feindlichen Panzer) handelt. Eine Meldung ist heller, eine echte Einheit wird in einem satten Farbton dargestellt.
+
+\paragraph{Voreingestellte Kameraperspektiven:}
+\label{sec:VoreingestellteKameraperspektiven}
+ Zusätzlich zu der freien Navigierbarkeit in der dreidimensionalen Darstellung gibt es die Möglichkeit, zwischen drei vordefinierten Perspektiven auszuwählen. Zwei zeigen gegenüberliegende isometrische Ansichten, die dritte stellt die Lage aus einer Draufsicht dar. Dies kann als Ansicht unter Vernachlässigung der Zeit-Achse interpretiert werden.
+
+\paragraph{Datenfilter:}
+\label{sec:Datenfilter}
+ Um die Meldungen auf ein gewünschtes Maß zu reduzieren, gibt es die Möglichkeit, die importierten Daten nach bestimmten Eigenschaften auszuwählen. Dafür verfügt \emph{BattleSimVis}  über einen Filter, der anhand von Schlüssel-Wert-Paaren Datensätze auswählt. Die Schlüssel stehen für bestimmte Eigenschaften der Meldungen (Freund-Feind-Kennung, Verlässlichkeit etc.).
+ 
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.30\textwidth]{Bilder/SichtenFilter.png}
+	\caption{Filter mit voreingestellten Sichten auf die Lage}
+	\label{fig:SichtenFilter}
+\end{figure}
+
+\paragraph{Vordefinierte Sichten auf die Lage:}
+\label{sec:VordefinierteSichtenAufDieLage}
+ Um eine Lage (unabhängig von der oben geschilderten Situation des S2-Offiziers) aus der Sicht der roten Einheiten, der blauen Einheiten oder omniscient anzusehen, gibt es vordefinierte Filter. Sie stellen bei der Wahl der blauen Sicht zum Beispiel alle echten blauen Einheiten, aber nur alle gemeldeten roten dar. Im Fall der Feindsicht ist dies genau andersherum. Die omnisciente Sicht zeigt alle Datensätze.
+
+\paragraph{Selektion in der grafischen Darstellung:}
+\label{sec:SelektionInDerGrafischenDarstellung}
+ Um die textuelle und die dreidimensionale Sicht optimal miteinander verbinden zu können, ist es erforderlich, dass eine Auswahl einer Einheit (zum Beispiel zum Inspizieren ihrer Eigenschaften) in beiden Darstellungen vorgenommen werden kann. In der Baumstruktur ist dies trivial durch einen Klick auf den Bezeichner und das damit verbundene Aufklappen des Baums möglich. \\
+Um auch in der grafischen Ansicht die Eigenschaften zu einer Einheit zu erfahren, klickt man sie dort einfach an. Durch einen durchscheinenden grünen Kasten wird sie hervorgehoben und in der Baumstruktur wird der dazugehörige Pfad expandiert und ausgewählt. \\
+Dieses Fähigkeit wird als Mousepicking bezeichnet und wird in Abschnitt \ref{ch:mousepicking} näher erläutert.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.20\textwidth]{Bilder/auswahl.png}
+	\caption{Hervorhebung in der grafischen Ansicht}
+	\label{fig:auswahl}
+\end{figure}
+
+
+\paragraph{Bewegungskegel:}
+\label{sec:Bewegungskegel}
+ Eine Kernfähigkeit von \emph{BattleSimVis} ist das Einblenden von Bewegungskegeln. Die oben beschriebene Auswahl, welche Eigenschaft einer Meldung auf welche Dimension abgebildet wird, vor allem die Wahl, die Zeit in die Höhe zu zeichnen, ermöglicht die Visualisierung der Reichweite einer Einheit. \\
+Wird eine Meldung in der grafischen Darstellung ausgewählt, kann ein Kegel ein- und ausgeblendet werden, der anzeigt, wo sich eine Einheit in der Zukunft aufhalten kann (nach oben geöffneter Kegel) oder in der Vergangenheit aufgehalten haben könnte. Alles was innerhalb dieses Kegels liegt, ist in Reichweite der Einheit unter Berücksichtigung ihrer Maximalgeschwindigkeit. Alles was außerhalb ist, kann nicht in der jeweiligen Zeit erreicht worden sein.
+
+\paragraph{Inhalt von Bewegungskegeln:}
+\label{sec:InhaltVonBewegungskegeln}
+Auch wenn oben beschrieben wurde, dass der S2--Offizier mit Hilfe von \emph{BattleSimVis} allein durch das Ansehen einer Lage Redundanzen ausschalten kann, unterstützt das Tool den Anwender bei der Auswertung von Bewegungskegeln, indem es eine Liste aller Einheiten anzeigt, die sich darin befinden.
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.50\textwidth]{Bilder/Bewegungkegelverg.png}
+	\caption{Bewegungskegel in die Vergangenheit}
+	\label{fig:Bewegungkegelverg}
+\end{figure}
+
+\subsubsection{Nutzung des Tools zur Lösung des gestellten Problems}
+\label{sec:NutzungDesToolsZurLoesungDesGestelltenProblems}
+Mit den oben dargestellten Fähigkeiten von \emph{BattleSimVis} ist es dem S2-Offizier nun möglich, die beiden in diesem Abschnitt aufgezeigten Lösungsansätze zu nutzen, um ein geeignetes Bild von der Lage zu bekommen.
+
+Das Problem der mehrfachen Meldung von Feindeinheiten durch eigene Kräfte, die gleichzeitig zum Beispiel einen roten Panzer entdecken, wird vom Programm dadurch behoben, dass die Einheiten auch am selben Ort dargestellt werden. Idealerweise sieht der S2-Offizier somit nur einen Panzer, wo auch nur ein Panzer in der Realität steht. \\
+Weichen die Daten geringfügig ab, fällt dies bei Berechnungen auf, jedoch erkennt man Unterschiede in der Position beim Ansehen erst bei so signifikanten Entfernungen, dass es sich um unterschiedliche Einheiten handeln muss. In Abbildung \ref{fig:gesamtesFenster} werden 12 feindliche Einheiten angezeigt. Da jeweils aber immer zwei Sichtungen eines Objekts vorliegen, sieht man lediglich sechs rote Kugeln.
+
+Um eine Reichweitenanalyse durchzuführen, also um zwei zu unterschiedlichen Zeitpunkten gemeldete Objekte eindeutig als auch in der Realität nicht identisch zu identifizieren, wird dem S2-Offizier die Möglichkeit an die Hand gegeben, zu jeder Einheit einen in die Zukunft oder einen in die Vergangenheit ragenden Trichter anzeigen zu können. Damit lässt sich die theoretische Reichweite eines Objekts anhand der Maximalgeschwindigkeit visualisieren. Alles, was nicht in diesem Trichter ist, muss auch eine andere Einheit sein.
+
+Somit ist gezeigt, dass die prototypische Implementierung durch die gewählte Visualisierung die Reduktion redundanter Daten ermöglicht und den S2-Offizier bei der Fusion multisensorischer Daten adäquat unterstützt.
+
+%\section{Erweiterbarkeit und Individualisierbarkeit}
+
+
+\section{Kernaspekte der Implementierung}
+Bei der Umsetzung von Framework und einer prototypischen Implementierung fanden sich einige Implantierungsdetails, die es wert sind, auf sie genauer einzugehen. Dies kann drei Gründe haben: Entweder sie sind für das Verständnis der Umsetzung relevant (zum Beispiel Abschnitt \ref{ch:mousepicking}), sie beinhalten elegante mathematische Ansätze (siehe Abschnitt \ref{ch:bewegungskegel}) oder erläutern andere mögliche Ansätze, die aus genannten Gründen nicht verfolgt wurden.
+\subsection{Observer-Pattern bei abgeleiteten Klassen}
+\label{sec:ObserverPatternBeiAbgeleitetenKlassen}
+Bei der Auswahl eines Datums in der textuellen Ansicht soll die resultierende Hervorhebung auch in der grafischen Darstellung erfolgen und umgekehrt. Zur Umsetzung dieser Aufgabe empfiehlt sich das Observer-Pattern. 
+
+Dabei gibt es auf der einen Seite eine observierbare Klasse. Dies ist der Ausgangspunkt, an dem die Veränderung eines Zustands auftritt. Sie verwaltet eine Liste von Klasseninstanzen, die an dieser Veränderung interessiert sind. Geschieht ein Zustandsübergang, werden diese von der observierten Klasse benachrichtigt und können angemessen reagieren.
+
+Dieses Entwurfsmuster (nach \cite{designpatterns}) ist in Java bereits in die mitgelieferte Klassenbibliothek integriert. Dabei ist der observierte Anteil als Klasse \emph{Observable} fertig umgesetzt. Ein Datenmodell zum Beispiel, das beobachtet werden und in unterschiedlichen Ansichten dargestellt werden soll, wird von der \emph{Observable}-Klasse abgeleitet. Alle notwendigen Methoden werden somit zur Verfügung gestellt.
+
+Der beobachtende Anteil ist in Java als Interface umgesetzt. Es existiert somit nur ein Gerüst von Methoden. In diesem Fall ist es nur eine einzige, die \emph{update()}-Methode. In ihr muss das Verhalten implementiert werden, das ausgelöst wird, wenn sich an der beobachteten Instanz etwas ändert.
+
+Dieser von Java bereitgestellte Ansatz kommt an seine Grenzen, wenn die beobachtete Klasse bereits von einer anderen erbt. Denn dann kann sie nicht auch noch von der \emph{Observable} abgeleitet werden. Java verbietet schließlich die Mehrfachvererbung von Klassen.
+
+Genau dieses Problem tritt auch bei den beiden Panels ein, die bei der Auswahl von Datensätzen wechselseitig sowohl Beobachter, als auch Beobachteter sind. Sie sind beide von der Swing-Klasse \emph{JPanel} abgeleitet und dürfen somit nicht von \emph{Observable} erben.
+
+Zu diesem Problem gibt es zwei unterschiedliche  Lösungsansätze. Auf der einen Seite kann man ein \emph{Observable}-Interface erstellen, muss dann aber die Liste der Beobachter und die Methoden zum Benachrichtigen selbst implementieren. Dies ist ein nicht unerheblicher Aufwand und zudem unter Umständen fehlerträchtiger Aufwand.
+
+Der andere Ansatz ist, eine innere Klasse in den zu beobachtenden Klassen zu erstellen, die dadurch von \emph{Observable} erben kann und als innere Klasse den vollen Zugriff auf die Instanzvariablen ihrer Umgebung hat. Außerdem kann die äußere Klasse die Methode zum benachrichtigen der Beobachter zum geeigneten Zeitpunkt aufrufen.
+
+So kann mit nur geringen Anpassungen die vorimplementierte Lösung übernommen und das Problem gelöst werden.
+
+\subsection{Entfernungsberechnung auf der Erde}
+\label{ch:haversine}
+
+Der in Abschnitt \ref{ch:Prototyp} vorgestellte Prototyp zur Visualisierung eines Gefechtsfeldes berechnet den Projektionsbereich, indem die minimale und maximale geografische Länge und Breite der Eingabedaten bestimmt wird. Diese vier Daten beschreiben ein Rechteck, dessen Kantenlängen berechnet und in die dreidimensionale Darstellung übertragen werden.
+
+An dieser Stelle ergibt sich ein Problem aus der Gestalt der Erde in Verbindung mit der Art der Positionsdaten. Weil die Lage der Objekte in Longitude (geografische Länge) und Latitude (geografische Breite) beschrieben wird, handelt es sich um Koordinaten auf einer Kugel. Daraus ergeben sich Besonderheiten für die Längenberechnung. 
+
+Weiterhin ist die Erde in Wirklichkeit aber keine Kugel, sondern ein Rotationsellipsoid, der an den Polen einen geringeren Radius hat, als am Äquator. Diese Tatsache sei aber für die folgenden Betrachtungen zu vernachlässigen. Grund dafür ist die bereits bei der Visualisierung gemachte Vereinfachung, die Höhe der Eingabedaten (siehe Abschnitt \ref{ch:kugelkappe}) zu vernachlässigen.
+
+Zur Entfernungsberechnung sollen drei Ansätze aufgezeigt und auf ihre Tauglichkeit untersucht werden. Grundlage hierfür ist eine Frage aus der U. S. Census Bureau Geographic Information Systems FAQ (\cite{url:USACensus}). Im Hinterkopf sollten dabei folgende Ausmaße bleiben, die vermitteln, in welchen Größenordnungen man sich bewegt. Der größte Truppenübungsplatz Europas in Bergen hat eine Ausdehnung von 25km x 18km. Er liegt etwa auf 52° nördlicher Breite. Ein Kampfpanzer vom Typ Leopard 2A5 hat eine Länge von 7,72m.
+
+\subsubsection{Pythagoras}
+\label{sec:Pythagoras}
+Der erste Ansatz ist die naive Anwendung des Satzes von Pythagoras. Ausgangspunkt  dafür ist die Annahme, sich nicht auf der Oberfläche einer Kugel zu bewegen, sondern auf einer Ebene. Dies hat Ungenauigkeiten zur Folge, die in Abschnitt \ref{ch:kugelkappe} beschrieben sind. Der Abstand \emph{d} zweier Punkte berechnet sich somit wie flogt:
+\begin{equation}\label{eq:eins}
+	d=\sqrt{(x_{2} -x_{1})^2 + (y_{2} -y_{1})^2}
+\end{equation}
+
+Der Abstand hat dieselbe Einheit, wie die in kartesischen Koordinaten angegebenen Punkte \emph{$P_{1}$($x_{1}$,  $y_{1}$)} und  \emph{$P_{2}$($x_{2}$, $y_{2}$)}.
+
+Abhängig von der geografischen Breite, an der die Berechnung durchgeführt wird, resultieren die in Tabelle \ref{tab:PythagorasFehler} dargelegten Fehler bei einer tatsächlichen Länge von 20km.
+
+\begin{table*}[ht!]
+	\centering
+		\begin{tabular}{ | l | l |}
+		\hline
+			\emph{absoluter Fehler}      & \emph{geografische Breite}       \\ \hline
+		  \verb|<| 30m       & \verb|<| 70°        \\ \hline
+      \verb|<| 20m      	& \verb|<| 50° \\ \hline
+      \verb|<| 9m 				& \verb|<| 30° \\
+      \hline
+		\end{tabular}
+	\caption{Absolute Fehler bei der Entfernungsberechnung nach Pythagoras, Abstand der Punkte ist 20km}
+	\label{tab:PythagorasFehler}
+\end{table*}
+
+Da die für die Veranschaulichung gewählte Länge durchaus in der Realität, zum Beispiel auf einem Truppenübungsplatz auftreten kann, sind die entstehenden Fehler nicht hinnehmbar.
+
+\subsubsection{Seitenkosinussatz}
+\label{sec:Seitenkosinussatz}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.50\textwidth]{Bilder/sphere2.png}
+	\caption{Kugeldreieck mit Beschriftung \cite{kugeldreieck}}
+	\label{fig:Law-of-haversines}
+\end{figure}
+
+Um die Entfernung zweier Punkte auf einer Kugel mathematisch korrekt zu berechnen, bedient man sich der sphärischen Geometrie. Für das in Abbildung \ref{fig:Law-of-haversines} dargestellte Kugeldreieck gilt der Seitenkosinussatz:
+
+\begin{equation}\label{eq:zwei}
+	\cos{c} = \cos{a} \cos{b} + \sin{a} \sin{b} \cos{\gamma} 
+\end{equation}
+
+Dabei soll die Entfernung \emph{c} von Punkt \emph{$P_{1}$} nach Punkt \emph{$P_{2}$} berechnet werden.\\
+Nimmt man für den oberen Punkt als Nordpol an, und arbeitet auf einer Einheitskugel, dann folgt:
+
+\begin{subequations}\label{grp}
+\begin{align}
+a&=90^\circ-lat_{1}\label{eq:drei}\\
+b&=90^\circ-lat_{2}\label{eq:vier}
+\end{align}
+\end{subequations}
+
+Bekannt ist folgender Zusammenhang:
+\begin{subequations}\label{grp2}
+\begin{align}
+\sin{90^\circ - x} = \cos{x}\\
+\cos{90^\circ - x} = \sin{x}
+\end{align}
+\end{subequations}
+
+Daraus ergibt sich nach Umformung eine Formel zur Berechnung der Länge. Das Ergebnis hängt von den Einheiten der Eingabedaten ab. Werden die Koordinaten im Gradmaß angegeben, so ist zusätzlich zum Erdradius mit dem Faktor $\frac{\pi}{180^\circ}$ zu multiplizieren. Werden die Daten im Bogenmaß eingegeben, entfällt der letzte Faktor.
+
+Der so berechnete Abstand ist unter Berücksichtigung der gemachten Vereinfachung, auf einer Kugel zu rechnen, mathematisch korrekt. Ideal ist diese Lösung jedoch nicht, da die Formel für sehr kleine Entfernungen schlecht konditioniert ist. Kritisch ist hier vor allem der Kosinus der Längengraddifferenz. Abhängig von der Gleitkommapräzision (weniger als sieben signifikante Stellen) können bereits Längen kleiner einer Nautischen Meile (1.852m) nicht mehr unterschieden werden. Der Grund hierfür ist in Tabelle \ref{tab:Kosinus} illustriert.
+
+\begin{table*}[ht!]
+	\centering
+		\begin{tabular}{ | l | l |}
+		\hline
+			$x$      & $\cos{x}$       \\ \hline
+		  1' (1.852m)       & 0,99999995769202532795126248717334        \\ \hline
+      30'' (926m)    & 0,99999998942300627605141750356948 \\ \hline
+      1'' (30,86m) 			& 0,99999999998824778473047407621793 \\
+      \hline
+		\end{tabular}
+	\caption{Schlechte Konditionierung des Kosinus}
+	\label{tab:Kosinus}
+\end{table*}
+
+\subsubsection{Haversine Formel}
+\label{sec:HaversineFormel}
+
+Die gleiche Berechnung wie oben kann durch geeignetes Umstellen der Gleichung auch ohne das geschilderte Problem durchgeführt werden. Grundlage bilden die Additionstheoreme und die heute weniger gebräuchliche trigonometrische Funktion des Semiversus (im englischen Haversine, daher der Name der Formel). 
+
+\begin{equation}
+	d = 2 R \arcsin{\sqrt{\sin^2{\left(\frac{lat_{2}-lat_{1}}{2}\right)} + \cos{\left(lat_{1}\right)} \cos{\left(lat_{2}\right)} \sin^2{\left(\frac{\Delta lon}{2}\right)}}}
+\end{equation}
+
+Auch diese Formel ist für ein spezielles Problem schlecht konditioniert. Problematisch sind Entfernungen zwischen antipodalen Punkten, also Orten, die sich auf dem Erdball gegenüberliegen. Da dieser Fall in Kontext des erstellten Prototyps keine Rolle spielt, ist dieser Fall aber zu vernachlässigen. \\
+Aus diesem Grund wurde diese Formel zur Entfernungsberechnung verwendet.
+
+\subsection{Informationsverlust durch Projektion einer Kugelkappe auf eine Ebene}
+\label{ch:kugelkappe}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.20\textwidth]{Bilder/kreisbogen.pdf}
+	\caption{Schnitt durch die Erde mit Kreisbogen und darunterliegender Strecke}
+	\label{fig:kreisbogen}
+\end{figure}
+
+Um im vorgestellten Prototyp eine Dimension für die Zeit verwenden zu können, war es notwendig die Höhe einer Einheit außer Acht zu lassen. Dadurch ergibt sich eine Ungenauigkeit, denn die Eingabedaten befinden sich eigentlich auf einer sogenannten Kugelkappe. So bezeichnet man einen Ausschnitt einer Kugeloberfläche. Zusätzlich sind sie eventuell sogar auf Bergen. Durch das Fortlassen der Höhe wird die Kugelkappe in die Ebene projiziert. 
+
+Um diesen Sachverhalt einfacher durchdenken zu können, soll er in den zweidimensionalen Raum übertragen werden. Folglich geht es dann nicht mehr um eine Kugelkappe, die in eine Ebene abgebildet wird, sondern um einen Kreisbogen, der auf eine Gerade projiziert wird.
+
+Durchdenkt man sich diesen Vorgang, ist es klar, dass die resultierende Gerade kürzer sein muss, als der Kreisbogen. Um diesen Fehler zu veranschaulichen  soll noch einmal die Größenordnung des Truppenübungsplatzes Bergen herangezogen werden. Mit Ausmaßen von 25km x 18km ist die theoretisch längste Strecke die Diagonale des aufgespannten Rechtecks. Diese ist nach Pythagoras ca. 30km lang.
+
+Diese 30km als Länge eines Kreisbogens auf einem Kreis mit einem Radius von 6371km sind der Anhalt für die folgende Rechnung. Verbindet man Anfang und Ende des Kreisbogens mit einer Gerade, so ist diese Strecke die gesuchte Projektion.
+
+Zwischen dem Mittelpunkt des Kreises und den Endpunkten des Kreisbogens wird ein gleichschenkliges Dreieck aufgespannt. Das Lot auf der Strecke, dessen Länge gesucht ist, Teilt das Dreieck in zwei gleichgroße rechtwinklige Teildreiecke. Grund hierfür ist, dass das Lot auf der Grundseite eines gleichschenkligen Dreiecks zugleich auch Winkelhalbierende ist. 
+
+Folglich ist der Winkel $\alpha$, der vom Lot und dem Radius, der Mittelpunkt und einen Endpunkt des Kreisbogens verbindet wie folgt zu berechnen:
+\begin{subequations}
+\begin{align}
+\frac{2 \pi \cdot 6371km}{2 \pi} &= \frac{30km}{2 \alpha} \\
+\alpha &= \frac{15}{6371}
+\end{align}
+\end{subequations}
+Mit dem berechneten Winkel lässt sich auf die Länge der gesuchten Strecke schließen. Sie ist das Doppelte der Gegenkathete zum Winkel $\alpha$.
+\begin{subequations}
+\begin{align}
+\sin{\alpha} &= \frac{a}{6371km} \\
+l &= 2 \sin{\alpha} \cdot 6371km
+\end{align}
+\end{subequations}
+
+Die Länge der Strecke ist somit etwa  29,999972km. Der absolute Fehler beträgt 2,72cm. Relativ sind das 0,001\,\textperthousand. Das Vernachlässigen der Höhe fällt also viel schwerer ins Gewicht, als die Projektion der Kugelkappe in die Ebene.
+
+
+\subsection{Mousepicking}
+\label{ch:mousepicking}
+\begin{figure}[hbt!]
+	\centering
+		\includegraphics[width=0.30\textwidth]{Bilder/mousepickingscreen.png}
+	\caption{Darstellung der von der Maus ausgehenden Strahlen aus \cite{guide}}
+	\label{fig:mousepickingscreen}
+\end{figure}
+Unter dem Wort Mousepicking wird nach \cite{guide} die Auswahl von Objekten in einer dreidimensionalen Darstellung verstanden. Dies ist in der Umsetzung des Visualisierungsframeworks notwendig, wenn ein Datum in der grafischen Ansicht selektiert werden soll, um zum Beispiel seine Eigenschaften in der textuellen Ansicht zu inspizieren.
+
+Bei dieser, auf den ersten Blick sicher trivial erscheinenden Tätigkeit gibt es ein Problem, dass der Leser vielleicht aus der Bäckerei kennt. Zeigt man, vor der Theke stehend, auf ein Gebäckstück hinter der Glasscheibe, welche die Backwaren vor den Kunden schützt, so ist es für den/die Verkäufer/in nicht einfach zu erkennen, auf was gezeigt wird.
+
+Ein ähnlicher Sachverhalt ergibt sich durch das Zeigen mit der Maus auf ein Objekt im dreidimensionalen Raum, denn der Mauszeiger bewegt sich nur auf einer Ebene, einer Art Fenster zum Raum der Darstellung. Um zu berechnen, auf was gezeigt wird, braucht es einen Strahl ausgehend von der Spitze des Mauszeigers. Dasjenige Objekt, das in der kürzesten Entfernung vom Zeiger getroffen wird, soll ausgewählt werden.
+
+Aus der analytischen Geometrie ist aber bekannt, dass eine Gerade, spezieller aber auch ein Strahl, durch mindestens zwei Punkte zu spezifizieren ist. An dieser Stelle hilft die gewählte Grafikengine, indem sie ihrem Benutzer zu einer gewählten Bildschirmkoordinate den Startpunkt des Strahls, der von ihr ausgeht, im dreidimensionalen Raum liefert. Zusätzlich ist sie in der Lage, senkrecht zur Bildschirmebene einen Zielpunkt am Ende des sichtbaren Bereichs zu liefern. Aus diesen beiden Punkten kann nun der für das Mousepicking benötigte Strahl berechnet werden.
+
+Bei der Übergabe der Bildschirmkoordinaten ist jedoch zu beachten, dass das von Swing verwendete Koordinatensystem seinen Ursprung in der \emph{oberen} linken Ecke besitzt. Im Vergleich zu \gls{opengl}, das den Ursprung mathematisch eingängig in der \emph{unteren} linken Ecke platziert. Die y-Koordinate ist also vor der Berechnung von der Höhe des Bildschirms abzuziehen. 
+
+In Abbildung \ref{fig:mousepickingscreen} ist eine Visualisierung der Strahlen nachzuvollziehen.
+
+\subsection{Bewegungskegel}
+\label{ch:bewegungskegel}
+In der prototypischen Implementierung ist es möglich, eine Reichweitenanalyse zu einer Einheit durchzuführen. Das heißt, wie weit sie sich unter Annahme einer bestimmten Maximalgeschwindigkeit bewegen kann. Dargestellt wird diese Reichweite durch einen Kegel, der seine Spitze im Ausgangsort der Einheit hat.
+
+Interessant ist es, festzustellen, welche anderen Einheiten sich in dem Kegel befinden. Visuell ist dies meist möglich, das heißt eine Berechnung ist nicht immer notwendig. Aber es gibt Grenzfälle, in welchen eine genaue Aussage nur mathematisch getroffen werden kann. Wie diese Berechnung aussehen kann, soll im Folgenden dargelegt werden. 
+
+\subsubsection{Engine-Mittel}
+\label{sec:EngineMittel}
+
+Unter Berücksichtigung der Tatsache, dass eine Engine für die dreidimensionale Darstellung verwendet wurde, kann man davon ausgehen, dass davon Mittel zur Verfügung gestellt werden, um das Problem zu lösen. 
+
+Eine mögliche Umsetzung basiert auf der Technik, die auch für die Mousepicks (siehe Abschnitt \ref{ch:mousepicking}) verwendet wurde: Gegeben seien die dreidimensionalen Objekte der Einheiten und der Kegel, in dem sie potentiell liegen könnten. Von jeder Einheit wird jetzt ein Strahl ausgesendet. Richtung ist grundsätzlich die negative y-Richtung. Naiv gesprochen: \emph{nach unten}. 
+
+Genau wie beim Mousepicking wird jetzt geprüft, ob der Kegel getroffen wurde. War dies der Fall, befindet sich die Einheit darin. 
+
+In der prototypischen Implementierung wurde diese Variante nicht umgesetzt. Grund dafür ist sind Probleme mit dem Algorithmus, den die Engine für die Kollisionsberechnung nutzt. Er ist auf Geschwindigkeit, nicht jedoch auf Genauigkeit ausgelegt. Ziel der Berechnung sollte aber ein sehr genaues Ergebnis sein. Deswegen entfällt diese Variante.
+
+\subsubsection{Winkelvergleich}
+\label{sec:Winkelvergleich}
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.20\textwidth]{Bilder/bewegungskegel.pdf}
+	\caption{Schnitt durch einen Kegel. $b$ ist dabei der Ortsvektor eines zu prüfenden Punkts.}
+	\label{fig:bewegungskegel}
+\end{figure}
+
+Ein Ansatz das Problem mit analytischer Geometrie anzugehen, ist der Vergleich von Winkeln zwischen Vektoren. Für diese Variante kann o. B. d. A. der Kegel als (gleichschenkliges) Dreieck angenommen werden. Auf der Basis wird nun das Lot gefällt. Bei diesem handelt es sich um die Höhe des Dreiecks. 
+
+Als Erstes wird der Winkel zwischen den Schenkeln des Dreiecks und dem Lot berechnet. Da der Radius des Kegels mit der Höhe des Dreiecks (und ebenfalls der Höhe des Kegels) ein rechtwinkliges Dreieck aufspannt, gilt:
+\begin{subequations}\label{eq:tan}
+\begin{align}
+\tan{\alpha} &= \frac{r}{h} \\
+\alpha &= \arctan{\frac{r}{h}}
+\end{align}
+\end{subequations}
+
+Als Zweites wird der Winkel berechnet, der sich für jede zu prüfende Einheit zwischen der Strecke von der Spitze des Kegels zur Einheit und dem Lot befindet. Er berechnet sich nach:
+\begin{equation}\label{eq:winkel}
+\cos{\beta} = \frac{\vec{a}\bullet\vec{b}}{\left|\vec{a}\right| \cdot \left|\vec{b}\right|} \\
+\end{equation}
+
+Ist dieser Winkel größer, liegt die Einheit außerhalb des Kegels. Ist er anderenfalls kleiner, befindet sich die geprüfte Einheit im Kegel. 
+
+Insgesamt handelt es sich hierbei um ein recht rechenaufwendiges Verfahren, da es für jede Einheit durchgeführt werden muss. Aus diesem Grund stellt sich die Frage, ob es Möglichkeiten zur Vereinfachung gibt.
+
+Vergleich der y-Komponenten
+Berechnet man den Winkel $\alpha$ nicht mit der Gleichung \ref{eq:tan}, sondern mit Gleichung \ref{eq:winkel}, ergibt sich eine Vereinfachung: Da der Richtungsvektor nur in der y-Komponente von null verschieden ist, geht auch nur die y-Komponente des Schenkelvektors ein. Damit degeneriert das Skalarprodukt zu einer einzigen Multiplikation. 
+
+Für die Winkelbrechnung sind die Längen der Vektoren, die für die Berechnung herangezogen werden, unerheblich. Darum muss für das Lot nicht mit dem Vektor (0, h, 0) gerechnet werden. Es genügt (0, 1, 0). Das Skalarprodukt muss nun schlicht nicht mehr ausgerechnet werden.
+
+Ebenso können der Schenkelvektor und der Vektor der zu prüfenden Einheit Richtung Kegelspitze normalisiert werden. Resultat ist, dass der Nenner der Formel zur Winkelberechnung gleich eins ist. Die Berechnung des Arkuskosinus ist zum Vergleich der beiden Winkel hinfällig. Schließlich müsste er nur von den y-Komponenten berechnet werden. Diese können aber auch gleich verglichen werden: Ist die Höhe (y-Komponente) des normalisierten Vektors der zu prüfenden Einheit kleiner, liegt sie außerhalb. Ist die des normalisierten Schenkelvektors kleiner, liegt sie im Kegel.
+
+Zusammenfassen müssen zur Berechnung nur noch folgende Schritte durchlaufen werden: 
+\begin{enumerate}
+	\item Einmalige Berechnung des Schenkelvektors
+	\item Normalisierung des Schenkelvektors
+	\item Für jede zu prüfende Einheit:
+\begin{enumerate}
+	\item Berechnung des Vektors von ihr zur Kegelspitze
+	\item Normalisierung dieses Vektors
+	\item Vergleich der y-Komponenten der beiden Vektoren.
+\end{enumerate}
+\end{enumerate}
+
+Durch diese Optimierung werden pro zu prüfender Einheit folgende absoluten und relativen Einsparungen gemacht:
+\begin{table*}[ht!]
+	\centering
+		\begin{tabular}{ | l | l |}
+		\hline
+			\emph{absolute Verbesserung}      & \emph{relative Verbesserung} 	      \\ \hline
+		  -4 Additionen       							& -44\%        												\\ \hline
+      -6 Multiplikationen    						& -66\% 															\\ \hline
+      -3 Divisionen											& -50\% 															\\ \hline
+      -1 Wurzel    											& -50\% 															\\ \hline
+      -1 trigonometrische Funktion    	& -100\% 															\\ \hline
+		\end{tabular}
+	\caption{Erreichte Verbesserungen durch Vereinfachung der Berechnung}
+	\label{tab:verbesserungen}
+\end{table*}
+
+Unter der Annahme, dass alle Berechnungen die gleiche Zeit (eine Zeiteinheit) in Anspruch nehmen, werden durch die Optimierung 14 von 27 Zeiteinheiten eingespart. Somit ergibt sich ein Infimum für die theoretische Geschwindigkeitsverbesserung von 51,9\%. 
+
+

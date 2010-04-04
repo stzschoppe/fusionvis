@@ -1,0 +1,77 @@
+%----------------------------------------------------------------%
+% fazit.tex						    		  	    										       %
+%----------------------------------------------------------------%
+\chapter{Fazit und Ausblick}
+In diesem letzten Kapitel soll eine Bewertung der im Rahmen dieser Arbeit entstandenen Implementierung vorgenommen werden. Dazu werden die zu Beginn gesetzten Ziele als Maßstab genommen. Anschließend soll aufgezeigt werden, welche Aspekte in einer weiterführenden Arbeit aufzugreifen sind und wie das Erstellte eingesetzt werden kann. 
+
+\section{Bewertung}
+Ziel dieser Arbeit sollte ein plattformunabhängiges Framework sein, das die Visualisierung von multisensorischen Daten ermöglicht. Es sollte einer prototypischen Implementierung dienen, welche Daten eines Gefechtssimulators darstellen kann und die Redundanzen in ihnen durch Visualisierung zu beseitigen vermag.
+
+Das Ergebnis der Arbeit ist vielversprechend. Im Prinzip konnten alle Ziele umgesetzt werden. Inwieweit dies geschehen ist, wird im Folgenden für die einzelnen Aspekte dargelegt.
+
+\subsubsection{Framework zur Visualisierung von Multisensorischen Daten}
+\label{sec:FrameworkZurVisualisierungVonMultisensorischenDaten}
+
+Im Zuge der Implementierung  ist ein Klassengerüst entstanden, das aus drei Teilen besteht. Der erste ist eine Datenstruktur, die durch ihre modulare Struktur eine hohe Flexibilität und Erweiterbarkeit bietet. Weiterhin ein Backend, welches auf der einen Seite den einfachen Import von \gls{xml}-Dateien in die geschaffene Datenstruktur ermöglicht und auf der anderen Seite diese mit weitreichenden Möglichkeiten der Individualisierung in eine dreidimensionale Ansicht umformen kann. Im dritten Teil, dem Frontend, können die Daten visuell und textuell betrachtet werden. Es ist also ein funktionsfähiges Framework entstanden.
+
+\subsubsection{Prototypische Implementierung}
+\label{sec:PrototypischeImplementierung}
+
+Mit Hilfe des erstellten Klassengerüsts war es ohne hohen Implementierungsaufwand möglich, die vom Betreuer dieser Arbeit zur Verfügung gestellten Daten eines Gefechtssimulatorproxy darzustellen. Entstanden ist dabei ein Prototyp, der in der Lage ist, Datensätze mit ihren Eigenschaften anzuzeigen.
+
+\subsubsection{Beseitigung von Redundanzen durch Visualisierung}
+\label{sec:BeseitigungVonRedundanzenDurchVisualisierung}
+
+Fusion auf Basis von Datensätzen, die sich an einer Stelle befindlichen, geschieht im Prototyp automatisch, da sie visuell nicht unterscheidbar sind und somit als ein Datum zu erkennen sind.
+
+Weiterhin wurde durch die Darstellung von Bewegungskegeln eine Möglichkeit der Reichweitenanalyse geschaffen. Somit ist es möglich, auch Sichtungen, die zu unterschiedlichen Zeiten an unterschiedlichen Orten gemacht wurden, einem Objekt zuzuordnen. Zusammenfassend ist somit mit dem Prototyp ein mächtiges Werkzeug zur Visualisierung und visuellen Fusion von Daten entstanden.
+
+\subsubsection{Plattformunabhängigkeit}
+\label{sec:fazitPlattformunabhaengigkeit}
+
+Aufgrund der Umsetzung in Java, der Verwendung von Swing und einer Grafikklassenbibliothek, die für alle gängigen Betriebssysteme vorhanden ist, entstand ein plattformunabhängiges System. Der Prototyp wurde erfolgreich auf Microsoft-Systemen (Windows XP, Vista, 7), auf Linux-Systemen (Ubuntu 9.04/9.10) und MacOS X getestet. Beschränkt wird die Unabhängigkeit nur von der Verfügbarkeit nativer \gls{lwjgl}-Bibliotheken und der \gls{opengl}-Fähigkeit des Betriebssystems. Da letztere für Windowssysteme bereits ab Win98 der Fall ist, scheitert es daran sicher mit sehr geringer Wahrscheinlichkeit.
+
+\section{Weiterführende Arbeit}
+Obwohl die Ziele der Arbeit sind erfüllt worden sind, gibt es dennoch Ansätze für die weiterführende Arbeit und Punkte, die sicher noch verbessert werden können. Diese beiden Aspekte sollen im Folgenden beleuchtet werden.
+
+\subsubsection{Ansätze zur Verbesserung}
+\label{sec:AnsaetzeZurVerbesserung}
+
+Das größte Problem dieser Arbeit war die kurze Zeit, in der sie erstellt werden musste. Aus diesem Grund mussten an einigen Stellen Abstriche gemacht werden. Als besonders kritisch ist dabei das Vertrautmachen mit der verwendeten Grafikbibliothek (siehe Abschnitt \ref{sec:jme}). Zwar hat sie sich in ersten Experimenten als sehr leicht verständlich und einfach zu handhaben gezeigt. Das an einigen Stellen jedoch benötigte Wissen von der vollen Komplexität hat aber gefehlt.
+
+Konkret äußert sich dieses Problem in den zwei separaten Datenmodellen. Auf der einen Seite steht das mit dem Framework entwickelte eigene Datenmodell. Auf der anderen Seite gibt es den Szenenbaum zum Anzeigen der Daten. Werden Informationen zu einem grafischen Objekt benötigt, muss im Datenmodell des Frameworks ein Lookup geschehen. Dieser Vorgang ist aufwendig und kann beseitigt werden, indem beide Datenmodelle verschmelzen. Dabei müssen lediglich die Klassen zur Datenspeicherung von den Knoten des Szenenbaums erben. Derart tiefgreifende Strukturänderungen sollten aber zum Ende der Arbeit nicht mehr durchgeführt werden. Die ungewollten Nebenwirkungen waren nicht abschätzbar.
+
+Ebenfalls durch die kurze Zeit, die für diese Arbeit zur Verfügung stand, entwickelten sich redundante Strukturen innerhalb des Klassengerüsts. Zum Wohle eines funktionsfähigen Prototyps wurde an einigen Stellen die Eleganz des Entwurfs in den Hintergrund gerückt. Durch den geeigneten Einsatz von Refactoring ist dieser Missstand jedoch zu beseitigen.
+
+Ein weiterer Punkt, an dem Verbesserungen vorgenommen werden können, ist die Ergonomie des Prototyps. Das auffälligste Beispiel ist die in Abschnitt \ref{sec:Datenfilter} beschriebene Filterfunktion. Der Name des Schlüssels, nach dem gefiltert werden soll, muss in korrekter Groß- und Kleinschreibung von Hand eingegeben werden. Förderlich wäre hier, eine Liste mit den möglichen Eigenschaften bereits aus den Daten auszulesen und mit Hilfe dieser Liste eine Auswahl zu ermöglichen.
+
+\subsubsection{Weiterführende Ansätze}
+\label{sec:WeiterfuehrendeAnssaetze}
+
+
+Der nächste Schritt muss, vor allem im Hinblick auf die Erprobung des Frameworks, die Visualisierung eines anderen Datenbestandes sein. Einige Möglichkeiten sollen hier aufgezählt werden:
+
+\paragraph{Neighbor Discovery Protocol}
+\label{sec:NeighborDiscoveryProtokoll}
+
+\gls{ndp} ist ein Protokoll, das unter anderem die Übersetzung von \gls{ip}v6-Adressen in Link-Layer-Adressen leistet. Es entspricht zum Address Resolution Protocol in \gls{ip}v4-Netzen.
+
+\cite{thomas1} und \cite{thomas2} entwickeln einen Monitoring-Ansatz für \gls{ndp}. In diesem Zusammenhang entstand die Idee, die anfallenden Daten zu visualisieren. Als Dimensionen könnten jeweils die \gls{ip}v6- und \gls{mac}-Adressen, sowie die Zeit,  dienen. Daraus könnten Schlüsse über häufig verwendete Hersteller der Netzhardware gezogen werden. Auch könnten Informationen gewonnen werden, welche Benutzer des Netzwerks aufgrund von häufigem Adresswechsel im Netz verdächtig erscheinen. 
+
+\paragraph{Internethandel}
+\label{sec:Internethandel}
+
+Eine weitere Möglichkeit, die Visualisierung von Daten zu nutzen, ist das Auswerten vom Kaufverhalten bei Kunden von Online-Shops und das Surf-Verhalten von Internet-Nutzern. Theoretisch lässt sich bei geeigneter Visualisierung ein Verhaltensmuster erkennen. Dieses könnte dazu dienen, Kunden auf unterschiedlichen Plattformen wiederzuerkennen. Hier wäre die Visualisierung wieder zur Datenfusion eingesetzt. 
+
+\subsubsection{Militärische Lagen}
+\label{sec:MilittaeischeLagen}
+
+Auf diesem Gebiet bewegt sich zwar schon der Prototyp, aber es gibt eine Vielzahl von Möglichkeiten, hier weiterführende Arbeit zu bestreiten. Ein Ansatz ist das Verbessern der Reichweitenanalyse. Fahrzeuge können nicht auf jedem Untergrund ihre Maximalgeschwindigkeit erreichen. Darum könnten Informationen über die Geländebeschaffenheit in die Visualisierung mit einfließen. Das hätte zur Folge, dass nicht mehr echte Trichter gezeichnet werden. Sie würden an einigen  Stellen, in Abhängigkeit vom Terrain, deformiert. Die Berechnung solcher Gebilde wird den anspruchvollsten Teil der Arbeit ausmachen.
+
+Zusätzlich könnte der Prototyp, neben der vorhandenen visuellen Fusion, um mathematische Modelle erweitert werden. Einen großen Einfluss werden dabei statistische und stochastische Berechnungen haben, da die Daten immer mit einer gewissen Unsicherheit behaftet sind. 
+
+
+\section{Fazit}
+Zusammenfassend ist in dieser Arbeit ein Prototyp zur Visualisierung einer militärischen Lage entstanden, der die in ihn gesetzten Anforderungen erfüllt. Durch Abstraktion des Prototyps konnte ein Klassengerüst erstellt werden, das für die Implementierung weiterer Datenarten verwendet werden kann.
+
+Die erhoffte Fähigkeit, Redundanzen in multisensorischen Daten durch Visualisierung beseitigen zu können, wurde umgesetzt. Bei der Erprobung mit echten, sowie konstruierten Eingabedaten hat sie sich als mögliche Alternative zu den grundlegenden mathematischen Modellen herausgestellt. Welche  Qualität der verfolgte Ansatz hat, bleibt in weiterführender Arbeit unter Beweis zu stellen.

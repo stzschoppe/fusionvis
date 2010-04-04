@@ -1,0 +1,31 @@
+%----------------------------------------------------------------%
+% einleitung.tex																					       %
+%----------------------------------------------------------------%
+\pagenumbering{arabic}
+\chapter{Einleitung}
+
+\section{Motivation}
+Wir leben in einer Zeit stetig voranschreitender Technologisierung. Dies äußert sich für jeden sichtbar auf vielerlei Art und Weise. Massenspeicher mit vor Jahren noch unvorstellbaren Kapazitäten, stetig wachsende Prozessorleistung und massiver Fortschritt in der Datenübertragung sind hier nur als Beispiele zu nennen. Solche Entwicklungen sind es, die das Sammeln, Verarbeiten und Speichern von riesigen Datenmengen erst ermöglichen.  Diesen Fortschritt gilt es zu nutzen und auf mögliche Anwendungsfelder auszuweiten. 
+
+\label{motivation}
+Betrachtet man ein Gefechtsfeld, sei es im Rahmen einer Übung, einer kriegerischen Auseinandersetzung oder eines Konflikts, so werden auch hier Informationen gesammelt und ausgewertet. Man stelle sich folgende Situation vor: Drei eigene Panzer bewegen sich durch das Gelände. Plötzlich klären sie zwei feindliche Fahrzeuge auf. Jeder einzelne eigene Panzer setzt eine Meldung ab und beschreibt, was er sieht. Dies führt zu sechs Meldungen. Der S2\footnote{Der S2-Offizier ist verantwortlich für die militärische Sicherheit, militärisches Nachrichtenwesen mit Aufklärung und Zielfindung, elektronisch Kampfführung und eben die Wehrlage}-Offizier muss nun aus diesen Meldungen ein Lagebild erstellen. Dabei sind aus der vorhandenen (teilweise redundanten) Information zwei statt sechs feindliche Fahrzeuge zu extrahieren. 
+
+Für das geschilderte Beispiel scheint es nicht notwendig, diese Informationsauswertung zu automatisieren. In der Realität hingegen  erfordert es viel Zeit, diese Arbeit zu erledigen\footnote{Ein Panzerbataillon der Bundeswehr umfasst zum Beispiel ca. 40 Kampfpanzer}. Und genau dies ist ein großes Problem, denn je älter die Lageinformation ist, umso weniger aussagekräftig ist sie. Entscheidungen, die darauf basierend getroffen werden, können falsch oder unverhältnismäßig sein. Um diesen Missstand zu beseitigen, gilt es, den S2-Offizier bei seiner Arbeit technisch zu unterstützen.
+
+\section{Ziel der Arbeit}
+
+Eine technische Unterstützung kann in unterschiedlichen Abstufungen geschehen. So können die separaten Meldungen zu einer großen Meldung zusammengefasst werden. Dies ist aber nicht sonderlich hilfreich, wenn zum Beispiel aus vielen einzelnen Datensätzen einfach eine zusammenhängende Datensammlung erstellt wird. Denn wenn diese in einem textuellen Format vorliegt, ist sie von einem Menschen nur schwer zu verstehen. Weiterhin können die auftretenden Redundanzen nicht einfach erfasst, geschweige denn überhaupt genutzt werden.
+
+Aus diesem Grund möchte ich mich in dieser Arbeit mit Visualisierungsformen auseinandersetzen, die eine menschenlesbare Sicht auf multisensorische Daten bieten. Zuerst sollen Visualisierungsmöglichkeiten aufgezeigt werden. Bei unterschiedlichen Ansätzen sollen diese bewertet werden.
+
+Ergebnis dieser Betrachtungen wird ein plattfurmunabhängiges Framework zur Darstellung multisensorischer Daten. Dieses verwende ich dann prototypisch dazu, die eingangs erwähnte Problemstellung des S2-Offiziers zu bearbeiten und ihm eine, für seine Lageerstellung hilfreiche, Sicht auf die eingehenden Meldungen zu geben. Dabei soll die prototypische Implementierung allein durch die Visualisierung zur Beseitigung von Redundanzen beitragen. 
+
+\section{Aufbau der Arbeit}
+
+Der Inhalt dieser Arbeit gliedert sich in drei Kapitel. In dem auf die Einführung folgenden zweiten Kapitel werden die verwendeten Technologien beleuchtet. Dazu zählen neben der verwendeten Programmiersprache und dem Format der Eingabedaten auch die verwendete Grafikklassenbibliothek und das zur Erstellung und Betreuung dieser Arbeit förderliche Online-Portal.
+
+Im dritten Kapitel werden die theoretischen Hintergründe von multisensorischen Daten und Fusion dargelegt. In diesen Zusammenhang soll diese Arbeit eingeordnet werden. Da ein zentraler Aspekt im hier verwendeten Umgang mit multisensorischen Daten die Visualisierung dieser ist, sollen im dritten Kapitel ebenfalls Visualisierungsmöglichkeiten aufgezeigt werden.
+
+Das vierte Kapitel dient der Darstellung des im Zuge dieser Arbeit erstellten Visualisierungsframeworks. Es wird im Aufbau und in der Verwendung beschrieben. Wichtig dabei sind vor allem das eigens für diesen Zweck geschaffene Datenmodell, sowie die vorgefertigte Benutzeroberfläche. Zentraler Aspekt dieser Arbeit ist der implementierte Prototyp, welcher der Visualisierung einer militärischen Lage dient und in dem Zusammenhang das Beseitigen von Redundanzen in multisensorischen Daten ermöglicht. Auch werden in diesem Abschnitt interessante mathematische und implementierungstechnische Details aufgezeigt.
+
+Zum wesentlichen Verständnis der Arbeit reicht das Studium des vierten Kapitels, da es die Beschreibung von Design und Implementierung des im Zuge dieser Arbeit zu erstellenden Visualisierungsprototyps enthält. An Stellen, an denen Wissen aus anderen Abschnitten benötigt wird, wird auf diese verwiesen.

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="protected" author="true" classpath="lib/jme-awt.jar;lib/jme.jar;lib/lib/lwjgl/jinput.jar;lib/lib/lwjgl/lwjgl.jar;lib/lib/jogl/jogl.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="de.unibw.fusionvis.datamodel.properties,de.unibw.fusionvis.datamodel,de.unibw.battlesimvis.backend,de.unibw.fusionvis,de.unibw.battlesimvis,de.unibw.fusionvis.frontend,de.unibw.battlesimvis.frontend,de.unibw.fusionvis.backend" source="1.6" sourcepath="src" splitindex="true" use="true" version="true"/>
+    </target>
+</project>
